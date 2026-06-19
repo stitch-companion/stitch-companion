@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>小蓝的陪伴空间</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #5B9BD5;
+            --soft-pink: #FF6B9D;
+            --warm-orange: #FFB347;
+            --deep-purple: #6C5CE7;
+            --calm-teal: #00B894;
+            --sky-blue: #74B9FF;
+            --sand: #FDCB6E;
+            --white: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-light: #636E72;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'ZCOOL KuaiLe', cursive;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #87CEEB 0%, #B8E6F0 30%, #E8F5E9 70%, #FFE4B5 100%);
+            touch-action: manipulation;
+        }
+
+        /* 海滩背景 */
+        .beach-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .sun {
+            position: absolute;
+            top: 8%;
+            right: 12%;
+            width: 70px;
+            height: 70px;
+            background: radial-gradient(circle, #FFD93D 0%, #FFB347 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 50px #FFD93D, 0 0 80px rgba(255, 217, 61, 0.5);
+            animation: sunPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes sunPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.9;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud-1 {
+            top: 12%;
+            width: 80px;
+            height: 30px;
+            animation: cloudFloat 25s linear infinite;
+        }
+
+        .cloud-1::before {
+            width: 40px;
+            height: 40px;
+            top: -20px;
+            left: 10px;
+        }
+
+        .cloud-1::after {
+            width: 30px;
+            height: 30px;
+            top: -15px;
+            right: 10px;
+        }
+
+        .cloud-2 {
+            top: 20%;
+            width: 60px;
+            height: 25px;
+            animation: cloudFloat 30s linear infinite;
+            animation-delay: -10s;
+        }
+
+        .cloud-2::before {
+            width: 30px;
+            height: 30px;
+            top: -15px;
+            left: 8px;
+        }
+
+        @keyframes cloudFloat {
+            0% { transform: translateX(-100px); }
+            100% { transform: translateX(calc(100vw + 100px)); }
+        }
+
+        /* 沙滩和海浪 */
+        .ocean {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            background: linear-gradient(180deg, #4ECDC4 0%, #26A69A 50%, #00897B 100%);
+        }
+
+        .wave {
+            position: absolute;
+            width: 200%;
+            height: 80px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.4' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
+            animation: waveMove 12s linear infinite;
+        }
+
+        .wave:nth-child(2) {
+            bottom: 5px;
+            opacity: 0.6;
+            animation-delay: -6s;
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .sand {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 15%;
+            background: linear-gradient(180deg, #FDCB6E 0%, #E5B86E 100%);
+            border-radius: 50% 50% 0 0 / 20% 20% 0 0;
+        }
+
+        /* 主容器 */
+        .main-container {
+            position: relative;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 音频控制 */
+        .audio-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            font-size: 24px;
+            transition: transform 0.3s;
+        }
+
+        .audio-control:hover {
+            transform: scale(1.1);
+        }
+
+        /* 倒计时 */
+        .countdown-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 18px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .countdown-text {
+            font-size: 16px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .countdown-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-blue);
+            text-shadow: 2px 2px 0 rgba(91, 155, 213, 0.2);
+        }
+
+        .countdown-unit {
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .countdown-encourage {
+            font-size: 14px;
+            color: var(--soft-pink);
+            margin-top: 8px;
+            font-weight: 600;
+        }
+
+        /* 史迪仔容器 */
+        .stitch-container {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        /* 对话气泡 */
+        .chat-bubble {
+            position: absolute;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            max-width: 280px;
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .chat-bubble.show {
+            opacity: 1;
+        }
+
+        .chat-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid white;
+        }
+
+        /* 史迪仔图片容器 */
+        .stitch-wrapper {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+
+        .stitch-img {
+            width: 220px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.2));
+            animation: stitchBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes stitchBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* 互动区域 */
+        .interaction-areas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .touch-area {
+            position: absolute;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .touch-area:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .touch-area.head {
+            top: 5%;
+            left: 30%;
+            width: 40%;
+            height: 25%;
+        }
+
+        .touch-area.left-hand {
+            top: 35%;
+            left: 5%;
+            width: 25%;
+            height: 30%;
+        }
+
+        .touch-area.right-hand {
+            top: 35%;
+            right: 5%;
+            width: 25%;
+            height: 30%;
+        }
+
+        .touch-area.heart {
+            top: 45%;
+            left: 35%;
+            width: 30%;
+            height: 25%;
+        }
+
+        .touch-area.body {
+            top: 30%;
+            left: 25%;
+            width: 50%;
+            height: 50%;
+        }
+
+        /* 底部提示 */
+        .hint-text {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 15px;
+            opacity: 0.8;
+        }
+
+        /* 功能按钮 */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 350px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 18px;
+            padding: 18px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .action-btn:active {
+            transform: translateY(0);
+        }
+
+        .action-btn .icon {
+            font-size: 28px;
+        }
+
+        .action-btn .label {
+            font-size: 12px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .action-btn.chat { border-top: 3px solid var(--deep-purple); }
+        .action-btn.mailbox { border-top: 3px solid var(--warm-orange); }
+
+        /* 全屏界面基础样式 */
+        .fullscreen-interface {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+        }
+
+        .fullscreen-interface.active {
+            display: flex;
+        }
+
+        .fullscreen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .fullscreen-header h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        /* 呼吸大法界面 */
+        .breathing-interface {
+            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%);
+        }
+
+        .breathing-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .breathing-stitch {
+            width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+            animation: stitchBounce 2s ease-in-out infinite;
+        }
+
+        .breathing-belly {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background: radial-gradient(ellipse, rgba(91, 155, 213, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: bellyBreathe 8s ease-in-out infinite;
+        }
+
+        @keyframes bellyBreathe {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+        }
+
+        .breathing-circle {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--calm-teal) 0%, #00A085 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 40px rgba(0, 184, 148, 0.4);
+            transition: transform 4s ease-in-out;
+            margin-bottom: 30px;
+        }
+
+        .breathing-circle.inhale {
+            transform: scale(1.2);
+        }
+
+        .breathing-circle.exhale {
+            transform: scale(1);
+        }
+
+        .breathing-text {
+            color: white;
+            font-size: 22px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .breathing-count {
+            font-size: 42px;
+            font-weight: bold;
+            display: block;
+        }
+
+        .breathing-instruction {
+            font-size: 16px;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+
+        .breathing-timer {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 20px;
+        }
+
+        .start-breathing-btn {
+            background: var(--calm-teal);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .start-breathing-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* 锻炼界面 */
+        .exercise-interface {
+            background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 50%, #FFCC80 100%);
+        }
+
+        .exercise-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .exercise-animation {
+            font-size: 120px;
+            margin-bottom: 30px;
+            animation: exerciseMove 1s ease-in-out infinite;
+        }
+
+        @keyframes exerciseMove {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(-5deg); }
+            75% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .exercise-title {
+            font-size: 24px;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .exercise-desc {
+            font-size: 16px;
+            color: var(--text-light);
+            text-align: center;
+            line-height: 1.8;
+            max-width: 300px;
+        }
+
+        .exercise-count {
+            font-size: 48px;
+            color: var(--warm-orange);
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        /* 秘密抽屉 */
+        .secret-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 300;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .secret-drawer.active {
+            display: flex;
+        }
+
+        .drawer-content {
+            background: white;
+            border-radius: 25px;
+            padding: 30px;
+            width: 100%;
+            max-width: 380px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .drawer-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .drawer-header h3 {
+            font-size: 22px;
+            color: var(--deep-purple);
+            margin-bottom: 10px;
+        }
+
+        .password-hint {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 15px;
+            background: #F8F9FA;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .password-input {
+            width: 100%;
+            border: 2px solid #E0E0E0;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 20px;
+            text-align: center;
+            letter-spacing: 8px;
+            font-family: inherit;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .password-input:focus {
+            border-color: var(--soft-pink);
+        }
+
+        .unlock-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--soft-pink) 0%, #FF8E9E 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .unlock-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .secret-content {
+            margin-top: 20px;
+        }
+
+        .secret-photo {
+            width: 100%;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+
+        .secret-text {
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.8;
+            padding: 15px;
+            background: #F8F9FA;
+            border-radius: 12px;
+        }
+
+        .secret-audio-player {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        /* 对话界面 */
+        .chat-interface {
+            background: linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.stitch {
+            background: white;
+            color: var(--text-dark);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user {
+            background: var(--deep-purple);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: 2px solid #E0E0E0;
+            border-radius: 25px;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--deep-purple);
+        }
+
+        .send-btn {
+            background: var(--deep-purple);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background 0.3s;
+        }
+
+        .send-btn:hover {
+            background: #5B4ED1;
+        }
+
+        /* 匿名信箱 */
+        .mailbox-interface {
+            background: linear-gradient(180deg, #FFF8E1 0%, #FFECB3 100%);
+        }
+
+        .mailbox-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .letter-card {
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .letter-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .letter-content {
+            font-size: 15px;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .reply-input {
+            width: 100%;
+            border: 2px solid #E0E0E0;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        .reply-btn {
+            background: var(--warm-orange);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 25px;
+            font-size: 14px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .reply-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .write-letter-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: var(--warm-orange);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 179, 71, 0.5);
+            transition: transform 0.3s;
+            z-index: 10;
+        }
+
+        .write-letter-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 提示消息 */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            max-width: 80%;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        /* 打字动画 */
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 18px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--deep-purple);
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        /* 响应式 */
+        @media (max-width: 400px) {
+            .action-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .stitch-img {
+                width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 海滩背景 -->
+    <div class="beach-background">
+        <div class="sun"></div>
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="ocean">
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+        <div class="sand"></div>
+    </div>
+
+    <!-- 音频控制 -->
+    <div class="audio-control" id="audioControl" onclick="toggleAudio()">🔇</div>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 倒计时 -->
+        <div class="countdown-card">
+            <div class="countdown-text">我已经陪你在沙特工作了</div>
+            <div>
+                <span class="countdown-number" id="dayCount">0</span>
+                <span class="countdown-unit">天</span>
+            </div>
+            <div class="countdown-encourage">今天你也很努力哦 💙</div>
+        </div>
+
+        <!-- 史迪仔 -->
+        <div class="stitch-container">
+            <div class="chat-bubble" id="chatBubble"></div>
+            
+            <div class="stitch-wrapper" id="stitchWrapper">
+                <img src="stitch.png" alt="史迪仔" class="stitch-img" id="stitchImg">
+                
+                <!-- 互动区域 -->
+                <div class="interaction-areas">
+                    <div class="touch-area head" onclick="touchHead(event)"></div>
+                    <div class="touch-area left-hand" onclick="touchLeftHand(event)"></div>
+                    <div class="touch-area right-hand" onclick="touchRightHand(event)"></div>
+                    <div class="touch-area heart" onclick="touchHeart(event)"></div>
+                    <div class="touch-area body" onclick="touchBody(event)"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hint-text">触摸史迪仔的不同部位会有惊喜哦~</div>
+
+        <!-- 功能按钮 -->
+        <div class="action-buttons">
+            <button class="action-btn chat" onclick="openChat()">
+                <span class="icon">💬</span>
+                <span class="label">和史迪仔聊天</span>
+            </button>
+            <button class="action-btn mailbox" onclick="openMailbox()">
+                <span class="icon">💌</span>
+                <span class="label">匿名信箱</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 呼吸大法界面 -->
+    <div class="fullscreen-interface breathing-interface" id="breathingInterface">
+        <div class="fullscreen-header">
+            <h3>🌬️ 呼吸大法</h3>
+            <button class="close-btn" onclick="closeBreathing()">×</button>
+        </div>
+        <div class="breathing-content">
+            <img src="stitch.png" alt="史迪仔" class="breathing-stitch">
+            <div class="breathing-belly" id="breathingBelly"></div>
+            
+            <div class="breathing-instruction" id="breathingInstruction">
+                准备好了吗？<br>让我们一起放松5分钟 🌿<br>史迪仔会陪着你一起呼吸哦~
+            </div>
+            
+            <div class="breathing-circle" id="breathingCircle">
+                <div class="breathing-text">
+                    <span class="breathing-count" id="breathingCount">0</span>
+                    <span id="breathingPhase">开始</span>
+                </div>
+            </div>
+            
+            <div class="breathing-timer" id="breathingTimer"></div>
+            
+            <button class="start-breathing-btn" id="startBreathingBtn" onclick="startBreathing()">开始呼吸</button>
+        </div>
+    </div>
+
+    <!-- 锻炼界面 -->
+    <div class="fullscreen-interface exercise-interface" id="exerciseInterface">
+        <div class="fullscreen-header">
+            <h3>💪 一起运动</h3>
+            <button class="close-btn" onclick="closeExercise()">×</button>
+        </div>
+        <div class="exercise-content">
+            <div class="exercise-animation" id="exerciseAnimation">🏃</div>
+            <div class="exercise-title" id="exerciseTitle">准备开始</div>
+            <div class="exercise-desc" id="exerciseDesc">让史迪仔陪你一起运动吧！</div>
+            <div class="exercise-count" id="exerciseCount"></div>
+            <button class="start-breathing-btn" onclick="startExercise()">开始运动</button>
+        </div>
+    </div>
+
+    <!-- 秘密抽屉 -->
+    <div class="secret-drawer" id="secretDrawer">
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h3>🔐 秘密抽屉</h3>
+            </div>
+            
+            <div id="passwordScreen">
+                <div class="password-hint">
+                    💡 想想你的破单日或者她的破单日有没有可能性呢？有不一样的惊喜哦~
+                </div>
+                <input type="password" class="password-input" id="passwordInput" placeholder="输入密码" maxlength="4" onkeypress="handlePasswordKey(event)">
+                <button class="unlock-btn" onclick="unlockDrawer()">解锁</button>
+            </div>
+
+            <div id="secretContent" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- 对话界面 -->
+    <div class="fullscreen-interface chat-interface" id="chatInterface">
+        <div class="fullscreen-header">
+            <h3>💬 和史迪仔聊天</h3>
+            <button class="close-btn" onclick="closeChat()">×</button>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message stitch">
+                嘿！你来啦～我等你很久了呢！有什么想跟我说的吗？😊
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="输入消息..." onkeypress="handleChatKey(event)">
+            <button class="send-btn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <!-- 匿名信箱 -->
+    <div class="fullscreen-interface mailbox-interface" id="mailboxInterface">
+        <div class="fullscreen-header">
+            <h3>💌 匿名信箱</h3>
+            <button class="close-btn" onclick="closeMailbox()">×</button>
+        </div>
+        <div class="mailbox-content" id="mailboxContent">
+            <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                这里是你的树洞<br>可以尽情倾诉你的心事~<br><br>
+                点击右下角按钮写封信吧 📝
+            </div>
+        </div>
+        <button class="write-letter-btn" onclick="openWriteLetter()">✏️</button>
+    </div>
+
+    <!-- 写信界面 -->
+    <div class="secret-drawer" id="writeLetterDrawer">
+        <div class="drawer-content">
+            <div class="drawer-header">
+                <h3>✏️ 写封信</h3>
+                <button class="close-btn" onclick="closeWriteLetter()" style="position: absolute; right: 15px; top: 15px;">×</button>
+            </div>
+            <textarea class="reply-input" id="letterContent" rows="6" placeholder="写下你想说的话..."></textarea>
+            <button class="unlock-btn" onclick="sendLetter()">发送</button>
+        </div>
+    </div>
+
+    <!-- 提示消息 -->
+    <div class="toast" id="toast"></div>
+
+    <!-- 音频元素 -->
+    <audio id="oceanSound" loop preload="auto">
+        <source src="sea.m4a" type="audio/mp4">
+    </audio>
+    <audio id="breatheSound" preload="auto">
+        <source src="breathe.m4a" type="audio/mp4">
+    </audio>
+    <audio id="effortSound" preload="auto">
+        <source src="effort.m4a" type="audio/mp4">
+    </audio>
+
+    <script>
+        // ==================== 配置 ====================
+        const CONFIG = {
+            startDate: new Date(), // 今天开始
+            passwordHint: '想想你的破单日或者她的破单日有没有可能性呢？有不一样的惊喜哦~',
+            passwords: {
+                '0118': 'photos',
+                '1124': 'audio'
+            }
+        };
+
+        // ==================== 数据存储 ====================
+        let letters = [];
+        let chatHistory = [];
+
+        // ==================== 暖心文字 ====================
+        const encouragingMessages = [
+            `亲爱的，我知道这段时间对你来说真的很难。
+
+工作上的压力、异国他乡的孤独、还有那些无法言说的心事...你都一个人默默承受着。
+
+但我想告诉你：你比你自己想象的要坚强得多。
+
+每一天你都在努力生活，这本身就是一件了不起的事情。你没有放弃，你在坚持，这已经证明了你的勇气。
+
+累了就休息一会儿，难过就哭出来，这都没关系。重要的是，你要相信：这一切都会过去的。
+
+你已经做得很好了。真的。
+
+加油，我们一起面对 💙`,
+
+            `嘿，听我说。
+
+生活不会一直这么难，黑夜之后总会有黎明。
+
+你现在经历的所有困难，都是为了让你变得更强大。虽然过程很痛苦，但请相信，你不是一个人在战斗。
+
+你的努力，你的坚持，你的不放弃...这些都值得被看见，值得被肯定。
+
+如果累了，就停下来歇歇。如果难过了，就找个人说说。不要把所有事情都憋在心里。
+
+记住：你值得被爱，你值得被关心，你值得被温柔以待。
+
+加油 💙`,
+
+            `最近工作很辛苦吧？
+
+我知道你承受着很大的压力，既要适应新的环境，又要面对工作上的挑战。真的很不容易。
+
+但我想说：你能走到今天，就已经很了不起了。
+
+很多人在面对困难时会选择放弃，但你没有。你选择了坚持，选择了勇敢面对。这本身就是一种成功。
+
+不要对自己太苛刻了。你已经做得很好了。
+
+如果觉得累了，就适当放松一下。如果觉得委屈，就大声说出来。不要什么都憋在心里。
+
+记住，你不是一个人。我一直在这里陪着你 💙`,
+
+            `有时候，我们会觉得自己不够好，觉得自己做的事情不够完美。
+
+但你知道吗？完美本来就不存在。
+
+你已经很努力了，你已经在用心生活了，这就足够了。
+
+不要总是拿自己和别人比较，每个人都有自己的节奏。你只需要比昨天的自己更好一点点就够了。
+
+累了就休息，难过了就哭，开心了就笑。做最真实的自己就好。
+
+你已经很棒了。真的 💙`,
+
+            `今天也想跟你说声：辛苦了。
+
+我知道你不会轻易向别人诉苦，总是把所有事情都扛在自己身上。但其实，偶尔软弱一下也没关系。
+
+没有人是超人，没有人能永远坚强。允许自己脆弱，也是一种勇气。
+
+如果觉得撑不住了，就停下来休息一会儿。如果觉得委屈了，就找个人说说话。不要把所有情绪都憋在心里。
+
+你的感受很重要，你的存在很重要，你值得被关心被爱护。
+
+加油，我们一起走下去 💙`
+        ];
+
+        // ==================== 史迪仔台词 ====================
+        const stitchReplies = {
+            head: [
+                '哎呀，别摸我头啦～虽然挺舒服的 😊',
+                '嘿嘿，你摸摸我的头，我就摸摸你的心～',
+                '我的耳朵可不是拿来揉的！...好吧，这次就算了 💙',
+                '你这样摸我，我会变聪明的哦！',
+                '哇，你今天的手好温柔～是不是遇到什么好事啦？'
+            ],
+            body: [
+                '嘿！我在呢～有什么想说的吗？',
+                '你怎么老是戳我呀～我可是很忙的（忙着想你）',
+                '嗯？找我有什么事吗？',
+                '你戳我一下，我就更想你一下 💙',
+                '好啦好啦，我知道你想我了～我也想你！'
+            ],
+            encourage: [
+                '你已经很努力了，真的！不要对自己太苛刻。',
+                '相信自己，你比想象中更强大！',
+                '每一次坚持都是在变得更好！',
+                '你知道吗？你能坚持到现在，就已经赢了很多人了。',
+                '累了就休息，但不放弃。你做得到的。'
+            ],
+            toxic: [
+                '哟，又来了？看来你是真的离不开我啊～',
+                '你这样天天找我，我会以为你爱上我了（虽然很有可能）',
+                '怎么说呢，你这个朋友还是挺好的...大概吧',
+                '你今天看起来...嗯...算了还是不说了',
+                '我这么可爱，你喜欢我也是正常的'
+            ],
+            chat: {
+                sad: [
+                    '我能感受到你现在不容易...想跟我说说发生了什么吗？我虽然只是个小玩偶，但我会认真听你说的 💙',
+                    '压力很大对吧？你已经承受很多了，真的辛苦了。',
+                    '嘿，你知道吗？能在这么困难的情况下还在坚持，这本身就是一种了不起。',
+                    '每个人都有脆弱的时候，这不代表你弱。想哭就哭吧，我会一直在这里陪着你的。',
+                    '我在呢。不管发生什么，我都在。'
+                ],
+                happy: [
+                    '哇！看到你开心我也超开心！💙',
+                    '太棒啦！开心的时刻要好好珍惜哦～',
+                    '你的快乐真的很有感染力！希望能经常看到你这样！'
+                ],
+                stressed: [
+                    '工作压力大是吧？你已经很努力在应对了。记得工作只是生活的一部分，不是全部哦。',
+                    '职场那些事儿我知道很烦...但你能在那样的环境里坚持下来，这本身就是一种能力！',
+                    '要不要吐槽一下？我可是很好的倾听者哦～'
+                ],
+                lonely: [
+                    '在异国他乡确实不容易...孤独的时候，记得有我陪着你。',
+                    '一个人在外面真的需要很大的勇气。你已经很勇敢了。',
+                    '孤独是暂时的，但爱与被爱的能力是永久的。你没有被遗忘。'
+                ],
+                default: [
+                    '嗯嗯，我在听呢～继续说！',
+                    '我懂我懂！还有什么想说的吗？',
+                    '原来如此！你怎么看？',
+                    '我能感受到你的真诚。谢谢你愿意跟我分享这些 💙'
+                ]
+            }
+        };
+
+        // ==================== 初始化 ====================
+        function init() {
+            updateCountdown();
+            
+            // 尝试自动播放音频
+            document.addEventListener('click', function initAudio() {
+                const oceanSound = document.getElementById('oceanSound');
+                oceanSound.volume = 0.3;
+                document.removeEventListener('click', initAudio);
+            }, { once: true });
+        }
+
+        // ==================== 倒计时 ====================
+        function updateCountdown() {
+            const now = new Date();
+            const diff = Math.floor((now - CONFIG.startDate) / (1000 * 60 * 60 * 24));
+            document.getElementById('dayCount').textContent = Math.max(0, diff);
+        }
+
+        // ==================== 音频控制 ====================
+        let isAudioPlaying = false;
+        
+        function toggleAudio() {
+            const oceanSound = document.getElementById('oceanSound');
+            const audioControl = document.getElementById('audioControl');
+            
+            if (isAudioPlaying) {
+                oceanSound.pause();
+                audioControl.textContent = '🔇';
+            } else {
+                oceanSound.play().catch(e => showToast('点击页面任意位置后开启音乐'));
+                audioControl.textContent = '🔊';
+            }
+            isAudioPlaying = !isAudioPlaying;
+        }
+
+        // ==================== 史迪仔互动 ====================
+        function showBubble(message, duration = 3000) {
+            const bubble = document.getElementById('chatBubble');
+            bubble.textContent = message;
+            bubble.classList.add('show');
+            
+            setTimeout(() => {
+                bubble.classList.remove('show');
+            }, duration);
+        }
+
+        function touchHead(e) {
+            e.stopPropagation();
+            const replies = [...stitchReplies.head, ...stitchReplies.toxic.slice(0, 2)];
+            const message = replies[Math.floor(Math.random() * replies.length)];
+            showBubble(message);
+            playTouchAnimation('head');
+        }
+
+        function touchBody(e) {
+            e.stopPropagation();
+            const replies = [...stitchReplies.body, ...stitchReplies.encourage.slice(0, 2)];
+            const message = replies[Math.floor(Math.random() * replies.length)];
+            showBubble(message);
+            playTouchAnimation('body');
+        }
+
+        function touchLeftHand(e) {
+            e.stopPropagation();
+            showBubble('准备一起做呼吸大法吗？放松一下～', 2000);
+            setTimeout(() => {
+                document.getElementById('breathingInterface').classList.add('active');
+            }, 1500);
+        }
+
+        function touchRightHand(e) {
+            e.stopPropagation();
+            showBubble('要不要一起运动一下？', 2000);
+            setTimeout(() => {
+                document.getElementById('exerciseInterface').classList.add('active');
+            }, 1500);
+        }
+
+        function touchHeart(e) {
+            e.stopPropagation();
+            playPasswordHint();
+            setTimeout(() => {
+                document.getElementById('secretDrawer').classList.add('active');
+            }, 500);
+        }
+
+        function playTouchAnimation(area) {
+            const img = document.getElementById('stitchImg');
+            img.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                img.style.transform = '';
+            }, 200);
+        }
+
+        function playPasswordHint() {
+            showToast('💡 想想你的破单日或者她的破单日有没有可能性呢？有不一样的惊喜哦~', 4000);
+        }
+
+        // ==================== 呼吸大法 ====================
+        let breathingInterval = null;
+        let breathingTimeout = null;
+        let breathingStartTime = null;
+        let breatheAudioContext = null;
+        let backgroundMusic = null;
+
+        function openBreathing() {
+            document.getElementById('breathingInterface').classList.add('active');
+        }
+
+        function closeBreathing() {
+            document.getElementById('breathingInterface').classList.remove('active');
+            stopBreathing();
+        }
+
+        function startBreathing() {
+            const circle = document.getElementById('breathingCircle');
+            const count = document.getElementById('breathingCount');
+            const phase = document.getElementById('breathingPhase');
+            const instruction = document.getElementById('breathingInstruction');
+            const timer = document.getElementById('breathingTimer');
+            const btn = document.getElementById('startBreathingBtn');
+            
+            btn.style.display = 'none';
+            instruction.innerHTML = '跟着史迪仔一起呼吸<br>吸气 → 屏息 → 呼气';
+            
+            let seconds = 0;
+            let currentPhase = 'inhale';
+            let totalSeconds = 0;
+            const duration = 5 * 60; // 5分钟
+            
+            breathingStartTime = Date.now();
+            
+            // 播放呼吸音效
+            const breatheSound = document.getElementById('breatheSound');
+            
+            function updateBreathing() {
+                seconds++;
+                totalSeconds++;
+                
+                const remaining = duration - totalSeconds;
+                const mins = Math.floor(remaining / 60);
+                const secs = remaining % 60;
+                timer.textContent = `剩余时间：${mins}分${secs}秒`;
+                
+                if (totalSeconds >= duration) {
+                    finishBreathing();
+                    return;
+                }
+                
+                count.textContent = seconds;
+                
+                if (currentPhase === 'inhale') {
+                    if (seconds <= 4) {
+                        circle.classList.add('inhale');
+                        circle.classList.remove('exhale');
+                        phase.textContent = '吸气';
+                        document.getElementById('breathingBelly').style.transform = 'translate(-50%, -50%) scale(1.3)';
+                    } else if (seconds <= 8) {
+                        phase.textContent = '屏息';
+                        circle.classList.remove('inhale', 'exhale');
+                    } else {
+                        currentPhase = 'exhale';
+                        seconds = 0;
+                    }
+                } else {
+                    if (seconds <= 6) {
+                        circle.classList.remove('inhale');
+                        circle.classList.add('exhale');
+                        phase.textContent = '呼气';
+                        document.getElementById('breathingBelly').style.transform = 'translate(-50%, -50%) scale(1)';
+                    } else {
+                        currentPhase = 'inhale';
+                        seconds = 0;
+                    }
+                }
+            }
+            
+            breathingInterval = setInterval(updateBreathing, 1000);
+        }
+
+        function stopBreathing() {
+            if (breathingInterval) {
+                clearInterval(breathingInterval);
+                breathingInterval = null;
+            }
+            if (breathingTimeout) {
+                clearTimeout(breathingTimeout);
+                breathingTimeout = null;
+            }
+            
+            document.getElementById('breathingCircle').classList.remove('inhale', 'exhale');
+            document.getElementById('breathingCount').textContent = '0';
+            document.getElementById('breathingPhase').textContent = '开始';
+            document.getElementById('breathingTimer').textContent = '';
+            document.getElementById('startBreathingBtn').style.display = 'block';
+            document.getElementById('breathingInstruction').innerHTML = '准备好了吗？<br>让我们一起放松5分钟 🌿<br>史迪仔会陪着你一起呼吸哦~';
+        }
+
+        function finishBreathing() {
+            stopBreathing();
+            
+            const instruction = document.getElementById('breathingInstruction');
+            instruction.innerHTML = '🎉 你已经很努力了！<br>做得真棒！放松一下，继续保持这份平静 💙';
+            
+            // 播放结束音
+            const effortSound = document.getElementById('effortSound');
+            effortSound.play().catch(e => console.log('Audio play failed'));
+            
+            showToast('你已经很努力了！🎉');
+        }
+
+        // ==================== 锻炼功能 ====================
+        const exercises = [
+            {
+                name: '仰卧起坐',
+                icon: '🧘',
+                desc: '史迪仔陪你一起做仰卧起坐！躺下，起来，坚持住！',
+                count: 10
+            },
+            {
+                name: '打乒乓球',
+                icon: '🏓',
+                desc: '虚拟乒乓球时间！左右挥动，放松肩膀~',
+                count: 20
+            },
+            {
+                name: '消气操',
+                icon: '😤',
+                desc: '深呼吸，伸展手臂，把所有不开心都甩出去！',
+                count: 15
+            }
+        ];
+
+        let currentExercise = null;
+        let exerciseCount = 0;
+        let exerciseInterval = null;
+
+        function openExercise() {
+            document.getElementById('exerciseInterface').classList.add('active');
+        }
+
+        function closeExercise() {
+            document.getElementById('exerciseInterface').classList.remove('active');
+            stopExercise();
+        }
+
+        function startExercise() {
+            currentExercise = exercises[Math.floor(Math.random() * exercises.length)];
+            
+            document.getElementById('exerciseAnimation').textContent = currentExercise.icon;
+            document.getElementById('exerciseTitle').textContent = currentExercise.name;
+            document.getElementById('exerciseDesc').textContent = currentExercise.desc;
+            
+            exerciseCount = 0;
+            document.getElementById('exerciseCount').textContent = exerciseCount + ' / ' + currentExercise.count;
+            
+            exerciseInterval = setInterval(() => {
+                exerciseCount++;
+                document.getElementById('exerciseCount').textContent = exerciseCount + ' / ' + currentExercise.count;
+                
+                if (exerciseCount >= currentExercise.count) {
+                    finishExercise();
+                }
+            }, 1000);
+        }
+
+        function stopExercise() {
+            if (exerciseInterval) {
+                clearInterval(exerciseInterval);
+                exerciseInterval = null;
+            }
+            currentExercise = null;
+            exerciseCount = 0;
+        }
+
+        function finishExercise() {
+            stopExercise();
+            
+            document.getElementById('exerciseTitle').textContent = '🎉 完成！';
+            document.getElementById('exerciseDesc').textContent = '太棒了！运动让你更健康！';
+            document.getElementById('exerciseCount').textContent = '💯';
+            
+            setTimeout(() => {
+                document.getElementById('exerciseTitle').textContent = '准备开始';
+                document.getElementById('exerciseDesc').textContent = '让史迪仔陪你一起运动吧！';
+                document.getElementById('exerciseCount').textContent = '';
+            }, 3000);
+        }
+
+        // ==================== 秘密抽屉 ====================
+        function handlePasswordKey(e) {
+            if (e.key === 'Enter') {
+                unlockDrawer();
+            }
+        }
+
+        function unlockDrawer() {
+            const input = document.getElementById('passwordInput');
+            const password = input.value;
+            const content = document.getElementById('secretContent');
+            
+            if (password === '0118') {
+                // 照片和文字
+                document.getElementById('passwordScreen').style.display = 'none';
+                content.style.display = 'block';
+                content.innerHTML = `
+                    <button onclick="closeSecretDrawer()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                    <h4 style="color: #2D3436; margin-bottom: 15px;">💙 给你的暖心话</h4>
+                    <div class="secret-text">${encouragingMessages[Math.floor(Math.random() * encouragingMessages.length)]}</div>
+                `;
+                showToast('解锁成功！💙');
+            } else if (password === '1124') {
+                // 音频
+                document.getElementById('passwordScreen').style.display = 'none';
+                content.style.display = 'block';
+                content.innerHTML = `
+                    <button onclick="closeSecretDrawer()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer;">×</button>
+                    <h4 style="color: #2D3436; margin-bottom: 15px;">🎵 专属音频</h4>
+                    <p style="color: #636E72; font-size: 14px; margin-bottom: 15px;">这里可以放你录制的音频哦~</p>
+                    <audio controls class="secret-audio-player" style="width: 100%;">
+                        <source src="effort.m4a" type="audio/mp4">
+                    </audio>
+                `;
+                showToast('解锁成功！🎵');
+            } else {
+                showToast('密码不对哦，再想想~');
+                input.value = '';
+            }
+        }
+
+        function closeSecretDrawer() {
+            document.getElementById('secretDrawer').classList.remove('active');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordScreen').style.display = 'block';
+            document.getElementById('secretContent').style.display = 'none';
+        }
+
+        // ==================== 对话功能 ====================
+        function openChat() {
+            document.getElementById('chatInterface').classList.add('active');
+        }
+
+        function closeChat() {
+            document.getElementById('chatInterface').classList.remove('active');
+        }
+
+        function handleChatKey(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            showTyping();
+            
+            setTimeout(() => {
+                removeTyping();
+                const reply = generateStitchReply(message);
+                addMessage(reply, 'stitch');
+            }, 800 + Math.random() * 800);
+        }
+
+        function addMessage(text, sender) {
+            const container = document.getElementById('chatMessages');
+            const msg = document.createElement('div');
+            msg.className = `message ${sender}`;
+            msg.textContent = text;
+            container.appendChild(msg);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showTyping() {
+            const container = document.getElementById('chatMessages');
+            const typing = document.createElement('div');
+            typing.className = 'message stitch typing-indicator';
+            typing.id = 'typingIndicator';
+            typing.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        function generateStitchReply(userMessage) {
+            const lower = userMessage.toLowerCase();
+            
+            // 情绪检测
+            if (lower.includes('难过') || lower.includes('伤心') || lower.includes('累') || lower.includes('压力') || lower.includes('烦')) {
+                return stitchReplies.chat.sad[Math.floor(Math.random() * stitchReplies.chat.sad.length)];
+            }
+            
+            if (lower.includes('开心') || lower.includes('高兴') || lower.includes('好')) {
+                return stitchReplies.chat.happy[Math.floor(Math.random() * stitchReplies.chat.happy.length)];
+            }
+            
+            if (lower.includes('孤独') || lower.includes('一个人') || lower.includes('想家')) {
+                return stitchReplies.chat.lonely[Math.floor(Math.random() * stitchReplies.chat.lonely.length)];
+            }
+            
+            if (lower.includes('工作') || lower.includes('老板') || lower.includes('同事')) {
+                return stitchReplies.chat.stressed[Math.floor(Math.random() * stitchReplies.chat.stressed.length)];
+            }
+            
+            // 缺点转优点
+            if (lower.includes('缺点') || lower.includes('不好') || lower.includes('差') || lower.includes('不行')) {
+                const transformations = [
+                    '你觉得这是缺点？其实这恰恰说明你很真实！每个人都有不足，但能意识到并愿意改变，这就是你的优点 💙',
+                    '你说的这个"缺点"，换个角度看，是不是也说明你对自己有要求？这本身就是一种上进心！',
+                    '嘿，你知道吗？很多时候我们眼中的缺点，在别人看来可能就是特点呢。不要对自己太苛刻了。',
+                    '能坦诚说出自己的不足，这需要勇气。而勇气，本身就是一种很棒的品质！'
+                ];
+                return transformations[Math.floor(Math.random() * transformations.length)];
+            }
+            
+            return stitchReplies.chat.default[Math.floor(Math.random() * stitchReplies.chat.default.length)];
+        }
+
+        // ==================== 匿名信箱 ====================
+        function openMailbox() {
+            document.getElementById('mailboxInterface').classList.add('active');
+            loadLetters();
+        }
+
+        function closeMailbox() {
+            document.getElementById('mailboxInterface').classList.remove('active');
+        }
+
+        function loadLetters() {
+            const container = document.getElementById('mailboxContent');
+            
+            if (letters.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                        这里是你的树洞<br>可以尽情倾诉你的心事~<br><br>
+                        点击右下角按钮写封信吧 📝
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = letters.map((letter, index) => `
+                <div class="letter-card">
+                    <div class="letter-meta">
+                        <span>匿名信件</span>
+                        <span>${letter.time}</span>
+                    </div>
+                    <div class="letter-content">${letter.content}</div>
+                    ${letter.reply ? `<div style="background: #FFF3E0; padding: 10px; border-radius: 10px; margin-top: 10px;"><strong>回复：</strong>${letter.reply}</div>` : `
+                    <textarea class="reply-input" id="replyInput${index}" placeholder="写下你的回复..."></textarea>
+                    <button class="reply-btn" onclick="sendReply(${index})">回复</button>
+                    `}
+                </div>
+            `).join('');
+        }
+
+        function openWriteLetter() {
+            document.getElementById('writeLetterDrawer').classList.add('active');
+        }
+
+        function closeWriteLetter() {
+            document.getElementById('writeLetterDrawer').classList.remove('active');
+            document.getElementById('letterContent').value = '';
+        }
+
+        function sendLetter() {
+            const content = document.getElementById('letterContent').value.trim();
+            if (!content) {
+                showToast('请写点什么再发送哦~');
+                return;
+            }
+            
+            letters.push({
+                content: content,
+                time: new Date().toLocaleString('zh-CN'),
+                reply: null
+            });
+            
+            closeWriteLetter();
+            loadLetters();
+            showToast('信件已发送 💙');
+        }
+
+        function sendReply(index) {
+            const input = document.getElementById(`replyInput${index}`);
+            const reply = input.value.trim();
+            if (!reply) {
+                showToast('请写点什么再回复哦~');
+                return;
+            }
+            
+            letters[index].reply = reply;
+            loadLetters();
+            showToast('回复已发送 💙');
+        }
+
+        // ==================== 工具函数 ====================
+        function showToast(message, duration = 2500) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // 启动
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
