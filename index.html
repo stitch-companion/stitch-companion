@@ -168,7 +168,7 @@
 
             // 加载 .glb 模型
             const loader = new THREE.GLTFLoader();
-            loader.load('./史迪仔.glb', gltf => {
+            loader.load('https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/default.glb', gltf => {
                 stitchModel = gltf.scene;
                 stitchModel.scale.set(1, 1, 1);
                 stitchModel.position.y = 0;
