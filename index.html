@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>史迪仔的陪伴空间</title>
+    <title>史迪仔24Ai</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -13,546 +13,236 @@
             overflow: hidden;
             position: relative;
         }
-
-        /* 天空 */
-        .sky {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 65%;
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        /* 太阳 */
+        /* ===== 天空 ===== */
+        .sky { position: fixed; top: 0; left: 0; width: 100%; height: 65%; z-index: 0; pointer-events: none; }
         .sun {
-            position: absolute;
-            top: 5%; right: 12%;
-            width: 70px; height: 70px;
+            position: absolute; top: 5%; right: 12%; width: 70px; height: 70px;
             background: radial-gradient(circle, #FFD93D 0%, #FFB347 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 60px #FFD93D;
+            border-radius: 50%; box-shadow: 0 0 60px #FFD93D;
             animation: pulse 4s ease-in-out infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
-
-        /* 云 */
-        .cloud {
-            position: absolute;
-            font-size: 60px;
-            opacity: 0.8;
-            animation: float 30s linear infinite;
-        }
-        .cloud1 { top: 8%; animation-duration: 30s; }
-        .cloud2 { top: 16%; animation-duration: 38s; animation-delay: -14s; }
-
-        @keyframes float {
-            0% { left: -100px; }
-            100% { left: calc(100vw + 100px); }
-        }
-
-        /* 海洋 */
-        .sea {
-            position: fixed;
-            bottom: 0; left: 0;
-            width: 100%; height: 38%;
-            background: linear-gradient(0deg, #00897B 0%, #26A69A 40%, #4ECDC4 100%);
-            z-index: 1;
-        }
-
-        .wave {
-            position: absolute;
-            top: -20px;
-            width: 200%; height: 40px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40'%3E%3Cpath d='M0,20 C150,5 350,35 600,20 C850,5 1050,35 1200,20 L1200,40 L0,40 Z' fill='rgba(255,255,255,0.3)'/%3E%3C/svg%3E") repeat-x;
-            animation: waveMove 8s linear infinite;
-        }
-
-        .wave2 {
-            top: -12px;
-            opacity: 0.5;
-            animation-delay: -4s;
-        }
-
-        @keyframes waveMove {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        /* 星星特效容器 */
-        .stars-container {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        .star {
-            position: absolute;
-            width: 6px; height: 6px;
-            background: radial-gradient(circle, #FFFDE7 0%, transparent 70%);
-            border-radius: 50%;
-            animation: starFall 1.5s ease-in forwards;
-            pointer-events: none;
-        }
-
-        @keyframes starFall {
-            0% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(100px) scale(0);
-            }
-        }
-
-        /* 主内容区 */
-        .main {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        /* 史迪仔占位 */
-        .stitch-placeholder {
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, #4A6CF7 0%, #3A56D4 100%);
-            border-radius: 50%;
-            margin: 20px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 100px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            cursor: pointer;
-            animation: float 3s ease-in-out infinite;
-            position: relative;
-            z-index: 20;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        /* 音频控制按钮 */
-        .audio-btn {
-            position: fixed;
-            top: 20px; right: 20px;
-            z-index: 200;
-            width: 50px; height: 50px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.9);
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 聊天框 */
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.08)} }
+        .cloud { position: absolute; font-size: 60px; opacity: 0.8; }
+        .cloud1 { top: 8%; animation: float 30s linear infinite; }
+        .cloud2 { top: 16%; animation: float 38s linear infinite; animation-delay: -14s; }
+        @keyframes float { 0%{left:-100px} 100%{left:calc(100vw+100px)} }
+        /* ===== 海洋 ===== */
+        .sea { position: fixed; bottom: 0; left: 0; width: 100%; height: 38%; background: linear-gradient(0deg, #00897B 0%, #26A69A 40%, #4ECDC4 100%); z-index: 1; }
+        .wave { position: absolute; top: -20px; width: 200%; height: 40px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 40'%3E%3Cpath d='M0,20 C150,5 350,35 600,20 C850,5 1050,35 1200,20 L1200,40 L0,40 Z' fill='rgba(255,255,255,0.3)'/%3E%3C/svg%3E") repeat-x; animation: waveMove 8s linear infinite; }
+        .wave2 { top: -12px; opacity: 0.5; animation-delay: -4s; }
+        @keyframes waveMove { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+        /* ===== 星星特效 ===== */
+        .stars-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 100; }
+        .star { position: absolute; width: 6px; height: 6px; background: radial-gradient(circle, #FFFDE7 0%, transparent 70%); border-radius: 50%; animation: starFall 1.5s ease-in forwards; pointer-events: none; }
+        @keyframes starFall { 0%{opacity:1;transform:translateY(0) scale(1)} 100%{opacity:0;transform:translateY(100px) scale(0)} }
+        /* ===== 主内容 ===== */
+        .main { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        /* ===== 3D 画布 ===== */
+        .model-wrap { width: 240px; height: 300px; margin: 10px auto; position: relative; z-index: 20; cursor: pointer; touch-action: none; }
+        #modelCanvas { width: 100%; height: 100%; display: block; }
+        .model-hint { text-align: center; font-size: 12px; color: #636E72; margin-top: 10px; opacity: 0.8; z-index: 20; position: relative; }
+        /* ===== 音频按钮 ===== */
+        .audio-btn { position: fixed; top: 20px; right: 20px; z-index: 200; width: 50px; height: 50px; border-radius: 50%; background: rgba(255,255,255,0.9); border: none; font-size: 24px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; }
+        /* ===== 聊天 ===== */
         .chat-box {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            width: 300px;
-            height: 400px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-            z-index: 150;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
+            position: fixed; bottom: 20px; right: 20px; width: 300px; height: 400px;
+            background: white; border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+            z-index: 150; display: none; flex-direction: column; overflow: hidden;
         }
-
-        .chat-box.active {
-            display: flex;
-        }
-
-        .chat-header {
-            padding: 15px;
-            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .chat-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: #F8F9FA;
-        }
-
-        .message {
-            margin-bottom: 10px;
-            padding: 10px 14px;
-            border-radius: 14px;
-            max-width: 80%;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .message.stitch {
-            background: white;
-            color: #2D3436;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        .message.user {
-            background: #6C5CE7;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            margin-left: auto;
-        }
-
-        .chat-input {
-            display: flex;
-            padding: 10px;
-            background: white;
-            border-top: 1px solid #E0E0E0;
-        }
-
-        .chat-input input {
-            flex: 1;
-            border: 2px solid #E0E0E0;
-            border-radius: 20px;
-            padding: 8px 15px;
-            font-size: 14px;
-            outline: none;
-        }
-
-        .chat-input button {
-            width: 40px; height: 40px;
-            border: none;
-            background: #6C5CE7;
-            color: white;
-            border-radius: 50%;
-            margin-left: 8px;
-            cursor: pointer;
-        }
-
-        /* 聊天-toggle 按钮 */
-        .chat-toggle {
-            position: fixed;
-            bottom: 20px; right: 20px;
-            z-index: 160;
-            width: 60px; height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
-            border: none;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-toggle.hidden {
-            display: none;
-        }
-
-        /* 提示文字 */
-        .hint {
-            text-align: center;
-            font-size: 12px;
-            color: #636E72;
-            margin-top: 15px;
-            opacity: 0.8;
-        }
-
-        /* Toast */
-        .toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 24px;
-            font-size: 14px;
-            z-index: 999;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-        }
-
-        .toast.show {
-            opacity: 1;
-        }
+        .chat-box.active { display: flex; }
+        .chat-header { padding: 15px; background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .chat-close { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .chat-messages { flex: 1; padding: 15px; overflow-y: auto; background: #F8F9FA; display: flex; flex-direction: column; }
+        .message { margin-bottom: 10px; padding: 10px 14px; border-radius: 14px; max-width: 80%; font-size: 14px; line-height: 1.6; }
+        .message.stitch { background: white; color: #2D3436; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .message.user { background: #6C5CE7; color: white; align-self: flex-end; border-bottom-right-radius: 4px; margin-left: auto; }
+        .chat-input { display: flex; padding: 10px; background: white; border-top: 1px solid #E0E0E0; }
+        .chat-input input { flex: 1; border: 2px solid #E0E0E0; border-radius: 20px; padding: 8px 15px; font-size: 14px; outline: none; }
+        .chat-input button { width: 40px; height: 40px; border: none; background: #6C5CE7; color: white; border-radius: 50%; margin-left: 8px; cursor: pointer; }
+        .chat-toggle-btn { position: fixed; bottom: 20px; right: 20px; z-index: 160; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%); border: none; color: white; font-size: 28px; cursor: pointer; box-shadow: 0 6px 20px rgba(108, 92, 231, 0.4); display: flex; align-items: center; justify-content: center; }
+        .chat-toggle-btn.hidden { display: none; }
+        /* ===== Toast ===== */
+        .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: white; padding: 12px 24px; border-radius: 24px; font-size: 14px; z-index: 999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        .toast.show { opacity: 1; }
+        @media(max-width:380px) { .model-wrap { width: 200px; height: 260px; } .chat-box { width: 260px; height: 350px; right: 10px; bottom: 10px; } }
     </style>
 </head>
 <body>
     <!-- 天空 -->
-    <div class="sky">
-        <div class="sun"></div>
-        <div class="cloud cloud1">☁️</div>
-        <div class="cloud cloud2">☁️</div>
-    </div>
-
+    <div class="sky"><div class="sun"></div><div class="cloud cloud1">☁️</div><div class="cloud cloud2">☁️</div></div>
     <!-- 海洋 -->
-    <div class="sea">
-        <div class="wave"></div>
-        <div class="wave wave2"></div>
-    </div>
-
+    <div class="sea"><div class="wave"></div><div class="wave wave2"></div></div>
     <!-- 星星特效容器 -->
     <div class="stars-container" id="starsContainer"></div>
-
     <!-- 音频按钮 -->
-    <button class="audio-btn" id="audioBtn" aria-label="海浪声音开关">🔇</button>
+    <button class="audio-btn" id="audioBtn">🔇</button>
 
-    <!-- 主内容 -->
+    <!--  主内容 -->
     <div class="main" id="mainArea">
-        <div class="stitch-placeholder" id="stitch">🐾</div>
-        <div class="hint">点击空白处有星星 ✨ | 点击史迪仔互动</div>
+        <!-- 3D 模型容器 -->
+        <div class="model-wrap" id="modelWrap">
+            <canvas id="modelCanvas" width="480" height="600"></canvas>
+        </div>
+        <div class="model-hint">点击空白处有星星 ✨</div>
     </div>
 
     <!-- 聊天框 -->
     <div class="chat-box" id="chatBox">
-        <div class="chat-header">
-            <span>💬 史迪仔的聊天</span>
-            <button class="chat-close" onclick="toggleChat()">×</button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message stitch">嘿！你来啦～有什么想跟我说的吗？😊</div>
-        </div>
+        <div class="chat-header"><span>💬 史迪仔</span><button class="chat-close" onclick="toggleChat()">×</button></div>
+        <div class="chat-messages" id="chatMessages"><div class="message stitch">嘿！你来啦～ 最近怎么样？😎</div></div>
         <div class="chat-input">
             <input type="text" id="chatInput" placeholder="说点什么..." onkeydown="if(event.key==='Enter')sendMessage()">
             <button onclick="sendMessage()">➤</button>
         </div>
     </div>
+    <button class="chat-toggle-btn" id="chatToggle" onclick="toggleChat()">💬</button>
 
-    <!-- 聊天 toggle -->
-    <button class="chat-toggle" id="chatToggle" onclick="toggleChat()">💬</button>
-
-    <!-- Toast -->
     <div class="toast" id="toast"></div>
 
+    <script src="./three.min.js"></script>
     <script>
-        // ========== 配置 ==========
-        let audioContext = null;
-        let noiseNode = null;
-        let isPlaying = false;
+        // ===== 配置 =====
+        let audioContext = null, noiseNode = null, isPlaying = false;
 
-        // ========== 海浪白噪音 ==========
+        // ===== 波浪白噪音 =====
         function initAudio() {
             if (audioContext) return;
-            
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const bufferSize = 2 * audioContext.sampleRate;
-            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-            const data = buffer.getChannelData(0);
-            
-            // 生成海浪白噪音
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = (Math.random() * 2 - 1) * 0.05;
-            }
-            
-            noiseNode = audioContext.createBufferSource();
-            noiseNode.buffer = buffer;
-            noiseNode.loop = true;
-            
-            // 低通滤波器模拟海浪声
-            const filter = audioContext.createBiquadFilter();
-            filter.type = 'lowpass';
-            filter.frequency.value = 400;
-            
-            // 音量控制
-            const gainNode = audioContext.createGain();
-            gainNode.gain.value = 0.3;
-            
-            noiseNode.connect(filter);
-            filter.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            noiseNode.start();
-            isPlaying = true;
-            document.getElementById('audioBtn').textContent = '🔊';
+            const bufSize = 2 * audioContext.sampleRate, buf = audioContext.createBuffer(1, bufSize, audioContext.sampleRate);
+            const d = buf.getChannelData(0);
+            for (let i = 0; i < bufSize; i++) d[i] = (Math.random()*2-1)*0.05;
+            noiseNode = audioContext.createBufferSource(); noiseNode.buffer = buf; noiseNode.loop = true;
+            const filter = audioContext.createBiquadFilter(); filter.type = 'lowpass'; filter.frequency.value = 400;
+            const gain = audioContext.createGain(); gain.gain.value = 0.3;
+            noiseNode.connect(filter); filter.connect(gain); gain.connect(audioContext.destination);
+            noiseNode.start(); isPlaying = true; document.getElementById('audioBtn').textContent = '🔊';
             showToast('海浪声已开启 🌊');
         }
+        document.getElementById('audioBtn').addEventListener('click', () => {
+            if (!audioContext) initAudio();
+            else if (isPlaying) { noiseNode.stop(); isPlaying = false; document.getElementById('audioBtn').textContent = '🔇'; showToast('已关闭'); }
+            else { noiseNode.start(); isPlaying = true; document.getElementById('audioBtn').textContent = '🔊'; showToast('海浪声已开启 🌊'); }
+        });
 
-        function toggleAudio() {
-            if (!audioContext) {
-                initAudio();
-            } else {
-                if (isPlaying) {
-                    noiseNode.stop();
-                    isPlaying = false;
-                    document.getElementById('audioBtn').textContent = '🔇';
-                    showToast('海浪声已关闭');
-                } else {
-                    noiseNode.start();
-                    isPlaying = true;
-                    document.getElementById('audioBtn').textContent = '🔊';
-                    showToast('海浪声已开启 🌊');
-                }
-            }
-        }
-
-        document.getElementById('audioBtn').addEventListener('click', toggleAudio);
-
-        // ========== 星星特效 ==========
+        // ===== 星星特效 =====
         function createStars(x, y) {
             const container = document.getElementById('starsContainer');
-            const starCount = 8;
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
-                star.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
-                star.style.animationDelay = (Math.random() * 0.5) + 's';
+            for (let i = 0; i < 8; i++) {
+                const star = document.createElement('div'); star.className = 'star';
+                star.style.left = (x + (Math.random()-0.5)*100) + 'px'; star.style.top = (y + (Math.random()-0.5)*50) + 'px';
+                star.style.animationDelay = (Math.random()*0.5) + 's';
                 container.appendChild(star);
-                
-                // 动画结束后移除
-                setTimeout(() => {
-                    star.remove();
-                }, 1500);
+                setTimeout(() => star.remove(), 1500);
             }
         }
-
-        // 点击空白处触发星星
-        document.addEventListener('click', (e) => {
-            // 排除点击史迪仔和聊天框
-            if (!e.target.closest('#stitch') && !e.target.closest('.chat-box') && !e.target.closest('.chat-toggle') && !e.target.closest('.audio-btn')) {
+        document.addEventListener('click', e => {
+            if (!e.target.closest('.model-wrap') && !e.target.closest('.chat-box') && !e.target.closest('.chat-toggle-btn') && !e.target.closest('.audio-btn'))
                 createStars(e.clientX, e.clientY);
-            }
         });
 
-        // ========== 聊天功能 ==========
-        let chatOpen = false;
+        // ===== Three.js 加载 3D 模型 =====
+        let scene, camera, renderer, stitchModel;
 
+        function init3D() {
+            const canvas = document.getElementById('modelCanvas');
+            const wrap = document.getElementById('modelWrap');
+            const W = canvas.width, H = canvas.height;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(30, W/H, 0.1, 100);
+            camera.position.set(0, 1, 6); camera.lookAt(0, 0.5, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(W, H); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+
+            // 灯光
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            const dir = new THREE.DirectionalLight(0xffffff, 0.8); dir.position.set(3, 6, 4);
+            dir.castShadow = true; scene.add(dir);
+            scene.add(new THREE.DirectionalLight(0x88ccff, 0.3).position.set(-3, 2, -2));
+
+            // 地影
+            const shadow = new THREE.Mesh(new THREE.PlaneGeometry(4, 2), new THREE.MeshBasicMaterial({color:0, transparent:true, opacity:0.08}));
+            shadow.rotation.x = -Math.PI/2; shadow.position.y = -1.5; scene.add(shadow);
+
+            // 加载 .glb 模型
+            const loader = new THREE.GLTFLoader();
+            loader.load('./史迪仔.glb', gltf => {
+                stitchModel = gltf.scene;
+                stitchModel.scale.set(1, 1, 1);
+                stitchModel.position.y = 0;
+                stitchModel.traverse(child => { if (child.isMesh) { child.castShadow = true; child.receiveShadow = true; } });
+                scene.add(stitchModel);
+                showToast('🎉 3D 史迪仔加载成功！');
+            }, xhr => {
+                // 加载进度
+                if (xhr.total > 0) {
+                    const pct = Math.floor(xhr.loaded / xhr.total * 100);
+                    if (pct % 25 === 0) console.log('加载进度: ' + pct + '%');
+                }
+            }, err => {
+                console.error('模型加载失败:', err);
+                showToast('模型加载失败，请检查文件路径');
+            });
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (stitchModel) {
+                // 浮动动画
+                const t = Date.now() * 0.001;
+                stitchModel.position.y = Math.sin(t * 0.8) * 0.08;
+                stitchModel.rotation.y = Math.sin(t * 0.5) * 0.1;
+            }
+            renderer.render(scene, camera);
+        }
+
+        // ===== 聊天 =====
+        let chatOpen = false;
         function toggleChat() {
             chatOpen = !chatOpen;
-            const chatBox = document.getElementById('chatBox');
-            const chatToggle = document.getElementById('chatToggle');
-            
-            if (chatOpen) {
-                chatBox.classList.add('active');
-                chatToggle.classList.add('hidden');
-            } else {
-                chatBox.classList.remove('active');
-                chatToggle.classList.remove('hidden');
-            }
+            document.getElementById('chatBox').classList.toggle('active', chatOpen);
+            document.getElementById('chatToggle').classList.toggle('hidden', chatOpen);
         }
 
-        // 史迪仔回复逻辑（毒舌又知心）
-        const stitchReplies = {
-            sad: [
-                "哭什么哭！你以为眼泪能解决问题吗？😤 ... 不过... 我也知道有时候真的很难。你已经很努力了，我看到了。",
-                "哼，又怎么了？工作上的事？... 听着，能让你这么难受的，说明你在乎。在乎的人总是比冷漠的人更强大。",
-                "喂！不准说自己不行！😠 你看看你，能从国内跑到沙特工作，这勇气多少人没有？... 好了好了，抱一下。🤗"
-            ],
-            happy: [
-                "哟，今天心情不错嘛！😏 是不是终于被老板夸了？... 哼，我就知道你能行。",
-                "笑得这么开心，是不是又偷偷摸鱼了？😑 ... 算了，偶尔放松一下也没关系。毕竟你平时那么拼。",
-                "心情好啊？那正好，陪我聊会儿！✨ 你笑起来的样子... 还挺好看的。"
-            ],
-            stress: [
-                "压力大？😤 那是你太认真了！... 听着，职场就是这样的。但你要记住，工作只是生活的一部分，不是全部。",
-                "又加班？！😠 你老板是不是觉得你是铁打的？... 好了，别气了。等你下班，我陪你吐槽！",
-                "压力大就跟我说话啊！😊 虽然我嘴毒，但至少我不会judge你。... 嗯，你做得已经很好了。"
-            ],
-            default: [
-                "嗯嗯，我在听呢～ 😊 继续说！",
-                "原来如此！😏 那你是怎么想的？",
-                "我懂我懂！✨ 想听更多～",
-                "谢谢你愿意跟我分享这些。💙"
-            ]
+        const replies = {
+            sad: ["哭什么哭！😤 你以为眼泪能帮你加班吗？... 好了好了，我知道你累了。你已经很努力了。", "喂！不准说自己不行！😠 能跑到沙特上班本身就是勇士了。... 抱一下。🤗"],
+            happy: ["哟～今天心情不错嘛？😏 是不是终于把老板气到了？嘿嘿，干得漂亮！", "笑得这么开心，今天吃啥好的了？😋 算了，你开心就好。"],
+            stress: ["又加班？！😠 你是不是觉得老板会给你颁奖？... 好了，劳逸结合，我陪你吐槽！", "压力山大是吧？😤 你越认真，我越心疼。放松点，天又不会塌。"],
+            default: ["嗯嗯，我在听呢～ 😊 继续说！", "原来如此！😏 那你是咋想的？", "我懂我懂！✨ 再多说点～"]
         };
-
-        function getStitchReply(userMsg) {
-            const msg = userMsg.toLowerCase();
-            
-            if (msg.includes('难过') || msg.includes('伤心') || msg.includes('累') || msg.includes('压力')) {
-                return stitchReplies.sad[Math.floor(Math.random() * stitchReplies.sad.length)];
-            } else if (msg.includes('开心') || msg.includes('高兴') || msg.includes('棒')) {
-                return stitchReplies.happy[Math.floor(Math.random() * stitchReplies.happy.length)];
-            } else if (msg.includes('工作') || msg.includes('老板') || msg.includes('加班')) {
-                return stitchReplies.stress[Math.floor(Math.random() * stitchReplies.stress.length)];
-            } else {
-                return stitchReplies.default[Math.floor(Math.random() * stitchReplies.default.length)];
-            }
+        function getReply(msg) {
+            const l = msg.toLowerCase();
+            if (/难|伤心|累|压力|委屈|哭/.test(l)) return replies.sad[Math.floor(Math.random()*replies.sad.length)];
+            if (/开心|高兴|棒|哈哈|不错/.test(l)) return replies.happy[Math.floor(Math.random()*replies.happy.length)];
+            if (/工作|老板|加班|职场/.test(l)) return replies.stress[Math.floor(Math.random()*replies.stress.length)];
+            return replies.default[Math.floor(Math.random()*replies.default.length)];
         }
-
         function sendMessage() {
             const input = document.getElementById('chatInput');
-            const msg = input.value.trim();
-            if (!msg) return;
-            
-            // 添加用户消息
-            addMessage(msg, 'user');
-            input.value = '';
-            
-            // 模拟史迪仔回复
-            setTimeout(() => {
-                const reply = getStitchReply(msg);
-                addMessage(reply, 'stitch');
-            }, 800 + Math.random() * 500);
+            const msg = input.value.trim(); if (!msg) return;
+            addMsg(msg, 'user'); input.value = '';
+            setTimeout(() => { addMsg(getReply(msg), 'stitch'); }, 800 + Math.random()*500);
+        }
+        function addMsg(text, who) {
+            const c = document.getElementById('chatMessages');
+            const d = document.createElement('div'); d.className = 'message ' + who; d.textContent = text;
+            c.appendChild(d); c.scrollTop = c.scrollHeight;
         }
 
-        function addMessage(text, sender) {
-            const container = document.getElementById('chatMessages');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'message ' + sender;
-            msgDiv.textContent = text;
-            container.appendChild(msgDiv);
-            container.scrollTop = container.scrollHeight;
+        // ===== Toast =====
+        function showToast(msg, dur=2500) {
+            const t = document.getElementById('toast'); t.textContent = msg;
+            t.classList.add('show'); setTimeout(() => t.classList.remove('show'), dur);
         }
 
-        // ========== 史迪仔点击互动 ==========
-        document.getElementById('stitch').addEventListener('click', () => {
-            const replies = [
-                "嘿！你戳到我啦！😊",
-                "哈哈，好痒！🤭",
-                "我就知道你会来找我～",
-                "今天也要加油哦！💙",
-                "你今天看起来不错耶 ✨"
-            ];
-            showToast(replies[Math.floor(Math.random() * replies.length)]);
-        });
-
-        // ========== Toast ==========
-        function showToast(msg, duration = 2500) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, duration);
-        }
-
-        // ========== 初始化 ==========
+        // ===== 初始化 =====
         window.addEventListener('load', () => {
-            showToast('欢迎回来！💙 点击空白处有星星特效 ✨');
+            init3D();
+            showToast('欢迎来到史迪仔24Ai 💙');
         });
     </script>
 </body>
