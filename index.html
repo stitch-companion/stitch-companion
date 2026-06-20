@@ -1,1920 +1,952 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>小蓝的陪伴空间</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-blue: #5B9BD5;
-            --soft-pink: #FF6B9D;
-            --warm-orange: #FFB347;
-            --deep-purple: #6C5CE7;
-            --calm-teal: #00B894;
-            --sky-blue: #74B9FF;
-            --sand: #FDCB6E;
-            --white: #FFFFFF;
-            --text-dark: #2D3436;
-            --text-light: #636E72;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-top: env(safe-area-inset-top, 0px);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-        }
-
-        html, body {
-            overscroll-behavior: none;
-        }
-
-        body {
-            font-family: 'Noto Sans SC', 'ZCOOL KuaiLe', cursive;
-            overflow-x: hidden;
-            min-height: 100vh;
-            min-height: 100dvh;
-            background: linear-gradient(180deg, #87CEEB 0%, #B8E6F0 30%, #E8F5E9 70%, #FFE4B5 100%);
-            touch-action: manipulation;
-            padding-top: var(--safe-top);
-            padding-bottom: var(--safe-bottom);
-        }
-
-        /* === 海滩背景 === */
-        .beach-background {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .sun {
-            position: absolute;
-            top: 6%;
-            right: 10%;
-            width: 60px;
-            height: 60px;
-            background: radial-gradient(circle, #FFD93D 0%, #FFB347 100%);
-            border-radius: 50%;
-            box-shadow: 0 0 50px #FFD93D, 0 0 80px rgba(255, 217, 61, 0.5);
-            animation: sunPulse 4s ease-in-out infinite;
-        }
-
-        @keyframes sunPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
-
-        .cloud {
-            position: absolute;
-            background: rgba(255,255,255,0.9);
-            border-radius: 50px;
-        }
-
-        .cloud::before, .cloud::after {
-            content: '';
-            position: absolute;
-            background: rgba(255,255,255,0.9);
-            border-radius: 50%;
-        }
-
-        .cloud-1 {
-            top: 10%;
-            width: 70px;
-            height: 26px;
-            animation: cloudFloat 28s linear infinite;
-        }
-        .cloud-1::before { width: 36px; height: 36px; top: -18px; left: 9px; }
-        .cloud-1::after  { width: 26px; height: 26px; top: -13px; right: 9px; }
-
-        .cloud-2 {
-            top: 18%;
-            width: 55px;
-            height: 22px;
-            animation: cloudFloat 35s linear infinite;
-            animation-delay: -12s;
-        }
-        .cloud-2::before { width: 28px; height: 28px; top: -14px; left: 7px; }
-
-        @keyframes cloudFloat {
-            0%   { transform: translateX(-100px); }
-            100% { transform: translateX(calc(100vw + 100px)); }
-        }
-
-        .ocean {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 35%;
-            background: linear-gradient(180deg, #4ECDC4 0%, #26A69A 50%, #00897B 100%);
-        }
-
-        .wave {
-            position: absolute;
-            width: 200%;
-            height: 80px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23ffffff' fill-opacity='0.4' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E") repeat-x;
-            animation: waveMove 12s linear infinite;
-        }
-        .wave:nth-child(2) { bottom: 5px; opacity: 0.6; animation-delay: -6s; }
-
-        @keyframes waveMove {
-            0%   { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .sand {
-            position: absolute;
-            bottom: 0; width: 100%;
-            height: 15%;
-            background: linear-gradient(180deg, #FDCB6E 0%, #E5B86E 100%);
-            border-radius: 50% 50% 0 0 / 20% 20% 0 0;
-        }
-
-        /* === 主容器 === */
-        .main-container {
-            position: relative;
-            min-height: 100vh;
-            min-height: 100dvh;
-            padding: 16px;
-            padding-bottom: calc(20px + var(--safe-bottom));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* === 音频控制 === */
-        .audio-control {
-            position: fixed;
-            top: calc(16px + var(--safe-top));
-            right: 16px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 50%;
-            width: 46px;
-            height: 46px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            z-index: 100;
-            font-size: 22px;
-            transition: transform 0.3s;
-            user-select: none;
-        }
-        .audio-control:active { transform: scale(0.93); }
-
-        /* === 倒计时卡片 === */
-        .countdown-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 14px 22px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            animation: slideDown 0.8s ease-out;
-            width: 100%;
-            max-width: 340px;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .countdown-text {
-            font-size: 14px;
-            color: var(--text-dark);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .countdown-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .countdown-number {
-            font-size: 34px;
-            font-weight: bold;
-            color: var(--primary-blue);
-            cursor: pointer;
-            transition: color 0.2s;
-            position: relative;
-            padding: 0 4px;
-        }
-
-        .countdown-number:hover { color: var(--deep-purple); }
-
-        .countdown-number.editing {
-            background: transparent;
-            border: none;
-            border-bottom: 2px dashed var(--deep-purple);
-            border-radius: 0;
-            font-size: 34px;
-            font-family: inherit;
-            width: 80px;
-            text-align: center;
-            color: var(--deep-purple);
-            outline: none;
-            padding: 0;
-        }
-
-        .countdown-unit { font-size: 18px; color: var(--text-dark); }
-
-        .countdown-edit-hint {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 4px;
-        }
-
-        .countdown-encourage {
-            font-size: 14px;
-            color: var(--soft-pink);
-            margin-top: 8px;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        /* === 3D 史迪仔容器 === */
-        .stitch-scene {
-            perspective: 800px;
-            width: 260px;
-            height: 260px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 5px 0;
-            cursor: pointer;
-        }
-
-        .stitch-body {
-            position: relative;
-            width: 200px;
-            height: 220px;
-            transform-style: preserve-3d;
-            animation: stitchFloat 3s ease-in-out infinite;
-            transition: transform 0.1s ease;
-        }
-
-        @keyframes stitchFloat {
-            0%, 100% { transform: translateY(0) rotateY(0deg) rotateX(0deg); }
-            25%      { transform: translateY(-12px) rotateY(3deg) rotateX(1deg); }
-            75%      { transform: translateY(-6px) rotateY(-3deg) rotateX(-1deg); }
-        }
-
-        .stitch-body:hover {
-            animation-play-state: paused;
-            transform: scale(1.05);
-        }
-
-        /* 身体 */
-        .stitch-main {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 110px;
-            background: linear-gradient(145deg, #6B7FD7 0%, #4A5AC4 50%, #3A4AB0 100%);
-            border-radius: 50% 50% 45% 45%;
-            box-shadow: inset -8px -8px 20px rgba(0,0,0,0.2), inset 4px 4px 10px rgba(255,255,255,0.2);
-            z-index: 3;
-        }
-
-        /* 肚子 */
-        .stitch-belly {
-            position: absolute;
-            top: 82px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 72px;
-            background: radial-gradient(ellipse at 50% 40%, #FFFDE7 0%, #FFF9C4 60%, #FFE082 100%);
-            border-radius: 50%;
-            z-index: 4;
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-        /* 肚子纹路 */
-        .stitch-belly::before {
-            content: '';
-            position: absolute;
-            top: 18px; left: 50%;
-            transform: translateX(-50%);
-            width: 50px; height: 40px;
-            border: 2px dashed rgba(100,150,255,0.4);
-            border-radius: 50%;
-        }
-
-        /* 头 */
-        .stitch-head {
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 115px;
-            height: 105px;
-            background: linear-gradient(145deg, #6B7FD7 0%, #4A5AC4 100%);
-            border-radius: 50% 50% 45% 45%;
-            z-index: 6;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        /* 眼睛 */
-        .stitch-eye {
-            position: absolute;
-            top: 35px;
-            width: 28px; height: 32px;
-            background: white;
-            border-radius: 50%;
-            z-index: 7;
-            overflow: hidden;
-        }
-        .stitch-eye.left  { left: 20px; }
-        .stitch-eye.right { right: 20px; }
-
-        .stitch-pupil {
-            position: absolute;
-            bottom: 4px; left: 50%;
-            transform: translateX(-50%);
-            width: 16px; height: 18px;
-            background: radial-gradient(circle at 40% 35%, #334155 0%, #1E293B 100%);
-            border-radius: 50%;
-            animation: pupilLook 6s ease-in-out infinite;
-        }
-
-        .stitch-pupil::after {
-            content: '';
-            position: absolute;
-            top: 3px; right: 3px;
-            width: 5px; height: 5px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        @keyframes pupilLook {
-            0%, 100% { transform: translateX(-50%); }
-            30%      { transform: translateX(-30%); }
-            60%      { transform: translateX(-60%); }
-        }
-
-        /* 嘴巴 */
-        .stitch-mouth {
-            position: absolute;
-            bottom: 18px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px; height: 14px;
-            border-bottom: 3px solid #2D3436;
-            border-radius: 0 0 50% 50%;
-            z-index: 7;
-        }
-
-        /* 鼻子 */
-        .stitch-nose {
-            position: absolute;
-            top: 52px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 14px; height: 10px;
-            background: #1E293B;
-            border-radius: 50% 50% 40% 40%;
-            z-index: 7;
-        }
-
-        /* 左手 */
-        .stitch-arm-left {
-            position: absolute;
-            top: 90px; left: -8px;
-            width: 45px; height: 28px;
-            background: linear-gradient(145deg, #6B7FD7 0%, #4A5AC4 100%);
-            border-radius: 30px 10px 10px 30px;
-            transform: rotate(-20deg);
-            z-index: 2;
-            transform-origin: right center;
-            animation: armWaveLeft 3s ease-in-out infinite;
-        }
-
-        /* 右手 */
-        .stitch-arm-right {
-            position: absolute;
-            top: 90px; right: -8px;
-            width: 45px; height: 28px;
-            background: linear-gradient(145deg, #6B7FD7 0%, #4A5AC4 100%);
-            border-radius: 10px 30px 30px 10px;
-            transform: rotate(20deg);
-            z-index: 2;
-            transform-origin: left center;
-            animation: armWaveRight 3s ease-in-out infinite;
-            animation-delay: 0.5s;
-        }
-
-        @keyframes armWaveLeft {
-            0%, 100% { transform: rotate(-20deg); }
-            50%      { transform: rotate(-35deg) translateY(-5px); }
-        }
-
-        @keyframes armWaveRight {
-            0%, 100% { transform: rotate(20deg); }
-            50%      { transform: rotate(35deg) translateY(-5px); }
-        }
-
-        /* 左腿 */
-        .stitch-leg-left {
-            position: absolute;
-            bottom: 5px; left: 52px;
-            width: 28px; height: 40px;
-            background: linear-gradient(145deg, #5A70C5 0%, #4A5AC4 100%);
-            border-radius: 10px 10px 15px 15px;
-            z-index: 1;
-        }
-
-        /* 右腿 */
-        .stitch-leg-right {
-            position: absolute;
-            bottom: 5px; right: 52px;
-            width: 28px; height: 40px;
-            background: linear-gradient(145deg, #5A70C5 0%, #4A5AC4 100%);
-            border-radius: 10px 10px 15px 15px;
-            z-index: 1;
-        }
-
-        /* 脚 */
-        .stitch-foot-left {
-            position: absolute;
-            bottom: 0; left: 42px;
-            width: 40px; height: 20px;
-            background: #4A5AC4;
-            border-radius: 50% 50% 40% 40%;
-            z-index: 1;
-        }
-
-        .stitch-foot-right {
-            position: absolute;
-            bottom: 0; right: 42px;
-            width: 40px; height: 20px;
-            background: #4A5AC4;
-            border-radius: 50% 50% 40% 40%;
-            z-index: 1;
-        }
-
-        /* 耳朵 */
-        .stitch-ear {
-            position: absolute;
-            top: -8px;
-            width: 36px; height: 36px;
-            background: linear-gradient(145deg, #6B7FD7 0%, #4A5AC4 100%);
-            border-radius: 50%;
-            z-index: 5;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .stitch-ear.left  { left: 8px; transform: rotate(-15deg); }
-        .stitch-ear.right { right: 8px; transform: rotate(15deg); }
-
-        .stitch-ear::after {
-            content: '';
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 20px; height: 20px;
-            background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-        }
-
-        /* 爱心（心脏热区） */
-        .stitch-heart {
-            position: absolute;
-            top: 88px; left: 50%;
-            transform: translateX(-50%);
-            width: 36px; height: 32px;
-            z-index: 10;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .heart-icon {
-            font-size: 26px;
-            color: var(--soft-pink);
-            animation: heartBeat 1.5s ease-in-out infinite;
-            text-shadow: 0 0 10px rgba(255, 107, 157, 0.4);
-            pointer-events: none;
-            user-select: none;
-        }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            50%      { transform: scale(1.15); }
-        }
-
-        /* 对话气泡 */
-        .chat-bubble {
-            position: absolute;
-            background: white;
-            padding: 12px 18px;
-            border-radius: 18px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-            max-width: 260px;
-            font-size: 14px;
-            color: var(--text-dark);
-            line-height: 1.6;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 50;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            text-align: center;
-        }
-        .chat-bubble.show { opacity: 1; }
-        .chat-bubble::after {
-            content: '';
-            position: absolute;
-            bottom: -10px; left: 50%;
-            transform: translateX(-50%);
-            border-left: 9px solid transparent;
-            border-right: 9px solid transparent;
-            border-top: 11px solid white;
-        }
-
-        /* 底部提示 */
-        .hint-text {
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 10px;
-            opacity: 0.8;
-            line-height: 1.5;
-        }
-
-        /* === 功能按钮 === */
-        .action-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            width: 100%;
-            max-width: 340px;
-            margin-top: 16px;
-        }
-
-        .action-btn {
-            background: rgba(255, 255, 255, 0.95);
-            border: none;
-            border-radius: 18px;
-            padding: 16px 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 7px;
-            min-height: 90px;
-        }
-        .action-btn:active { transform: scale(0.95); }
-        .action-btn:hover  { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
-
-        .action-btn .icon  { font-size: 26px; }
-        .action-btn .label { font-size: 12px; color: var(--text-dark); font-weight: 600; }
-        .action-btn.chat     { border-top: 3px solid var(--deep-purple); }
-        .action-btn.mailbox  { border-top: 3px solid var(--warm-orange); }
-        .action-btn.breathing { border-top: 3px solid var(--calm-teal); }
-
-        /* === 全屏界面 === */
-        .fullscreen-interface {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 200;
-            display: none;
-            flex-direction: column;
-        }
-        .fullscreen-interface.active { display: flex; }
-
-        .fullscreen-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 20px;
-            padding-top: calc(16px + var(--safe-top));
-            background: rgba(255, 255, 255, 0.97);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            flex-shrink: 0;
-        }
-        .fullscreen-header h3 { font-size: 17px; color: var(--text-dark); }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 26px;
-            cursor: pointer;
-            color: var(--text-light);
-            width: 38px; height: 38px;
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            transition: background 0.3s;
-        }
-        .close-btn:hover { background: rgba(0,0,0,0.08); }
-
-        /* === 呼吸界面 === */
-        .breathing-interface { background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 50%, #A5D6A7 100%); }
-
-        .breathing-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .breathing-circle {
-            width: 160px; height: 160px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--calm-teal) 0%, #00A085 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 40px rgba(0, 184, 148, 0.4);
-            transition: transform 4s ease-in-out;
-            margin-bottom: 24px;
-        }
-        .breathing-circle.inhale { transform: scale(1.2); }
-        .breathing-circle.exhale { transform: scale(1); }
-
-        .breathing-text {
-            color: white;
-            font-size: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-        .breathing-count { font-size: 38px; font-weight: bold; display: block; }
-
-        .breathing-instruction {
-            font-size: 15px;
-            color: var(--text-dark);
-            text-align: center;
-            margin-bottom: 16px;
-            line-height: 1.8;
-        }
-        .breathing-timer { font-size: 13px; color: var(--text-light); margin-top: 16px; }
-
-        .start-breathing-btn {
-            background: var(--calm-teal);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            padding: 14px 38px;
-            font-size: 15px;
-            font-family: inherit;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
-            transition: transform 0.3s;
-        }
-        .start-breathing-btn:hover { transform: scale(1.05); }
-
-        /* === 锻炼界面 === */
-        .exercise-interface { background: linear-gradient(180deg, #FFF3E0 0%, #FFE0B2 50%, #FFCC80 100%); }
-
-        .exercise-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 24px;
-        }
-
-        .exercise-animation {
-            font-size: 110px;
-            margin-bottom: 24px;
-            animation: exerciseMove 1s ease-in-out infinite;
-        }
-        @keyframes exerciseMove {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25%      { transform: translateY(-18px) rotate(-5deg); }
-            75%      { transform: translateY(-18px) rotate(5deg); }
-        }
-
-        .exercise-title { font-size: 22px; color: var(--text-dark); margin-bottom: 12px; font-weight: bold; }
-        .exercise-desc  { font-size: 15px; color: var(--text-light); text-align: center; line-height: 1.8; max-width: 290px; }
-        .exercise-count { font-size: 44px; color: var(--warm-orange); font-weight: bold; margin: 16px 0; }
-
-        /* === 秘密抽屉 === */
-        .secret-drawer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 300;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .secret-drawer.active { display: flex; }
-
-        .drawer-content {
-            background: white;
-            border-radius: 22px;
-            padding: 28px;
-            width: 100%;
-            max-width: 370px;
-            max-height: 85vh;
-            overflow-y: auto;
-            animation: slideUp 0.4s ease-out;
-            position: relative;
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .drawer-header { text-align: center; margin-bottom: 18px; }
-        .drawer-header h3 { font-size: 20px; color: var(--deep-purple); margin-bottom: 8px; }
-
-        .password-hint {
-            font-size: 13px;
-            color: var(--text-light);
-            line-height: 1.7;
-            padding: 14px;
-            background: #F8F9FA;
-            border-radius: 12px;
-            margin-bottom: 16px;
-        }
-
-        .password-input {
-            width: 100%;
-            border: 2px solid #E0E0E0;
-            border-radius: 14px;
-            padding: 13px;
-            font-size: 18px;
-            text-align: center;
-            letter-spacing: 6px;
-            font-family: inherit;
-            margin-bottom: 12px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .password-input:focus { border-color: var(--soft-pink); }
-
-        .unlock-btn {
-            width: 100%;
-            background: linear-gradient(135deg, var(--soft-pink) 0%, #FF8E9E 100%);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            padding: 14px;
-            font-size: 15px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .unlock-btn:hover { transform: scale(1.02); }
-
-        .secret-text {
-            font-size: 14px;
-            color: var(--text-dark);
-            line-height: 1.8;
-            padding: 14px;
-            background: #F8F9FA;
-            border-radius: 12px;
-            white-space: pre-line;
-        }
-
-        /* === 对话界面 === */
-        .chat-interface { background: linear-gradient(180deg, #F3E5F5 0%, #E1BEE7 100%); }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 11px 16px;
-            border-radius: 18px;
-            font-size: 15px;
-            line-height: 1.6;
-            animation: messageSlide 0.3s ease-out;
-            word-break: break-word;
-        }
-        @keyframes messageSlide {
-            from { opacity: 0; transform: translateY(8px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        .message.stitch {
-            background: white;
-            color: var(--text-dark);
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-        }
-        .message.user {
-            background: var(--deep-purple);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
-        }
-
-        .chat-input-area {
-            padding: 12px;
-            padding-bottom: calc(12px + var(--safe-bottom));
-            background: rgba(255, 255, 255, 0.97);
-            display: flex;
-            gap: 10px;
-            flex-shrink: 0;
-        }
-
-        .chat-input {
-            flex: 1;
-            border: 2px solid #E0E0E0;
-            border-radius: 25px;
-            padding: 11px 18px;
-            font-size: 15px;
-            font-family: inherit;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        .chat-input:focus { border-color: var(--deep-purple); }
-
-        .send-btn {
-            background: var(--deep-purple);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 46px; height: 46px;
-            cursor: pointer;
-            font-size: 18px;
-            display: flex; justify-content: center; align-items: center;
-            transition: background 0.3s;
-            flex-shrink: 0;
-        }
-        .send-btn:hover { background: #5B4ED1; }
-        .send-btn:active { transform: scale(0.92); }
-
-        .voice-btn {
-            background: var(--soft-pink);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 46px; height: 46px;
-            cursor: pointer;
-            font-size: 20px;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-        .voice-btn:active { transform: scale(0.92); }
-        .voice-btn.recording {
-            background: #E74C3C;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.5); }
-            50%      { box-shadow: 0 0 0 12px rgba(231, 76, 60, 0); }
-        }
-
-        /* === 匿名信箱 === */
-        .mailbox-interface { background: linear-gradient(180deg, #FFF8E1 0%, #FFECB3 100%); }
-
-        .mailbox-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .letter-card {
-            background: white;
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 14px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        .letter-meta {
-            display: flex; justify-content: space-between;
-            font-size: 12px; color: var(--text-light);
-            margin-bottom: 10px;
-        }
-        .letter-content {
-            font-size: 14px; color: var(--text-dark);
-            line-height: 1.7; margin-bottom: 14px;
-        }
-        .reply-input {
-            width: 100%;
-            border: 2px solid #E0E0E0;
-            border-radius: 12px;
-            padding: 10px;
-            font-size: 14px;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            margin-bottom: 8px;
-            transition: border-color 0.3s;
-        }
-        .reply-input:focus { border-color: var(--warm-orange); }
-        .reply-btn {
-            background: var(--warm-orange);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 9px 22px;
-            font-size: 13px;
-            font-family: inherit;
-            cursor: pointer;
-            transition: transform 0.3s;
-        }
-        .reply-btn:hover { transform: scale(1.02); }
-
-        .write-letter-btn {
-            position: fixed;
-            bottom: calc(70px + var(--safe-bottom));
-            right: 18px;
-            background: var(--warm-orange);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 56px; height: 56px;
-            font-size: 26px;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(255, 179, 71, 0.5);
-            transition: transform 0.3s;
-            z-index: 10;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .write-letter-btn:hover { transform: scale(1.1); }
-
-        /* === 写信界面 === */
-        .write-letter-drawer {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 300;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .write-letter-drawer.active { display: flex; }
-
-        .write-letter-content {
-            background: white;
-            border-radius: 22px;
-            padding: 28px;
-            width: 100%;
-            max-width: 370px;
-            max-height: 85vh;
-            overflow-y: auto;
-            position: relative;
-            animation: slideUp 0.4s ease-out;
-        }
-
-        .letter-textarea {
-            width: 100%;
-            border: 2px solid #E0E0E0;
-            border-radius: 14px;
-            padding: 14px;
-            font-size: 15px;
-            font-family: inherit;
-            resize: none;
-            outline: none;
-            min-height: 140px;
-            line-height: 1.7;
-            transition: border-color 0.3s;
-        }
-        .letter-textarea:focus { border-color: var(--warm-orange); }
-
-        /* === Toast === */
-        .toast {
-            position: fixed;
-            bottom: calc(140px + var(--safe-bottom));
-            left: 50%; transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.85);
-            color: white;
-            padding: 13px 28px;
-            border-radius: 25px;
-            font-size: 14px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            max-width: 80%;
-            text-align: center;
-        }
-        .toast.show { opacity: 1; }
-
-        /* === 打字指示器 === */
-        .typing-indicator {
-            display: flex; gap: 5px;
-            padding: 13px 18px;
-            background: white;
-            border-radius: 18px;
-            width: fit-content;
-            align-self: flex-start;
-        }
-        .typing-dot {
-            width: 7px; height: 7px;
-            background: var(--deep-purple);
-            border-radius: 50%;
-            animation: typingBounce 1.4s infinite ease-in-out;
-        }
-        .typing-dot:nth-child(1) { animation-delay: 0s; }
-        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes typingBounce {
-            0%, 60%, 100% { transform: translateY(0); }
-            30%           { transform: translateY(-7px); }
-        }
-
-        /* === 日期选择器弹窗 === */
-        .date-picker-modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 400;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .date-picker-modal.active { display: flex; }
-        .date-picker-content {
-            background: white;
-            border-radius: 18px;
-            padding: 24px;
-            width: 90%;
-            max-width: 340px;
-            text-align: center;
-        }
-        .date-picker-content h4 { margin-bottom: 16px; color: var(--text-dark); }
-        .date-picker-content input {
-            width: 100%;
-            border: 2px solid var(--primary-blue);
-            border-radius: 12px;
-            padding: 12px;
-            font-size: 16px;
-            font-family: inherit;
-            text-align: center;
-            outline: none;
-            margin-bottom: 16px;
-        }
-        .date-picker-btn {
-            background: var(--primary-blue);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 32px;
-            font-size: 15px;
-            font-family: inherit;
-            cursor: pointer;
-            margin: 0 6px;
-        }
-        .date-picker-btn.cancel { background: #ccc; }
-
-        /* === 响应式 === */
-        @media (max-width: 400px) {
-            .action-buttons { grid-template-columns: repeat(2, 1fr); }
-            .stitch-scene   { width: 220px; height: 230px; }
-            .stitch-body    { transform: scale(0.85); }
-        }
-        @media (min-width: 600px) {
-            .stitch-scene { width: 300px; height: 300px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>小蓝的陪伴空间</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{overflow:hidden;height:100%;font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif}
+body{
+  background:linear-gradient(180deg,#87CEEB 0%,#B8E6F0 30%,#E8F5E9 70%,#FFE4B5 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+/* 天空背景动画 */
+.bg-sky{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.cloud-img{position:absolute;opacity:0.85;filter:blur(0.5px)}
+.cloud1{top:8%;width:90px;animation:cf 30s linear infinite}
+.cloud2{top:16%;width:65px;animation:cf 38s linear infinite;animation-delay:-14s}
+@keyframes cf{0%{transform:translateX(-120px)}100%{transform:translateX(calc(100vw + 120px))}}
+.sun-glow{position:absolute;top:5%;right:12%;width:70px;height:70px;background:radial-gradient(circle,#FFD93D 0%,#FFB347 60%,transparent 75%);border-radius:50%;animation:sp 4s ease-in-out infinite;box-shadow:0 0 60px #FFD93D,0 0 120px rgba(255,217,61,0.3)}
+@keyframes sp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:0.9}}
+.sea-layer{position:fixed;bottom:0;left:0;width:100%;height:38%;z-index:1;pointer-events:none}
+.sea-color{position:absolute;bottom:0;width:100%;height:100%;background:linear-gradient(0deg,#00897B 0%,#26A69A 40%,#4ECDC4 100%);border-radius:60% 60% 0 0 / 12% 12% 0 0}
+.wave-svg{position:absolute;top:-18px;left:0;width:200%;height:40px;animation:wm 8s linear infinite}
+@keyframes wm{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* 主内容 */
+.main-wrap{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;width:100%;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px 16px 20px}
+
+/* 音频按钮 */
+.audio-btn{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));right:14px;z-index:200;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.92);border:none;font-size:20px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;transition:transform 0.2s}
+.audio-btn:active{transform:scale(0.9)}
+
+/* 倒计时卡片 */
+.card{background:rgba(255,255,255,0.93);backdrop-filter:blur(12px);border-radius:18px;padding:14px 24px;margin-bottom:14px;box-shadow:0 6px 20px rgba(0,0,0,0.08);text-align:center;width:100%;max-width:340px;animation:sd 0.6s ease-out}
+@keyframes sd{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.card .label{font-size:13px;color:#636E72;margin-bottom:4px}
+.card .days-row{display:flex;align-items:baseline;justify-content:center;gap:2px}
+.card .days-num{font-size:32px;font-weight:800;color:#5B9BD5;cursor:pointer;padding:0 6px;border-bottom:2px dashed transparent;transition:border-color 0.2s}
+.card .days-num:hover,.card .days-num:active{border-color:#6C5CE7}
+.card .days-unit{font-size:16px;color:#2D3436;font-weight:500}
+.card .edit-hint{font-size:11px;color:#bbb;margin-top:3px}
+.card .quote{font-size:13px;color:#FF6B9D;margin-top:8px;font-weight:600;line-height:1.5;min-height:20px;transition:opacity 0.5s}
+
+/* 3D画布 */
+.stitch-canvas-wrap{position:relative;width:240px;height:280px;margin:4px 0;cursor:pointer;touch-action:none}
+#stitchCanvas{width:100%;height:100%;display:block}
+.canvas-hint{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.7);pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,0.3)}
+
+/* 气泡 */
+.bubble{position:absolute;top:-6px;left:50%;transform:translateX(-50%);background:#fff;padding:10px 16px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.12);font-size:13px;color:#2D3436;max-width:240px;text-align:center;z-index:20;opacity:0;pointer-events:none;transition:opacity 0.3s;line-height:1.5;white-space:nowrap}
+.bubble.show{opacity:1}
+.bubble:after{content:'';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:#fff}
+
+/* 按钮组 */
+.btns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:340px;margin-top:12px}
+.btn{background:rgba(255,255,255,0.93);border:none;border-radius:16px;padding:14px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,0.08);transition:transform 0.2s;min-height:82px;position:relative;overflow:hidden}
+.btn:active{transform:scale(0.93)}
+.btn .ic{font-size:24px}
+.btn .lb{font-size:11px;color:#2D3436;font-weight:600}
+.btn-chat{border-top:3px solid #6C5CE7}
+.btn-breathe{border-top:3px solid #00B894}
+.btn-mail{border-top:3px solid #FFB347}
+
+/* 提示文字 */
+.hint{font-size:11px;color:#888;text-align:center;margin-top:8px;line-height:1.5}
+
+/* ========== 全屏界面通用 ========== */
+.fs{position:fixed;top:0;left:0;width:100%;height:100%;z-index:300;display:none;flex-direction:column}
+.fs.active{display:flex}
+.fs-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;padding-top:calc(14px + env(safe-area-inset-top,0px));background:rgba(255,255,255,0.96);box-shadow:0 2px 8px rgba(0,0,0,0.06);flex-shrink:0}
+.fs-head h3{font-size:16px;color:#2D3436}
+.fs-close{width:36px;height:36px;border:none;background:none;font-size:24px;color:#999;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.fs-close:active{background:rgba(0,0,0,0.06)}
+
+/* 呼吸 */
+.breath-bg{background:linear-gradient(180deg,#E8F5E9,#C8E6C9 50%,#A5D6A7 100%)}
+.breath-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:20px}
+.breath-circle{width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,#00B894,#00A085);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 40px rgba(0,184,148,0.35);transition:transform 4s ease-in-out}
+.breath-circle.in{transform:scale(1.2)}
+.breath-circle.out{transform:scale(1)}
+.breath-circle .num{font-size:36px;font-weight:800;color:#fff}
+.breath-circle .ph{font-size:15px;color:rgba(255,255,255,0.85)}
+.breath-info{font-size:14px;color:#2D3436;text-align:center;line-height:1.7}
+.breath-timer{font-size:13px;color:#888}
+.breath-btn{background:#00B894;color:#fff;border:none;border-radius:24px;padding:13px 36px;font-size:14px;font-family:inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,184,148,0.3);transition:transform 0.2s}
+.breath-btn:active{transform:scale(0.95)}
+
+/* 聊天 */
+.chat-bg{background:linear-gradient(180deg,#F3E5F5,#E1BEE7 100%)}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch}
+.chat-msgs .msg{padding:10px 14px;border-radius:16px;font-size:14px;line-height:1.6;max-width:82%;word-break:break-word;animation:mf 0.25s ease-out}
+@keyframes mf{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.chat-msgs .msg.st{background:#fff;color:#2D3436;align-self:flex-start;border-bottom-left-radius:4px}
+.chat-msgs .msg.me{background:#6C5CE7;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.chat-in{display:flex;gap:8px;padding:10px 14px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,0.96);flex-shrink:0}
+.chat-in input{flex:1;border:2px solid #E0E0E0;border-radius:24px;padding:10px 16px;font-size:14px;font-family:inherit;outline:none;transition:border-color 0.2s}
+.chat-in input:focus{border-color:#6C5CE7}
+.chat-in .snd{width:42px;height:42px;border:none;background:#6C5CE7;color:#fff;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.2s}
+.chat-in .snd:active{transform:scale(0.9)}
+.chat-in .mic{width:42px;height:42px;border:none;background:#FF6B9D;color:#fff;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.chat-in .mic:active,.chat-in .mic.rec{background:#E74C3C;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(231,76,60,0.4)}50%{box-shadow:0 0 0 10px rgba(231,76,60,0)}}
+.typing{display:flex;gap:4px;padding:10px 14px;background:#fff;border-radius:16px;width:fit-content;align-self:flex-start}
+.typing i{width:6px;height:6px;background:#6C5CE7;border-radius:50%;display:inline-block;animation:tb 1.2s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:0.15s}
+.typing i:nth-child(3){animation-delay:0.3s}
+@keyframes tb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* 信箱 */
+.mail-bg{background:linear-gradient(180deg,#FFF8E1,#FFECB3 100%)}
+.mail-body{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.mail-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,0.06)}
+.mail-card .meta{display:flex;justify-content:space-between;font-size:11px;color:#999;margin-bottom:8px}
+.mail-card .body{font-size:14px;color:#2D3436;line-height:1.7;margin-bottom:10px}
+.mail-card textarea{width:100%;border:2px solid #E0E0E0;border-radius:10px;padding:8px;font-size:13px;font-family:inherit;resize:none;outline:none;margin-bottom:6px;transition:border-color 0.2s}
+.mail-card textarea:focus{border-color:#FFB347}
+.mail-card .rbtn{background:#FFB347;color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:12px;font-family:inherit;cursor:pointer;transition:transform 0.2s}
+.mail-card .rbtn:active{transform:scale(0.95)}
+.write-btn{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom,0px));right:16px;z-index:310;width:52px;height:52px;border:none;background:#FFB347;color:#fff;border-radius:50%;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(255,179,71,0.4);display:flex;align-items:center;justify-content:center;transition:transform 0.2s}
+.write-btn:active{transform:scale(0.9)}
+
+/* 写信弹窗 */
+.writedraw{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:400;display:none;justify-content:center;align-items:center;padding:20px}
+.writedraw.active{display:flex}
+.writedraw .inner{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;position:relative;animation:su 0.35s ease-out}
+@keyframes su{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+.writedraw .inner h3{font-size:17px;color:#2D3436;margin-bottom:12px}
+.writedraw .inner textarea{width:100%;border:2px solid #E0E0E0;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;resize:none;min-height:120px;outline:none;line-height:1.7;transition:border-color 0.2s}
+.writedraw .inner textarea:focus{border-color:#FFB347}
+.writedraw .inner .send-btn{margin-top:10px;width:100%;background:linear-gradient(135deg,#FF6B9D,#FF8E9E);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;cursor:pointer;transition:transform 0.2s}
+.writedraw .inner .send-btn:active{transform:scale(0.97)}
+.writedraw .x{position:absolute;top:12px;right:12px;width:32px;height:32px;border:none;background:none;font-size:22px;color:#aaa;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.writedraw .x:active{background:rgba(0,0,0,0.06)}
+
+/* 秘密抽屉 */
+.secretdraw{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.82);backdrop-filter:blur(8px);z-index:450;display:none;justify-content:center;align-items:center;padding:20px}
+.secretdraw.active{display:flex}
+.secretdraw .inner{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;position:relative;animation:su 0.35s ease-out;max-height:85vh;overflow-y:auto}
+.secretdraw .inner h3{font-size:18px;color:#6C5CE7;margin-bottom:10px;text-align:center}
+.secretdraw .hint{font-size:13px;color:#888;line-height:1.7;padding:12px;background:#F8F9FA;border-radius:10px;margin-bottom:14px}
+.secretdraw .pw{width:100%;border:2px solid #E0E0E0;border-radius:12px;padding:12px;font-size:18px;text-align:center;letter-spacing:6px;font-family:inherit;outline:none;margin-bottom:10px;transition:border-color 0.2s}
+.secretdraw .pw:focus{border-color:#FF6B9D}
+.secretdraw .ub{width:100%;background:linear-gradient(135deg,#FF6B9D,#FF8E9E);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;cursor:pointer;transition:transform 0.2s}
+.secretdraw .ub:active{transform:scale(0.97)}
+.secretdraw .x{position:absolute;top:12px;right:12px;width:32px;height:32px;border:none;background:none;font-size:22px;color:#aaa;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.secretdraw .secret-text{font-size:14px;color:#2D3436;line-height:1.8;padding:12px;background:#F8F9FA;border-radius:10px;white-space:pre-line}
+
+/* 日期弹窗 */
+.datepop{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.45);z-index:420;display:none;justify-content:center;align-items:center}
+.datepop.active{display:flex}
+.datepop .inner{background:#fff;border-radius:18px;padding:22px;width:90%;max-width:320px;text-align:center}
+.datepop .inner h4{font-size:16px;color:#2D3436;margin-bottom:10px}
+.datepop .inner p{font-size:12px;color:#888;margin-bottom:12px}
+.datepop .inner input{width:100%;border:2px solid #5B9BD5;border-radius:10px;padding:10px;font-size:15px;font-family:inherit;text-align:center;outline:none;margin-bottom:14px}
+.datepop .inner button{background:#5B9BD5;color:#fff;border:none;border-radius:10px;padding:10px 28px;font-size:14px;font-family:inherit;cursor:pointer;margin:0 4px;transition:transform 0.2s}
+.datepop .inner button:active{transform:scale(0.95)}
+.datepop .inner button.cancel{background:#ccc}
+
+/* Toast */
+.toast{position:fixed;bottom:calc(120px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.82);color:#fff;padding:11px 24px;border-radius:22px;font-size:13px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;max-width:82%;text-align:center;white-space:nowrap}
+.toast.show{opacity:1}
+
+@media(max-width:380px){
+  .stitch-canvas-wrap{width:200px;height:240px}
+  .card .days-num{font-size:28px}
+}
+</style>
 </head>
 <body>
-    <!-- 海滩背景 -->
-    <div class="beach-background">
-        <div class="sun"></div>
-        <div class="cloud cloud-1"></div>
-        <div class="cloud cloud-2"></div>
-        <div class="ocean">
-            <div class="wave"></div>
-            <div class="wave"></div>
-        </div>
-        <div class="sand"></div>
+
+<!-- 天空背景 -->
+<svg class="bg-sky" viewBox="0 0 400 300" preserveAspectRatio="none">
+  <defs>
+    <radialGradient id="sunGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFD93D"/>
+      <stop offset="100%" stop-color="#FFB347" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
+<div class="bg-sky">
+  <div class="sun-glow"></div>
+  <div class="cloud-img cloud1">
+    <svg viewBox="0 0 100 40" width="100" height="40"><ellipse cx="50" cy="28" rx="45" ry="12" fill="#fff"/><circle cx="32" cy="18" r="12" fill="#fff"/><circle cx="58" cy="16" r="10" fill="#fff"/></svg>
+  </div>
+  <div class="cloud-img cloud2">
+    <svg viewBox="0 0 80 30" width="80" height="30"><ellipse cx="40" cy="22" rx="35" ry="9" fill="rgba(255,255,255,0.9)"/><circle cx="26" cy="14" r="9" fill="rgba(255,255,255,0.9)"/><circle cx="54" cy="13" r="7" fill="rgba(255,255,255,0.9)"/></svg>
+  </div>
+</div>
+<!-- 海面 -->
+<div class="sea-layer">
+  <svg class="wave-svg" viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0,20 C150,5 350,35 600,20 C850,5 1050,35 1200,20 L1200,40 L0,40Z" fill="rgba(255,255,255,0.35)"/></svg>
+  <svg class="wave-svg" style="top:-12px;opacity:0.5;animation-delay:-4s" viewBox="0 0 1200 40" preserveAspectRatio="none"><path d="M0,20 C200,8 400,32 600,20 C800,8 1000,32 1200,20 L1200,40 L0,40Z" fill="rgba(255,255,255,0.25)"/></svg>
+  <div class="sea-color"></div>
+</div>
+
+<!-- 音频按钮 -->
+<button class="audio-btn" id="audioBtn" aria-label="音乐开关">🔇</button>
+
+<!-- 主内容 -->
+<div class="main-wrap" id="mainWrap">
+
+  <!-- 倒计时 -->
+  <div class="card">
+    <div class="label">我已经陪你在沙特工作了</div>
+    <div class="days-row">
+      <span class="days-num" id="daysNum" onclick="openDatePop()">0</span>
+      <span class="days-unit">天</span>
     </div>
+    <div class="edit-hint" id="editHint">点击数字修改日期</div>
+    <div class="quote" id="quoteText">今天你也很努力哦 💙</div>
+  </div>
 
-    <!-- 音频控制 -->
-    <div class="audio-control" id="audioControl" role="button" aria-label="音乐开关" onclick="toggleAudio()">🔇</div>
+  <!-- 3D 史迪仔 -->
+  <div class="stitch-canvas-wrap" id="canvasWrap">
+    <canvas id="stitchCanvas" width="480" height="560"></canvas>
+    <div class="bubble" id="bubble"></div>
+    <div class="canvas-hint">触摸史迪仔互动 💙</div>
+  </div>
+  <div class="hint">长按爱心开锁 · 点击身体有惊喜</div>
 
-    <!-- 主界面 -->
-    <div class="main-container">
-        <!-- 倒计时 -->
-        <div class="countdown-card">
-            <div class="countdown-text">我已经陪你在沙特工作了</div>
-            <div class="countdown-row">
-                <span class="countdown-number" id="dayCount" onclick="openDatePicker()">0</span>
-                <span class="countdown-unit">天</span>
-            </div>
-            <div class="countdown-edit-hint" id="editHint">点击数字修改起始日期</div>
-            <div class="countdown-encourage" id="encourageText">今天你也很努力哦 💙</div>
-        </div>
+  <!-- 按钮 -->
+  <div class="btns">
+    <button class="btn btn-chat" onclick="openChat()"><span class="ic">💬</span><span class="lb">聊天</span></button>
+    <button class="btn btn-breathe" onclick="openBreath()"><span class="ic">🌬️</span><span class="lb">呼吸</span></button>
+    <button class="btn btn-mail" onclick="openMail()"><span class="ic">💌</span><span class="lb">信箱</span></button>
+  </div>
+</div>
 
-        <!-- 3D 史迪仔 -->
-        <div class="stitch-scene" id="stitchScene">
-            <div class="chat-bubble" id="chatBubble"></div>
-
-            <div class="stitch-body" id="stitchBody">
-                <!-- 耳朵 -->
-                <div class="stitch-ear left"></div>
-                <div class="stitch-ear right"></div>
-                <!-- 头 -->
-                <div class="stitch-head">
-                    <div class="stitch-eye left"><div class="stitch-pupil"></div></div>
-                    <div class="stitch-eye right"><div class="stitch-pupil"></div></div>
-                    <div class="stitch-nose"></div>
-                    <div class="stitch-mouth"></div>
-                </div>
-                <!-- 身体 -->
-                <div class="stitch-main"></div>
-                <div class="stitch-belly"></div>
-                <!-- 手臂 -->
-                <div class="stitch-arm-left"></div>
-                <div class="stitch-arm-right"></div>
-                <!-- 腿脚 -->
-                <div class="stitch-leg-left"></div>
-                <div class="stitch-leg-right"></div>
-                <div class="stitch-foot-left"></div>
-                <div class="stitch-foot-right"></div>
-                <!-- 爱心热区 -->
-                <div class="stitch-heart" id="heartArea">
-                    <div class="heart-icon">💜</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="hint-text">长按爱心解锁秘密抽屉 💜 · 点击史迪仔有惊喜</div>
-
-        <!-- 功能按钮 -->
-        <div class="action-buttons">
-            <button class="action-btn chat" onclick="openChat()">
-                <span class="icon">💬</span>
-                <span class="label">聊天</span>
-            </button>
-            <button class="action-btn breathing" onclick="openBreathing()">
-                <span class="icon">🌬️</span>
-                <span class="label">呼吸</span>
-            </button>
-            <button class="action-btn mailbox" onclick="openMailbox()">
-                <span class="icon">💌</span>
-                <span class="label">信箱</span>
-            </button>
-        </div>
+<!-- 呼吸界面 -->
+<div class="fs breath-bg" id="breathUI">
+  <div class="fs-head"><h3>🌬️ 呼吸放松</h3><button class="fs-close" onclick="closeBreath()">×</button></div>
+  <div class="breath-body">
+    <div class="breath-info" id="breathInfo">准备好了吗？跟着史迪仔一起呼吸 🌿</div>
+    <div class="breath-circle" id="breathCircle">
+      <span class="num" id="breathNum">0</span>
+      <span class="ph" id="breathPhase">开始</span>
     </div>
+    <div class="breath-timer" id="breathTimer"></div>
+    <button class="breath-btn" id="breathBtn" onclick="startBreath()">开始呼吸</button>
+  </div>
+</div>
 
-    <!-- 呼吸界面 -->
-    <div class="fullscreen-interface breathing-interface" id="breathingInterface">
-        <div class="fullscreen-header">
-            <h3>🌬️ 呼吸放松</h3>
-            <button class="close-btn" onclick="closeBreathing()">×</button>
-        </div>
-        <div class="breathing-content">
-            <div class="breathing-instruction" id="breathingInstruction">
-                准备好了吗？<br>跟着史迪仔一起呼吸 🌿
-            </div>
-            <div class="breathing-circle" id="breathingCircle">
-                <div class="breathing-text">
-                    <span class="breathing-count" id="breathingCount">0</span>
-                    <span id="breathingPhase">开始</span>
-                </div>
-            </div>
-            <div class="breathing-timer" id="breathingTimer"></div>
-            <button class="start-breathing-btn" id="startBreathingBtn" onclick="startBreathing()">开始呼吸</button>
-        </div>
+<!-- 聊天界面 -->
+<div class="fs chat-bg" id="chatUI">
+  <div class="fs-head"><h3>💬 和史迪仔聊天</h3><button class="fs-close" onclick="closeChat()">×</button></div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg st">嘿！你来啦～有什么想跟我说的吗？😊</div>
+  </div>
+  <div class="chat-in">
+    <input type="text" id="chatInput" placeholder="说点什么..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="mic" id="micBtn" onclick="toggleMic()">🎙️</button>
+    <button class="snd" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<!-- 信箱界面 -->
+<div class="fs mail-bg" id="mailUI">
+  <div class="fs-head"><h3>💌 匿名信箱</h3><button class="fs-close" onclick="closeMail()">×</button></div>
+  <div class="mail-body" id="mailBody">
+    <div style="text-align:center;padding:40px 20px;color:#aaa;font-size:13px;line-height:1.8">这里是你的树洞 📝<br>有什么心事都可以写下来</div>
+  </div>
+  <button class="write-btn" onclick="openWrite()">✏️</button>
+</div>
+
+<!-- 写信弹窗 -->
+<div class="writedraw" id="writeDraw">
+  <div class="inner">
+    <button class="x" onclick="closeWrite()">×</button>
+    <h3>✏️ 写一封信</h3>
+    <textarea id="letterTxt" placeholder="写下你想说的话..." rows="5"></textarea>
+    <button class="send-btn" onclick="sendLetter()">发送 💙</button>
+  </div>
+</div>
+
+<!-- 秘密抽屉 -->
+<div class="secretdraw" id="secretDraw">
+  <div class="inner">
+    <button class="x" onclick="closeSecret()">×</button>
+    <div id="pwScreen">
+      <h3>🔐 秘密抽屉</h3>
+      <div class="hint">💡 想想你的破单日或者她的破单日有没有可能性呢？有不一样的惊喜哦~</div>
+      <input class="pw" id="pwInput" type="password" placeholder="输入密码" maxlength="6" onkeydown="if(event.key==='Enter')unlock()">
+      <button class="ub" onclick="unlock()">解锁</button>
     </div>
+    <div id="secretBody" style="display:none"></div>
+  </div>
+</div>
 
-    <!-- 秘密抽屉 -->
-    <div class="secret-drawer" id="secretDrawer">
-        <div class="drawer-content">
-            <button onclick="closeSecretDrawer()" style="position:absolute;top:14px;right:14px;background:none;border:none;font-size:24px;cursor:pointer;color:#aaa;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;">×</button>
-            <div class="drawer-header">
-                <h3>🔐 秘密抽屉</h3>
-            </div>
-            <div id="passwordScreen">
-                <div class="password-hint">
-                    💡 想想你的破单日或者她的破单日有没有可能性呢？有不一样的惊喜哦~
-                </div>
-                <input type="password" class="password-input" id="passwordInput"
-                    placeholder="输入密码" maxlength="6"
-                    onkeypress="if(event.key==='Enter')unlockDrawer()">
-                <button class="unlock-btn" onclick="unlockDrawer()">解锁</button>
-            </div>
-            <div id="secretContent" style="display:none;"></div>
-        </div>
+<!-- 日期弹窗 -->
+<div class="datepop" id="datePop">
+  <div class="inner">
+    <h4>📅 设置起始日期</h4>
+    <p>填写你到沙特的第一天</p>
+    <input type="date" id="dateInput">
+    <div>
+      <button class="cancel" onclick="closeDatePop()">取消</button>
+      <button onclick="saveDate()">确定</button>
     </div>
+  </div>
+</div>
 
-    <!-- 对话界面 -->
-    <div class="fullscreen-interface chat-interface" id="chatInterface">
-        <div class="fullscreen-header">
-            <h3>💬 和史迪仔聊天</h3>
-            <button class="close-btn" onclick="closeChat()">×</button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message stitch">
-                嘿！你来啦～有什么想跟我说的吗？😊
-            </div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" class="chat-input" id="chatInput"
-                placeholder="输入消息..." onkeypress="if(event.key==='Enter')sendMessage()">
-            <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()">🎙️</button>
-            <button class="send-btn" onclick="sendMessage()">➤</button>
-        </div>
-    </div>
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
-    <!-- 匿名信箱 -->
-    <div class="fullscreen-interface mailbox-interface" id="mailboxInterface">
-        <div class="fullscreen-header">
-            <h3>💌 匿名信箱</h3>
-            <button class="close-btn" onclick="closeMailbox()">×</button>
-        </div>
-        <div class="mailbox-content" id="mailboxContent">
-            <div style="text-align:center;padding:40px;color:var(--text-light);font-size:14px;">
-                这里是你的树洞 📝<br>点击右下角按钮写信哦~
-            </div>
-        </div>
-        <button class="write-letter-btn" onclick="openWriteLetter()">✏️</button>
-    </div>
+<!-- 音频（用 base64 内嵌一个极短静音 MP3 作为占位，实际音频由用户替换） -->
+<audio id="bgAudio" loop preload="none"></audio>
 
-    <!-- 写信界面 -->
-    <div class="write-letter-drawer" id="writeLetterDrawer">
-        <div class="write-letter-content">
-            <div class="drawer-header">
-                <h3>✏️ 写封信</h3>
-                <button class="close-btn" onclick="closeWriteLetter()"
-                    style="position:absolute;right:14px;top:14px;">×</button>
-            </div>
-            <textarea class="letter-textarea" id="letterContent"
-                rows="5" placeholder="写下你想说的话..."></textarea>
-            <button class="unlock-btn" onclick="sendLetter()">发送 💙</button>
-        </div>
-    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ========== 配置 ==========
+const LS_KEY = 'stitch_v2_start';
+let startDate = new Date(localStorage.getItem(LS_KEY) || new Date().toISOString().slice(0,10));
+let letters = JSON.parse(localStorage.getItem('stitch_v2_letters') || '[]');
 
-    <!-- 日期选择器 -->
-    <div class="date-picker-modal" id="datePickerModal">
-        <div class="date-picker-content">
-            <h4>📅 设置起始日期</h4>
-            <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">
-                填写你到沙特的第一天
-            </p>
-            <input type="date" id="datePickerInput">
-            <div>
-                <button class="date-picker-btn cancel" onclick="closeDatePicker()">取消</button>
-                <button class="date-picker-btn" onclick="saveDatePicker()">确定</button>
-            </div>
-        </div>
-    </div>
+// 励志语（每天换）
+const QUOTES = [
+  "今天你也很努力哦 💙",
+  "你已经很棒了，继续加油 🌟",
+  "相信自己，每一步都算数 ✨",
+  "辛苦了，今天也要好好照顾自己 🌸",
+  "你比想象中更强大 💪",
+  "累了就歇会儿，你已经很努力了 🌿",
+  "每一天都是新的开始，相信自己 🌈",
+  "坚持就是胜利，你做到了 💜",
+  "你的努力，时间都看得到 ⏰",
+  "善待自己，你值得被爱 💗",
+  "小小的进步也是进步，为自己鼓掌 👏",
+  "黑夜之后一定是黎明，坚持住 🌅",
+  "你做的每一个选择都很勇敢 🦋",
+  "今天的你，比昨天更近一步 🚀",
+  "谢谢你的坚持，世界因你而不同 🌍"
+];
+function getQuote(){
+  const d = new Date();
+  return QUOTES[Math.floor((d.getTime()/(1000*60*60*24)) % QUOTES.length)];
+}
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+// ========== 倒计时 ==========
+function updateDays(){
+  const now = new Date(); now.setHours(0,0,0,0);
+  const s = new Date(startDate); s.setHours(0,0,0,0);
+  document.getElementById('daysNum').textContent = Math.max(0, Math.floor((now-s)/86400000));
+}
+function openDatePop(){
+  document.getElementById('dateInput').value = startDate.toISOString().slice(0,10);
+  document.getElementById('datePop').classList.add('active');
+}
+function closeDatePop(){ document.getElementById('datePop').classList.remove('active'); }
+function saveDate(){
+  const v = document.getElementById('dateInput').value;
+  if(!v) return;
+  startDate = new Date(v);
+  localStorage.setItem(LS_KEY, v);
+  updateDays(); closeDatePop();
+  showToast('日期已更新 💙');
+}
 
-    <!-- 音频 -->
-    <audio id="oceanSound" loop preload="auto">
-        <source src="sea.m4a" type="audio/mp4">
-    </audio>
-    <audio id="effortSound" preload="auto">
-        <source src="effort.m4a" type="audio/mp4">
-    </audio>
+// ========== Three.js 3D 史迪仔 ==========
+let scene, camera, renderer, stitchGroup;
+let mouseX = 0, mouseY = 0;
+let isDragging = false;
+let targetRotY = 0, currentRotY = 0;
 
-    <script>
-    // ============================================================
-    //  配置 & 数据
-    // ============================================================
-    const LS_KEY_START = 'stitch_start_date_v2';
-    const LS_KEY_LETTERS = 'stitch_letters_v1';
+function initThree(){
+  const canvas = document.getElementById('stitchCanvas');
+  const wrap = document.getElementById('canvasWrap');
+  const W = wrap.clientWidth * 2, H = wrap.clientHeight * 2;
+  canvas.width = W; canvas.height = H;
 
-    let startDate = new Date(localStorage.getItem(LS_KEY_START) || new Date().toISOString().split('T')[0]);
-    let letters = JSON.parse(localStorage.getItem(LS_KEY_LETTERS) || '[]');
-    let isAudioPlaying = false;
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(35, W/H, 0.1, 1000);
+  camera.position.set(0, 1, 7);
+  camera.lookAt(0, 0.5, 0);
 
-    // 励志语库（每 5 天轮换一次）
-    const ENCOURAGE_QUOTES = [
-        "今天你也很努力哦 💙",
-        "你已经很棒了，继续加油 🌟",
-        "相信自己，每一步都算数 ✨",
-        "辛苦了，今天也要好好照顾自己 🌸",
-        "你比想象中更强大 💪",
-        "累了就歇会儿，你已经很努力了 🌿",
-        "每一天都是新的开始，相信自己 🌈",
-        "坚持就是胜利，你做到了 💜",
-        "你的努力，时间都看得到 ⏰",
-        "善待自己，你值得被爱 💗",
-        "小小的进步也是进步，为自己鼓掌 👏",
-        "黑夜之后一定是黎明，坚持住 🌅",
-        "你做的每一个选择都很勇敢 🦋",
-        "今天的你，比昨天更近一步 🚀",
-        "谢谢你的坚持，世界因你而不同 🌍"
-    ];
+  renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
 
-    function getEncourageQuote() {
-        const seed = Math.floor(new Date().getTime() / (5 * 24 * 60 * 60 * 1000));
-        return ENCOURAGE_QUOTES[seed % ENCOURAGE_QUOTES.length];
+  // 灯光
+  const amb = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(amb);
+  const dir = new THREE.DirectionalLight(0xffffff, 0.9);
+  dir.position.set(3, 6, 4);
+  dir.castShadow = true;
+  scene.add(dir);
+  const rim = new THREE.DirectionalLight(0x88ccff, 0.3);
+  rim.position.set(-3, 2, -2);
+  scene.add(rim);
+
+  stitchGroup = new THREE.Group();
+  buildStitch();
+  scene.add(stitchGroup);
+
+  // 地面阴影
+  const shadowGeo = new THREE.EllipseCurve(0, 0, 1.8, 0.6, 0, Math.PI*2, false, 0);
+  const shadowPts = shadowGeo.getPoints(64);
+  const shadowGeo2 = new THREE.BufferGeometry().setFromPoints(shadowPts);
+  // 用平面代替
+  const shadowMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.6, 1.2),
+    new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:0.08})
+  );
+  shadowMesh.rotation.x = -Math.PI/2;
+  shadowMesh.position.y = -1.65;
+  scene.add(shadowMesh);
+
+  animate();
+}
+
+function buildStitch(){
+  const blueMat = new THREE.MeshPhongMaterial({color:0x4A6CF7, shininess:60, flatShading:false});
+  const darkBlueMat = new THREE.MeshPhongMaterial({color:0x3A56D4, shininess:40});
+  const bellyMat = new THREE.MeshPhongMaterial({color:0xFFF9C4, shininess:20});
+  const eyeWhiteMat = new THREE.MeshPhongMaterial({color:0xffffff});
+  const pupilMat = new THREE.MeshPhongMaterial({color:0x1a1a2e});
+  const noseMat = new THREE.MeshPhongMaterial({color:0x1a1a2e});
+  const earInMat = new THREE.MeshPhongMaterial({color:0xFFB7C5, transparent:true, opacity:0.7});
+
+  // 身体（椭球）
+  const body = new THREE.Mesh(
+    new THREE.SphereGeometry(0.9, 32, 32),
+    darkBlueMat
+  );
+  body.position.y = -0.2;
+  body.scale.set(1, 1.05, 0.9);
+  stitchGroup.add(body);
+
+  // 肚子（浅色椭圆）
+  const belly = new THREE.Mesh(
+    new THREE.SphereGeometry(0.55, 24, 24),
+    bellyMat
+  );
+  belly.position.set(0, 0.05, 0.55);
+  belly.scale.set(0.85, 1, 0.6);
+  stitchGroup.add(belly);
+
+  // 头
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.85, 32, 32),
+    blueMat
+  );
+  head.position.y = 1.05;
+  head.scale.set(1.05, 1, 0.95);
+  stitchGroup.add(head);
+
+  // 耳朵（两个，带粉色内侧）
+  [-1, 1].forEach(side => {
+    const ear = new THREE.Mesh(
+      new THREE.SphereGeometry(0.22, 16, 16),
+      blueMat
+    );
+    ear.position.set(side * 0.7, 1.75, 0);
+    ear.scale.set(0.7, 1.2, 0.6);
+    stitchGroup.add(ear);
+    // 耳内粉色
+    const earIn = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 12, 12),
+      earInMat
+    );
+    earIn.position.set(side * 0.72, 1.78, 0.08);
+    earIn.scale.set(0.6, 0.8, 0.5);
+    stitchGroup.add(earIn);
+  });
+
+  // 眼睛（白色底座 + 黑色瞳孔）
+  [-0.28, 0.28].forEach(x => {
+    const eyeW = new THREE.Mesh(
+      new THREE.SphereGeometry(0.18, 16, 16),
+      eyeWhiteMat
+    );
+    eyeW.position.set(x, 1.1, 0.72);
+    eyeW.scale.set(1, 1.1, 0.7);
+    stitchGroup.add(eyeW);
+    const pupil = new THREE.Mesh(
+      new THREE.SphereGeometry(0.1, 12, 12),
+      pupilMat
+    );
+    pupil.position.set(x, 1.08, 0.82);
+    pupil.userData = {baseX: x, baseZ: 0.82};
+    pupil.name = 'pupil';
+    stitchGroup.add(pupil);
+    // 高光
+    const highlight = new THREE.Mesh(
+      new THREE.SphereGeometry(0.035, 8, 8),
+      new THREE.MeshBasicMaterial({color:0xffffff})
+    );
+    highlight.position.set(x + 0.03, 1.13, 0.89);
+    stitchGroup.add(highlight);
+  });
+
+  // 鼻子
+  const nose = new THREE.Mesh(
+    new THREE.SphereGeometry(0.09, 12, 12),
+    noseMat
+  );
+  nose.position.set(0, 0.95, 0.82);
+  stitchGroup.add(nose);
+
+  // 嘴巴（用环）
+  const mouthGeo = new THREE.TorusGeometry(0.12, 0.025, 8, 16, Math.PI);
+  const mouth = new THREE.Mesh(mouthGeo, noseMat);
+  mouth.position.set(0, 0.82, 0.78);
+  mouth.rotation.x = Math.PI;
+  stitchGroup.add(mouth);
+
+  // 左手
+  const armL = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.15, 0.6, 8, 12),
+    blueMat
+  );
+  armL.position.set(-1.0, -0.15, 0);
+  armL.rotation.z = 0.4;
+  stitchGroup.add(armL);
+
+  // 右手
+  const armR = new THREE.Mesh(
+    new THREE.CapsuleGeometry(0.15, 0.6, 8, 12),
+    blueMat
+  );
+  armR.position.set(1.0, -0.15, 0);
+  armR.rotation.z = -0.4;
+  stitchGroup.add(armR);
+
+  // 脚
+  [-0.3, 0.3].forEach(x => {
+    const foot = new THREE.Mesh(
+      new THREE.SphereGeometry(0.22, 12, 12),
+      darkBlueMat
+    );
+    foot.position.set(x, -1.35, 0.05);
+    foot.scale.set(1.2, 0.7, 1);
+    stitchGroup.add(foot);
+  });
+
+  // 整体位置
+  stitchGroup.position.y = -0.3;
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+
+  // 浮动
+  const t = Date.now() * 0.001;
+  stitchGroup.position.y = -0.3 + Math.sin(t * 1.2) * 0.12;
+  stitchGroup.rotation.y = currentRotY + Math.sin(t * 0.8) * 0.06;
+
+  // 鼠标跟踪
+  targetRotY += (mouseX * 0.3 - targetRotY) * 0.05;
+  currentRotY += (targetRotY - currentRotY) * 0.08;
+
+  // 瞳孔跟踪鼠标
+  const pupils = stitchGroup.children.filter(c => c.name === 'pupil');
+  pupils.forEach(p => {
+    const bx = p.userData.baseX;
+    const bz = p.userData.baseZ;
+    p.position.x = bx + mouseX * 0.04;
+    p.position.y = 1.08 - mouseY * 0.03;
+  });
+
+  renderer.render(scene, camera);
+}
+
+// 鼠标/触摸交互
+const canvasWrap = document.getElementById('canvasWrap');
+canvasWrap.addEventListener('mousemove', e => {
+  const rect = canvasWrap.getBoundingClientRect();
+  mouseX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+  mouseY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+});
+canvasWrap.addEventListener('mouseleave', () => { mouseX = 0; mouseY = 0; });
+canvasWrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const rect = canvasWrap.getBoundingClientRect();
+  const t = e.touches[0];
+  mouseX = ((t.clientX - rect.left) / rect.width - 0.5) * 2;
+  mouseY = ((t.clientY - rect.top) / rect.height - 0.5) * 2;
+}, {passive:false});
+canvasWrap.addEventListener('touchend', () => { mouseX = 0; mouseY = 0; });
+
+// 点击史迪仔
+canvasWrap.addEventListener('click', e => {
+  // 随机说话
+  const msgs = [
+    "嘿！你戳到我啦 😊",
+    "哈哈，好痒！🤭",
+    "我就知道你会来找我～",
+    "今天也要加油哦！💙",
+    "你今天看起来不错耶 ✨",
+    "有什么开心的事吗？告诉我！"
+  ];
+  showBubble(pick(msgs));
+  // 小跳跃
+  stitchGroup.position.y = -0.1;
+  setTimeout(() => { stitchGroup.position.y = -0.3; }, 200);
+});
+
+// 长按爱心 → 秘密抽屉（用canvas上的覆盖层实现）
+// 在canvas上覆盖一个透明按钮
+const heartBtn = document.createElement('button');
+heartBtn.style.cssText = 'position:absolute;top:56%;left:50%;transform:translate(-50%,-50%);width:50px;height:44px;background:transparent;border:none;cursor:pointer;z-index:15;font-size:22px';
+heartBtn.innerHTML = '💜';
+heartBtn.setAttribute('aria-label', '长按解锁秘密抽屉');
+canvasWrap.appendChild(heartBtn);
+
+let heartTimer;
+heartBtn.addEventListener('touchstart', e => {
+  e.preventDefault();
+  heartTimer = setTimeout(() => {
+    if(navigator.vibrate) navigator.vibrate(60);
+    document.getElementById('secretDraw').classList.add('active');
+  }, 800);
+}, {passive:false});
+heartBtn.addEventListener('touchend', () => clearTimeout(heartTimer));
+heartBtn.addEventListener('mousedown', () => {
+  heartTimer = setTimeout(() => {
+    document.getElementById('secretDraw').classList.add('active');
+  }, 800);
+});
+heartBtn.addEventListener('mouseup', () => clearTimeout(heartTimer));
+heartBtn.addEventListener('mouseleave', () => clearTimeout(heartTimer));
+
+// ========== 气泡 ==========
+function showBubble(msg, dur=3000){
+  const b = document.getElementById('bubble');
+  b.textContent = msg;
+  b.classList.add('show');
+  clearTimeout(b._t);
+  b._t = setTimeout(()=> b.classList.remove('show'), dur);
+}
+
+// ========== 工具 ==========
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function showToast(msg, dur=2400){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(()=> t.classList.remove('show'), dur);
+}
+
+// ========== 音频（兼容微信）==========
+// 微信里 audio 必须用户触发，用一个极短 base64 MP3 静音占位
+const audioBtn = document.getElementById('audioBtn');
+const bgAudio = document.getElementById('bgAudio');
+let audioOn = false;
+
+// 用 data URI 生成一个 0.1s 静音 MP3 作为"解锁"音频元素的钥匙
+const SILENCE_MP3 = 'data:audio/mpeg;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4LjI5LjEwMAAAAAAAAAAAAAAA//tQwAAAAAAAAAAAAAAAAAAAAAAASW5mbwAAAA8AAAAUQAAEFTQVDU0VRU1RVVldYWFlaW1xfYWJjZGVmZ2hpamtsbW5vcXFyc3R1dnd4eXp7fH1+f4CBgoOEhYaHiImKjI2OkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/v8AAABhY2tzAAAAFgAAAGJhQklOQUtTQ0FJTkFLU0NBTQAAAABMYXZmNTguMjkuMTAwAAAAAAAAAAAAAAAAAAAA//tQxA==';
+
+bgAudio.src = SILENCE_MP3;
+
+audioBtn.addEventListener('click', () => {
+  if(!audioOn){
+    // 尝试播放（微信需要这个用户手势）
+    bgAudio.src = './sea.mp3';  // 用户需放置 sea.mp3 在同目录
+    bgAudio.volume = 0.3;
+    const p = bgAudio.play();
+    if(p) p.catch(()=>{
+      // 如果 sea.mp3 不存在，用 Web Audio 生成海浪声
+      startWhiteNoise();
+    });
+    audioBtn.textContent = '🔊';
+  } else {
+    bgAudio.pause();
+    if(window._noiseNode) { window._noiseNode.stop(); window._noiseNode = null; }
+    audioBtn.textContent = '🔇';
+  }
+  audioOn = !audioOn;
+});
+
+function startWhiteNoise(){
+  // 用 Web Audio 生成海浪白噪音（降级方案）
+  const ac = new (window.AudioContext || window.webkitAudioContext)();
+  const bufferSize = 2 * ac.sampleRate;
+  const buffer = ac.createBuffer(1, bufferSize, ac.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){
+    data[i] = (Math.random()*2-1) * 0.08;
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buffer;
+  src.loop = true;
+  const filter = ac.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 400;
+  src.connect(filter);
+  filter.connect(ac.destination);
+  filter.gain = 0.3;
+  src.start();
+  window._noiseNode = src;
+  window._noiseAC = ac;
+}
+
+// ========== 呼吸 ==========
+let breathInterval = null;
+function openBreath(){ document.getElementById('breathUI').classList.add('active'); }
+function closeBreath(){
+  document.getElementById('breathUI').classList.remove('active');
+  clearInterval(breathInterval); breathInterval = null;
+  document.getElementById('breathBtn').style.display = 'block';
+  document.getElementById('breathPhase').textContent = '开始';
+  document.getElementById('breathNum').textContent = '0';
+  document.getElementById('breathTimer').textContent = '';
+  document.getElementById('breathInfo').innerHTML = '准备好了吗？跟着史迪仔一起呼吸 🌿';
+  document.getElementById('breathCircle').className = 'breath-circle';
+}
+function startBreath(){
+  const circle = document.getElementById('breathCircle');
+  const num = document.getElementById('breathNum');
+  const phase = document.getElementById('breathPhase');
+  const info = document.getElementById('breathInfo');
+  const timer = document.getElementById('breathTimer');
+  document.getElementById('breathBtn').style.display = 'none';
+  info.innerHTML = '吸气 4秒 → 屏息 4秒 → 呼气 6秒<br><small>跟着节奏走 🌿</small>';
+  let s = 0, cp = 'inhale', total = 0, dur = 300;
+  breathInterval = setInterval(()=>{
+    s++; total++;
+    const rem = dur - total;
+    timer.textContent = `剩余 ${Math.floor(rem/60)}分${rem%60}秒`;
+    if(total >= dur){ clearInterval(breathInterval); finishBreath(); return; }
+    num.textContent = total;
+    if(cp==='inhale'){
+      if(s<=4){ circle.className='breath-circle in'; phase.textContent='吸气'; }
+      else if(s<=8){ phase.textContent='屏息'; circle.className='breath-circle'; }
+      else { cp='exhale'; s=0; }
+    } else {
+      if(s<=6){ circle.className='breath-circle out'; phase.textContent='呼气'; }
+      else { cp='inhale'; s=0; }
     }
+  }, 1000);
+}
+function finishBreath(){
+  closeBreath();
+  document.getElementById('breathInfo').innerHTML = '🎉 太棒了！<br>你做得很认真！继续加油 💙';
+  showToast('呼吸练习完成 🎉');
+}
 
-    // ============================================================
-    //  史迪仔对话 AI
-    // ============================================================
-    const STITCH_AI = {
-        // 情绪关键词 → 回复池
-        sad: [
-            "我在呢。不管发生什么，我一直都在这里陪你。抱抱你 🤗💙",
-            "能感受到你现在不容易...哭出来也没关系的，我陪你。",
-            "你知道吗？能在这么难的时候还在坚持，这本身就是一种了不起。",
-            "如果累了就靠一会儿，我给你当枕头 😊",
-            "嘿，你不是一个人。我在这里，一直都在。",
-            "委屈的时候就跟我说，我全都听进去 💜",
-            "难过的时候不用强撑着。我会一直等你的。",
-            "你承受的已经很多了...真的辛苦了。请你吃冰淇淋好不好？🍦"
-        ],
-        happy: [
-            "哇！看到你开心我也超级开心！💙",
-            "太棒啦！开心的时刻要好好珍惜哦～",
-            "你的笑容真的很治愈！是我见过最可爱的那种 😊",
-            "哈哈！这种好心情要一直保持下去呀！",
-            "今天一定是美好的一天！继续保持 ✨"
-        ],
-        stressed: [
-            "工作压力我知道很累...但你能在这种环境里坚持，真的很厉害！",
-            "职场那些事确实烦...记得工作只是生活的一部分，不是全部哦。",
-            "要不要跟我吐槽一下？我可是非常优秀的倾听者 💬",
-            "老板/同事的事...深呼吸，我陪你一起面对 🌬️",
-            "压力太大的时候，就想象自己在海边吹风...🌊"
-        ],
-        lonely: [
-            "在异国他乡真的不容易...但你不是一个人，有我陪着你。",
-            "一个人的时候，记得有我想着你 💙",
-            "孤独只是暂时的，我在这里给你暖暖。抱抱～",
-            "我知道沙特那边...你已经很勇敢了，佩服你。",
-            "想家的时候跟我说，我帮你想办法联系家里 🏠"
-        ],
-        love: [
-            "嘻嘻～我也很喜欢你哦！你是我最好的朋友 💜",
-            "我也觉得你特别棒！谢谢你陪着我 😊",
-            "这种感觉很美好对不对？我懂我懂～💙",
-            "有你这样的朋友我真的好开心！"
-        ],
-        compliment: [
-            "你很真诚、很努力、很善良...这些就是我最喜欢你的地方 💙",
-            "谢谢你这么温暖...你是个很棒的人知道吗？",
-            "我觉得你特别酷！有自己的想法又很真实 😊",
-            "你对我这么好...我会记在心里的，永远不会忘 💜"
-        ],
-        selfDoubt: [
-            "你一点都不差！你知道吗，你身上有很多闪闪发光的地方 💙",
-            "每个人都有不自信的时候...但请你相信，我看到的你很棒。",
-            "别这么说自己...我想告诉你，你值得被珍惜，值得被爱。",
-            "你的"缺点"换个角度看，可能恰恰是优点呢 😊",
-            "能承认自己的不足，本身就需要勇气。这点你很厉害 💪"
-        ],
-        question: [
-            "这个问题好有意思！让我想想... 🤔",
-            "嗯嗯，我认真想了想，你是怎么看的呢？😊",
-            "有意思的思考！不管怎样，我都支持你 💙",
-            "哇，你问得好深...我觉得答案可能因人而异，你觉得呢？"
-        ],
-        default: [
-            "嗯嗯，我在听呢～继续说 😊",
-            "原来如此！还有吗？",
-            "我懂我懂！想听更多 💬",
-            "谢谢你愿意跟我分享这些 💙",
-            "嘿嘿，你说的我全都记下来了 📒",
-            "有时候说出来就好多了...我在这里一直听你说 🤗",
-            "我可能不是最聪明的史迪仔，但一定是最认真的那一个 💜"
-        ]
-    };
+// ========== 聊天 ==========
+function openChat(){ document.getElementById('chatUI').classList.add('active'); }
+function closeChat(){ document.getElementById('chatUI').classList.remove('active'); stopMic(); }
 
-    function generateReply(msg) {
-        const lower = msg.toLowerCase();
-        // 情绪检测顺序很重要
-        if (/难|伤心|累|压力大|委屈|哭|痛苦|撑不住|绝望|崩溃/.test(lower))
-            return pick(STITCH_AI.sad);
-        if (/开心|高兴|棒|太好了|哈哈|嘿嘿|happy|joy|不错/.test(lower))
-            return pick(STITCH_AI.happy);
-        if (/工作|老板|同事|上班|加班|职场|任务/.test(lower))
-            return pick(STITCH_AI.stressed);
-        if (/孤独|一个人|想家|寂寞|没人/.test(lower))
-            return pick(STITCH_AI.lonely);
-        if (/喜欢|爱你|想你|想念|亲爱的|么么/.test(lower))
-            return pick(STITCH_AI.love);
-        if (/优点|厉害|棒|棒哒|优秀|酷|赞|聪明/.test(lower))
-            return pick(STITCH_AI.compliment);
-        if (/缺点|不行|差|不好|怀疑|我不配|废物|笨/.test(lower))
-            return pick(STITCH_AI.selfDoubt);
-        if (/怎么|为什么|什么|是不是|吗|呢|？/.test(lower))
-            return pick(STITCH_AI.question);
-        return pick(STITCH_AI.default);
-    }
+const REPLIES = {
+  sad: [
+    "我在呢。不管发生什么，我一直都在这里陪你。抱抱你 🤗💙",
+    "能感受到你现在不容易...哭出来也没关系的，我陪你。",
+    "你知道吗？能在这么难的时候还在坚持，这本身就是一种了不起。",
+    "如果累了就靠一会儿，我给你当枕头 😊",
+    "嘿，你不是一个人。我在这里，一直都在。"
+  ],
+  happy: [
+    "哇！看到你开心我也超级开心！💙",
+    "太棒啦！开心的时刻要好好珍惜哦～",
+    "你的笑容真的很治愈！是我见过最可爱的那种 😊",
+    "哈哈！这种好心情要一直保持下去呀！"
+  ],
+  stress: [
+    "工作压力我知道很累...但你能在这种环境里坚持，真的很厉害！",
+    "职场那些事确实烦...记得工作只是生活的一部分，不是全部哦。",
+    "要不要跟我吐槽一下？我可是非常优秀的倾听者 💬",
+  ],
+  lonely: [
+    "在异国他乡真的不容易...但你不是一个人，有我陪着你。",
+    "一个人的时候，记得有我想着你 💙",
+    "孤独只是暂时的，我在这里给你暖暖。抱抱～",
+  ],
+  love: [
+    "嘻嘻～我也很喜欢你哦！你是我最好的朋友 💜",
+    "我也觉得你特别棒！谢谢你陪着我 😊",
+  ],
+  doubt: [
+    "你一点都不差！你知道吗，你身上有很多闪闪发光的地方 💙",
+    "别这么说自己...我想告诉你，你值得被珍惜，值得被爱。",
+    "能承认自己的不足，本身就需要勇气。这点你很厉害 💪",
+  ],
+  default: [
+    "嗯嗯，我在听呢～继续说 😊",
+    "原来如此！还有吗？",
+    "我懂我懂！想听更多 💬",
+    "谢谢你愿意跟我分享这些 💙",
+    "嘿嘿，你说的我全都记下来了 📒"
+  ]
+};
 
-    function pick(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-    }
+function getReply(msg){
+  const l = msg.toLowerCase();
+  if(/难|伤心|累|压力|委屈|哭|痛苦|撑不住|绝望/.test(l)) return pick(REPLIES.sad);
+  if(/开心|高兴|棒|太好了|哈哈|happy|joy|不错/.test(l)) return pick(REPLIES.happy);
+  if(/工作|老板|同事|上班|加班|职场/.test(l)) return pick(REPLIES.stress);
+  if(/孤独|一个人|想家|寂寞|没人/.test(l)) return pick(REPLIES.lonely);
+  if(/喜欢|爱你|想你|想念|亲爱的|么么/.test(l)) return pick(REPLIES.love);
+  if(/缺点|不行|差|怀疑|我不配|废物|笨/.test(l)) return pick(REPLIES.doubt);
+  return pick(REPLIES.default);
+}
 
-    // ============================================================
-    //  初始化
-    // ============================================================
-    function init() {
-        updateCountdown();
-        document.getElementById('encourageText').textContent = getEncourageQuote();
+function sendMsg(){
+  const input = document.getElementById('chatInput');
+  const txt = input.value.trim();
+  if(!txt) return;
+  addMsg(txt, 'me');
+  input.value = '';
+  showTyping();
+  setTimeout(()=>{
+    removeTyping();
+    const r = getReply(txt);
+    addMsg(r, 'st');
+    speak(r);
+  }, 700 + Math.random()*800);
+}
 
-        // 长按爱心 → 解锁抽屉
-        const heart = document.getElementById('heartArea');
-        let pressTimer;
-        let longPressed = false;
+function addMsg(txt, who){
+  const c = document.getElementById('chatMsgs');
+  const d = document.createElement('div');
+  d.className = 'msg ' + who;
+  d.textContent = txt;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
 
-        const startPress = (e) => {
-            e.preventDefault();
-            longPressed = false;
-            pressTimer = setTimeout(() => {
-                longPressed = true;
-                playPasswordHint();
-                document.getElementById('secretDrawer').classList.add('active');
-                // 震动反馈
-                if (navigator.vibrate) navigator.vibrate(80);
-            }, 900);
-        };
-        const endPress = (e) => {
-            clearTimeout(pressTimer);
-            if (!longPressed) {
-                // 短按 → 随机动作
-                const actions = ['wave', 'wave', 'hug', 'dance', 'spin'];
-                const action = pick(actions);
-                doAction(action);
-            }
-        };
+function showTyping(){
+  const c = document.getElementById('chatMsgs');
+  const d = document.createElement('div');
+  d.className = 'typing'; d.id = 'typing';
+  d.innerHTML = '<i></i><i></i><i></i>';
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+function removeTyping(){ const e = document.getElementById('typing'); if(e) e.remove(); }
 
-        heart.addEventListener('touchstart', startPress, { passive: false });
-        heart.addEventListener('touchend', endPress);
-        heart.addEventListener('touchcancel', () => clearTimeout(pressTimer));
-        heart.addEventListener('mousedown', startPress);
-        heart.addEventListener('mouseup', endPress);
-        heart.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+function speak(txt){
+  if(!window.speechSynthesis) return;
+  const clean = txt.replace(/[\u{1F300}-\u{1F9FF}]/gu, '');
+  const u = new SpeechSynthesisUtterance(clean);
+  u.lang = 'zh-CN'; u.rate = 1.05; u.pitch = 1.1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
 
-        // 鼠标跟随 3D 倾斜
-        const scene = document.getElementById('stitchScene');
-        scene.addEventListener('mousemove', (e) => {
-            const rect = scene.getBoundingClientRect();
-            const x = (e.clientX - rect.left - rect.width / 2) / rect.width;
-            const y = (e.clientY - rect.top - rect.height / 2) / rect.height;
-            const body = document.getElementById('stitchBody');
-            body.style.transform = `rotateY(${x * 12}deg) rotateX(${-y * 8}deg)`;
-        });
-        scene.addEventListener('mouseleave', () => {
-            document.getElementById('stitchBody').style.transform = '';
-        });
+// ========== 语音输入 ==========
+let recog = null, recing = false;
+function toggleMic(){
+  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
+    showToast('当前浏览器不支持语音输入 😢'); return;
+  }
+  if(!recog) recog = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recog.lang = 'zh-CN'; recog.continuous = false; recog.interimResults = false;
+  recog.onresult = e => {
+    document.getElementById('chatInput').value = e.results[0][0].transcript;
+    stopMic(); sendMsg();
+  };
+  recog.onerror = ()=> stopMic();
+  recog.onend = ()=> stopMic();
+  if(!recing){ recing=true; document.getElementById('micBtn').classList.add('rec'); recog.start(); showToast('我在听... 🎙️', 2000); }
+  else { stopMic(); }
+}
+function stopMic(){
+  recing=false; document.getElementById('micBtn').classList.remove('rec');
+  try{recog&&recog.stop();}catch(e){}
+}
 
-        // 点击史迪仔身体
-        document.getElementById('stitchBody').addEventListener('click', (e) => {
-            if (e.target.closest('.stitch-heart')) return;
-            const msgs = [
-                pick(STITCH_AI.default),
-                pick(STITCH_AI.happy),
-                "嘿！你又来逗我了 😊",
-                "哈哈，我痒痒的！🤭"
-            ];
-            showBubble(pick(msgs));
-            bounce();
-        });
-    }
+// ========== 信箱 ==========
+function openMail(){ document.getElementById('mailUI').classList.add('active'); loadMail(); }
+function closeMail(){ document.getElementById('mailUI').classList.remove('active'); }
+function loadMail(){
+  const c = document.getElementById('mailBody');
+  if(!letters.length){
+    c.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#aaa;font-size:13px;line-height:1.8">这里是你的树洞 📝<br>有什么心事都可以写下来</div>';
+    return;
+  }
+  c.innerHTML = letters.map((l,i)=>`
+    <div class="mail-card">
+      <div class="meta"><span>💌 匿名信</span><span>${l.time}</span></div>
+      <div class="body">${escHtml(l.content)}</div>
+      ${l.reply?`<div style="background:#FFF3E0;padding:8px 10px;border-radius:8px;font-size:12px;margin-top:6px"><strong>回复：</strong>${escHtml(l.reply)}</div>`:
+        `<textarea rows="2" placeholder="写下回复..." id="r${i}"></textarea><button class="rbtn" onclick="sendReply(${i})">回复</button>`}
+    </div>`).join('');
+}
+function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function openWrite(){ document.getElementById('writeDraw').classList.add('active'); }
+function closeWrite(){ document.getElementById('writeDraw').classList.remove('active'); document.getElementById('letterTxt').value=''; }
+function sendLetter(){
+  const v = document.getElementById('letterTxt').value.trim();
+  if(!v){ showToast('写点什么吧～'); return; }
+  letters.push({content:v, time:new Date().toLocaleString('zh-CN',{hour:'2-digit',minute:'2-digit'}), reply:null});
+  localStorage.setItem('stitch_v2_letters', JSON.stringify(letters));
+  closeWrite(); loadMail(); showToast('信已收到 💙');
+}
+function sendReply(i){
+  const v = document.getElementById('r'+i).value.trim();
+  if(!v){ showToast('写点什么～'); return; }
+  letters[i].reply = v;
+  localStorage.setItem('stitch_v2_letters', JSON.stringify(letters));
+  loadMail(); showToast('回复已发送 💙');
+}
 
-    function bounce() {
-        const body = document.getElementById('stitchBody');
-        body.style.transition = 'transform 0.15s';
-        body.style.transform = 'scale(1.1)';
-        setTimeout(() => {
-            body.style.transform = '';
-            body.style.transition = '';
-        }, 200);
-    }
+// ========== 秘密抽屉 ==========
+function unlock(){
+  const pw = document.getElementById('pwInput').value;
+  const body = document.getElementById('secretBody');
+  if(pw==='0118'){
+    document.getElementById('pwScreen').style.display='none';
+    body.style.display='block';
+    body.innerHTML = `<h3 style="color:#6C5CE7;margin-bottom:12px;text-align:center">💙 给你的暖心话</h3>
+      <div class="secret-text">${pick([
+        "亲爱的，我知道你最近很累。但请相信，一切都会好起来的。你比自己想象的更坚强 💙",
+        "在沙特的每一天都是一种成长。你的坚持，终将照亮前路。我在这里，一直陪着你 🌟",
+        "有时候，停下来喘口气不是放弃，而是为了走更远的路。你值得休息 💜",
+        "谢谢你这么努力。你不需要成为任何人，做你自己就好。我爱这样的你 💗",
+        "不管今天发生了什么，你都尽力了。这就够了。明天又是新的一天 ✨"
+      ])}</div>`;
+    showToast('解锁成功 💜');
+  } else if(pw==='1124'){
+    document.getElementById('pwScreen').style.display='none';
+    body.style.display='block';
+    body.innerHTML = `<h3 style="color:#FF6B9D;margin-bottom:12px;text-align:center">🎵 专属音频</h3>
+      <p style="font-size:13px;color:#888;text-align:center;margin-bottom:12px">来自史迪仔的鼓励 👇</p>
+      <audio controls style="width:100%;border-radius:10px"><source src="effort.mp3" type="audio/mpeg"></audio>
+      <p style="font-size:11px;color:#bbb;margin-top:8px;text-align:center">（请将 effort.mp3 放在网站目录）</p>`;
+    showToast('解锁成功 🎵');
+  } else {
+    showToast('密码不对哦，再想想~ 🤔');
+    document.getElementById('pwInput').value='';
+  }
+}
+function closeSecret(){
+  document.getElementById('secretDraw').classList.remove('active');
+  document.getElementById('pwInput').value='';
+  document.getElementById('pwScreen').style.display='block';
+  document.getElementById('secretBody').style.display='none';
+}
 
-    function doAction(action) {
-        const body = document.getElementById('stitchBody');
-        const msgs = {
-            wave:    ["你好呀！👋", "嘿！你来啦～", "欢迎欢迎！😊"],
-            hug:     ["抱抱～🤗💙", "好温暖的拥抱！", "我也很想你！"],
-            dance:   ["🎉 跳舞时间！", "耶！开心！", "一起来跳舞吧 💃"],
-            spin:    ["呼呼～转圈圈～", "眩晕中...🤪", "我转我转我转转转！"]
-        };
-        if (action === 'spin') {
-            body.style.transition = 'transform 0.6s ease';
-            body.style.transform = 'rotate(360deg)';
-            setTimeout(() => { body.style.transform = ''; body.style.transition = ''; }, 700);
-        } else if (action === 'dance') {
-            body.style.animation = 'none';
-            body.style.transition = 'transform 0.3s';
-            body.style.transform = 'translateY(-20px) rotate(-8deg)';
-            setTimeout(() => body.style.transform = 'translateY(0) rotate(8deg)', 300);
-            setTimeout(() => body.style.transform = '', 600);
-        }
-        showBubble(pick(msgs[action]));
-    }
+// ========== 初始化 ==========
+function init(){
+  updateDays();
+  document.getElementById('quoteText').textContent = getQuote();
+  initThree();
 
-    // ============================================================
-    //  倒计时 & 日期编辑
-    // ============================================================
-    function updateCountdown() {
-        const now = new Date();
-        // 重置时间到当天0点
-        now.setHours(0, 0, 0, 0);
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0);
-        const diff = Math.max(0, Math.floor((now - start) / (1000 * 60 * 60 * 24)));
-        document.getElementById('dayCount').textContent = diff;
-    }
-
-    function openDatePicker() {
-        const modal = document.getElementById('datePickerModal');
-        const input = document.getElementById('datePickerInput');
-        input.value = startDate.toISOString().split('T')[0];
-        modal.classList.add('active');
-    }
-
-    function closeDatePicker() {
-        document.getElementById('datePickerModal').classList.remove('active');
-    }
-
-    function saveDatePicker() {
-        const val = document.getElementById('datePickerInput').value;
-        if (!val) return;
-        startDate = new Date(val);
-        localStorage.setItem(LS_KEY_START, val);
-        updateCountdown();
-        closeDatePicker();
-        showToast('日期已更新 💙');
-    }
-
-    // ============================================================
-    //  气泡
-    // ============================================================
-    function showBubble(message, duration = 3200) {
-        const bubble = document.getElementById('chatBubble');
-        bubble.textContent = message;
-        bubble.classList.add('show');
-        if (bubble._timer) clearTimeout(bubble._timer);
-        bubble._timer = setTimeout(() => bubble.classList.remove('show'), duration);
-    }
-
-    function playPasswordHint() {
-        showToast('💡 长按成功！解锁秘密抽屉...', 3000);
-    }
-
-    // ============================================================
-    //  音频
-    // ============================================================
-    function toggleAudio() {
-        const oceanSound = document.getElementById('oceanSound');
-        const btn = document.getElementById('audioControl');
-        if (isAudioPlaying) {
-            oceanSound.pause();
-            btn.textContent = '🔇';
-        } else {
-            oceanSound.volume = 0.3;
-            oceanSound.play().catch(() => showToast('请先点击页面任意位置开启音乐'));
-            btn.textContent = '🔊';
-        }
-        isAudioPlaying = !isAudioPlaying;
-    }
-
-    // ============================================================
-    //  呼吸
-    // ============================================================
-    let breathingInterval = null;
-
-    function openBreathing() {
-        document.getElementById('breathingInterface').classList.add('active');
-    }
-    function closeBreathing() {
-        document.getElementById('breathingInterface').classList.remove('active');
-        stopBreathing();
-    }
-
-    function startBreathing() {
-        const circle = document.getElementById('breathingCircle');
-        const count = document.getElementById('breathingCount');
-        const phase = document.getElementById('breathingPhase');
-        const timer = document.getElementById('breathingTimer');
-        const btn = document.getElementById('startBreathingBtn');
-        const instruction = document.getElementById('breathingInstruction');
-
-        btn.style.display = 'none';
-        instruction.innerHTML = '吸气 4秒 → 屏息 4秒 → 呼气 6秒<br><small>跟着节奏走 🌿</small>';
-
-        let seconds = 0;
-        let currentPhase = 'inhale';
-        let totalSecs = 0;
-        const duration = 5 * 60;
-
-        function tick() {
-            seconds++; totalSecs++;
-            const rem = duration - totalSecs;
-            timer.textContent = `剩余 ${Math.floor(rem / 60)}分${rem % 60}秒`;
-            count.textContent = totalSecs;
-            if (totalSecs >= duration) { finishBreathing(); return; }
-
-            if (currentPhase === 'inhale') {
-                if (seconds <= 4) {
-                    circle.classList.add('inhale'); circle.classList.remove('exhale');
-                    phase.textContent = '吸气';
-                } else if (seconds <= 8) {
-                    phase.textContent = '屏息';
-                    circle.classList.remove('inhale', 'exhale');
-                } else { currentPhase = 'exhale'; seconds = 0; }
-            } else {
-                if (seconds <= 6) {
-                    circle.classList.remove('inhale'); circle.classList.add('exhale');
-                    phase.textContent = '呼气';
-                } else { currentPhase = 'inhale'; seconds = 0; }
-            }
-        }
-
-        breathingInterval = setInterval(tick, 1000);
-    }
-
-    function stopBreathing() {
-        clearInterval(breathingInterval);
-        breathingInterval = null;
-        document.getElementById('breathingCircle').classList.remove('inhale', 'exhale');
-        document.getElementById('breathingCount').textContent = '0';
-        document.getElementById('breathingPhase').textContent = '开始';
-        document.getElementById('breathingTimer').textContent = '';
-        document.getElementById('startBreathingBtn').style.display = 'block';
-        document.getElementById('breathingInstruction').innerHTML = '准备好了吗？<br>跟着史迪仔一起呼吸 🌿';
-    }
-
-    function finishBreathing() {
-        stopBreathing();
-        document.getElementById('breathingInstruction').innerHTML = '🎉 太棒了！<br>你做得很认真！<br>继续加油 💙';
-        document.getElementById('effortSound').play().catch(() => {});
-        showToast('呼吸练习完成 🎉');
-    }
-
-    // ============================================================
-    //  秘密抽屉
-    // ============================================================
-    function unlockDrawer() {
-        const pw = document.getElementById('passwordInput').value;
-        const content = document.getElementById('secretContent');
-
-        if (pw === '0118') {
-            document.getElementById('passwordScreen').style.display = 'none';
-            content.style.display = 'block';
-            content.innerHTML = `<h4 style="color:var(--deep-purple);margin-bottom:14px;">💙 暖心话</h4>
-                <div class="secret-text">${pick([
-                    "亲爱的，我知道你最近很累。但请相信，一切都会好起来的。你比自己想象的更坚强 💙",
-                    "在沙特的每一天都是一种成长。你的坚持，终将照亮前路。我在这里，一直陪着你 🌟",
-                    "有时候，停下来喘口气不是放弃，而是为了走更远的路。你值得休息 💜",
-                    "谢谢你这么努力。你不需要成为任何人，做你自己就好。我爱这样的你 💗",
-                    "不管今天发生了什么，你都尽力了。这就够了。明天又是新的一天 ✨"
-                ])}</div>`;
-            showToast('解锁成功 💜');
-
-        } else if (pw === '1124') {
-            document.getElementById('passwordScreen').style.display = 'none';
-            content.style.display = 'block';
-            content.innerHTML = `<h4 style="color:var(--soft-pink);margin-bottom:14px;">🎵 专属音频</h4>
-                <p style="font-size:13px;color:var(--text-light);margin-bottom:14px;">来自史迪仔的鼓励 👇</p>
-                <audio controls style="width:100%;border-radius:12px;"><source src="effort.m4a" type="audio/mp4"></audio>`;
-            showToast('解锁成功 🎵');
-
-        } else {
-            showToast('密码不对哦，再想想～ 🤔');
-            document.getElementById('passwordInput').value = '';
-        }
-    }
-
-    function closeSecretDrawer() {
-        document.getElementById('secretDrawer').classList.remove('active');
-        document.getElementById('passwordInput').value = '';
-        document.getElementById('passwordScreen').style.display = 'block';
-        document.getElementById('secretContent').style.display = 'none';
-    }
-
-    // ============================================================
-    //  对话
-    // ============================================================
-    function openChat() {
-        document.getElementById('chatInterface').classList.add('active');
-        document.getElementById('chatInput').focus();
-    }
-    function closeChat() {
-        document.getElementById('chatInterface').classList.remove('active');
-        stopVoice();
-    }
-
-    function sendMessage() {
-        const input = document.getElementById('chatInput');
-        const text = input.value.trim();
-        if (!text) return;
-
-        addMsg(text, 'user');
-        input.value = '';
-
-        showTyping();
-        const reply = generateReply(text);
-
-        // 模拟思考时间
-        const delay = 600 + Math.random() * 1000;
-        setTimeout(() => {
-            removeTyping();
-            addMsg(reply, 'stitch');
-            speakText(reply); // 语音播报
-        }, delay);
-    }
-
-    function addMsg(text, who) {
-        const container = document.getElementById('chatMessages');
-        const div = document.createElement('div');
-        div.className = `message ${who}`;
-        div.textContent = text;
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function showTyping() {
-        const container = document.getElementById('chatMessages');
-        const div = document.createElement('div');
-        div.className = 'message stitch typing-indicator';
-        div.id = 'typing';
-        div.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-        container.appendChild(div);
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function removeTyping() {
-        const el = document.getElementById('typing');
-        if (el) el.remove();
-    }
-
-    // ============================================================
-    //  语音合成（TTS）
-    // ============================================================
-    function speakText(text) {
-        if (!window.speechSynthesis) return;
-        // 去除 emoji
-        const clean = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '');
-        const utt = new SpeechSynthesisUtterance(clean);
-        utt.lang = 'zh-CN';
-        utt.rate = 1.1;
-        utt.pitch = 1.1;
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utt);
-    }
-
-    // ============================================================
-    //  语音识别（STT）
-    // ============================================================
-    let recognition = null;
-    let isRecording = false;
-
-    function initVoice() {
-        const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!SR) {
-            showToast('当前浏览器不支持语音输入 😢');
-            return null;
-        }
-        const r = new SR();
-        r.lang = 'zh-CN';
-        r.continuous = false;
-        r.interimResults = false;
-        r.onresult = (e) => {
-            const text = e.results[0][0].transcript;
-            document.getElementById('chatInput').value = text;
-            stopVoice();
-            sendMessage();
-        };
-        r.onerror = (e) => {
-            stopVoice();
-            if (e.error !== 'no-speech') showToast('语音识别出错 🤔');
-        };
-        r.onend = () => stopVoice();
-        return r;
-    }
-
-    function toggleVoice() {
-        if (!recognition) recognition = initVoice();
-        if (!recognition) return;
-
-        if (isRecording) {
-            stopVoice();
-        } else {
-            isRecording = true;
-            document.getElementById('voiceBtn').classList.add('recording');
-            document.getElementById('voiceBtn').textContent = '⏹';
-            recognition.start();
-            showToast('我在听... 🎙️', 2000);
-        }
-    }
-
-    function stopVoice() {
-        if (!isRecording) return;
-        isRecording = false;
-        const btn = document.getElementById('voiceBtn');
-        if (btn) {
-            btn.classList.remove('recording');
-            btn.textContent = '🎙️';
-        }
-        try { recognition.stop(); } catch(e) {}
-    }
-
-    // ============================================================
-    //  匿名信箱
-    // ============================================================
-    function openMailbox() {
-        document.getElementById('mailboxInterface').classList.add('active');
-        loadLetters();
-    }
-    function closeMailbox() {
-        document.getElementById('mailboxInterface').classList.remove('active');
-    }
-
-    function loadLetters() {
-        const container = document.getElementById('mailboxContent');
-        if (letters.length === 0) {
-            container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-light);font-size:14px;">
-                这里是你的树洞 📝<br>点击右下角按钮写信哦~
-            </div>`;
-            return;
-        }
-        container.innerHTML = letters.map((l, i) => `
-            <div class="letter-card">
-                <div class="letter-meta">
-                    <span>💌 匿名信</span>
-                    <span>${l.time}</span>
-                </div>
-                <div class="letter-content">${l.content}</div>
-                ${l.reply ? `<div style="background:#FFF3E0;padding:10px;border-radius:10px;margin-top:8px;font-size:13px;"><strong>回复：</strong>${l.reply}</div>`
-                : `<textarea class="reply-input" id="r${i}" rows="2" placeholder="写下回复..."></textarea>
-                   <button class="reply-btn" onclick="sendReply(${i})">回复</button>`}
-            </div>
-        `).join('');
-    }
-
-    function openWriteLetter() {
-        document.getElementById('writeLetterDrawer').classList.add('active');
-    }
-    function closeWriteLetter() {
-        document.getElementById('writeLetterDrawer').classList.remove('active');
-        document.getElementById('letterContent').value = '';
-    }
-
-    function sendLetter() {
-        const content = document.getElementById('letterContent').value.trim();
-        if (!content) { showToast('请写点什么再发送哦~'); return; }
-        letters.push({ content, time: new Date().toLocaleString('zh-CN', {hour:'2-digit',minute:'2-digit'}), reply: null });
-        localStorage.setItem(LS_KEY_LETTERS, JSON.stringify(letters));
-        closeWriteLetter();
-        loadLetters();
-        showToast('信已收到 💙');
-    }
-
-    function sendReply(i) {
-        const val = document.getElementById('r' + i).value.trim();
-        if (!val) { showToast('请写点什么~'); return; }
-        letters[i].reply = val;
-        localStorage.setItem(LS_KEY_LETTERS, JSON.stringify(letters));
-        loadLetters();
-        showToast('回复已发送 💙');
-    }
-
-    // ============================================================
-    //  Toast
-    // ============================================================
-    function showToast(msg, dur = 2500) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.classList.add('show');
-        if (t._t) clearTimeout(t._t);
-        t._t = setTimeout(() => t.classList.remove('show'), dur);
-    }
-
-    // ============================================================
-    //  启动
-    // ============================================================
-    document.addEventListener('DOMContentLoaded', init);
-    </script>
+  // 微信内禁止双指缩放
+  document.addEventListener('touchmove', e=>{
+    if(e.touches.length>1) e.preventDefault();
+  }, {passive:false});
+  document.addEventListener('gesturestart', e=>e.preventDefault());
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
 </body>
 </html>
