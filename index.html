@@ -259,6 +259,8 @@ function openMail(){document.getElementById('mailFS').classList.add('active');lo
 function closeMail(){document.getElementById('mailFS').classList.remove('active')}
 function sendMail(){var i=document.getElementById('mailInput'),v=i.value.trim();if(!v){st('写点什么吧～');return}var ms=JSON.parse(localStorage.getItem('sd_mail')||'[]');ms.push({text:v,time:new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}),reply:'史迪仔已收到你的信件 💙'});localStorage.setItem('sd_mail',JSON.stringify(ms));i.value='';loadMails();st('信已送出 💌')}
 function loadMails(){var c=document.getElementById('mailList'),ms=JSON.parse(localStorage.getItem('sd_mail')||'[]');if(!ms.length){c.innerHTML='<div style="text-align:center;padding:30px;color:#888;font-size:13px">还没有留言<br>写下第一封吧 📝</div>';return}c.innerHTML=ms.map(function(m,i){return'<div class="mail-item"><div class="mt"><span>📩 第'+(i+1)+'封</span><span>'+m.time+'</span></div><div class="mc">'+escHtml(m.text)+'</div><div class="mr">💙 '+escHtml(m.reply)+'</div></div>'}).join('')}
+// 跨标签页信箱同步
+window.addEventListener('storage',function(e){if(e.key==='sd_mail'){var m=document.getElementById('mailFS');if(m&&m.classList.contains('active'))loadMails()}})
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 // === Init ===
 window.addEventListener('load',function(){init3D();st('欢迎来到史迪仔24Ai 💙')});
