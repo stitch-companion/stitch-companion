@@ -309,7 +309,13 @@ body{
 <!-- 音频（用 base64 内嵌一个极短静音 MP3 作为占位，实际音频由用户替换） -->
 <audio id="bgAudio" loop preload="none"></audio>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="./three.min.js"></script>
+<script>
+// 如果本地 three.min.js 加载失败，使用备用 CDN
+if (typeof THREE === 'undefined') {
+  document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>');
+}
+</script>
 <script>
 // ========== 配置 ==========
 const LS_KEY = 'stitch_v2_start';
