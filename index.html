@@ -226,18 +226,34 @@ function init3D(){
   scene.add(new THREE.DirectionalLight(0x88ccff,.3).position.set(-3,2,-2));
   raycaster=new THREE.Raycaster(); mouse=new THREE.Vector2();
 
-  // 加载模型
-  const l=new THREE.GLTFLoader();
-  l.load('https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/default.glb',
-    gltf=>{
-      model=gltf.scene; model.position.y=0;
-      // 打印模型结构
-      model.traverse(c=>{if(c.isMesh){c.castShadow=true;c.receiveShadow=true;console.log('Mesh:',c.name,c.position.y)}});
-      scene.add(model); showToast('🎉 3D 史迪仔加载成功！');
-    },
-    xhr=>{if(xhr.total>0){const p=Math.floor(xhr.loaded/xhr.total*100);if(p%25===0)console.log(p+'%')}},
-    err=>{console.error(err);showToast('模型加载失败')}
-  );
+  // 加载指示器
+  const loadingDiv=document.createElement('div');
+  loadingDiv.id='modelLoading';
+  loadingDiv.style.cssText='position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,0.5);border-radius:15px;z-index:10;';
+  loadingDiv.innerHTML='<div style="font-size:40px;margin-bottom:10px">🐾</div><div style="width:80%;max-width:200px;height:8px;background:#E0E0E0;border-radius:4px;overflow:hidden"><div id="progBar" style="width:0%;height:100%;background:linear-gradient(90deg,#6C5CE7,#A29BFE);border-radius:4px;transition:width 0.3s"></div></div><div style="font-size:12px;color:#888;margin-top:8px">加载3D史迪仔中...<br><span id="progText" style="font-size:11px">可能需要30-60秒(75MB)</span></div>';
+  document.getElementById('modelWrap').appendChild(loadingDiv);
+
+  // 模型 URL 列表（多个备选）
+  const modelURLs=[
+    'https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/default.glb',
+    'https://stitch-companion.github.io/stitch-companion/default.glb'
+  ];
+
+  function tryLoad(idx){
+    if(idx>=modelURLs.length){document.getElementById('modelLoading').innerHTML='<div style="font-size:40px;margin-bottom:10px">🐾</div><div style="font-size:13px;color:#888">模型加载失败，<br>请检查网络后刷新页面</div>';return}
+    const l=new THREE.GLTFLoader();
+    l.load(modelURLs[idx],
+      gltf=>{
+        const ml=document.getElementById('modelLoading');if(ml)ml.remove();
+        model=gltf.scene; model.position.y=0;
+        model.traverse(c=>{if(c.isMesh){c.castShadow=true;c.receiveShadow=true;console.log('Mesh:',c.name,c.position.y)}});
+        scene.add(model); showToast('🎉 3D 史迪仔加载成功！',3000);
+      },
+      xhr=>{if(xhr.total>0){const p=Math.floor(xhr.loaded/xhr.total*100);document.getElementById('progBar').style.width=p+'%';document.getElementById('progText').textContent=p+'% - 需要30-60秒(75MB)';}},
+      err=>{console.error('URL '+idx+' 失败:',err);tryLoad(idx+1)}
+    );
+  }
+  tryLoad(0);
 
   // 点击 canvas → 射线检测
   canvas.addEventListener('click',onModelClick);
