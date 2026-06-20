@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -98,20 +98,24 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;backg
 </style>
 </head>
 <body>
-<div class="sky"><div class="sun"></div><div class="cloud cloud1">☁️</div><div class="cloud cloud2">☁️</div></div>
+<canvas id="waveCanvas" style="position:fixed;top:0;left:0;width:100%;height:65%;z-index:0;pointer-events:none"></canvas><div class="sky"><div class="sun"></div><div class="cloud cloud1">☁️</div><div class="cloud cloud2">☁️</div></div>
 <div class="sea"><div class="wave"></div><div class="wave wave2"></div></div>
 <div class="stars" id="stars"></div>
 <button class="audio-btn" id="audioBtn">🔇</button>
 <!-- 呼吸和鼓励音频 -->
 <audio id="breatheAudio" preload="auto" src="https://stitch-companion.github.io/stitch-companion/breathe.m4a"></audio>
 <audio id="effortAudio" preload="auto" src="https://stitch-companion.github.io/stitch-companion/effort.m4a"></audio>
-<audio id="bgm1" preload="auto" loop src="https://stitch-companion.github.io/stitch-companion/%E6%89%98%E5%8F%A3%E7%A7%801.mp3"></audio>
-<audio id="bgm2" preload="auto" loop src="https://stitch-companion.github.io/stitch-companion/%E6%89%98%E5%8F%A3%E7%A7%802.mp3"></audio>
+<audio id="bgm1" preload="auto" loop src="https://stitch-companion.github.io/stitch-companion/bgm1.mp3"></audio>
+<audio id="bgm2" preload="auto" loop src="https://stitch-companion.github.io/stitch-companion/bgm2.mp3"></audio>
 <audio id="audio11241" preload="auto" src="https://stitch-companion.github.io/stitch-companion/1124%E9%9F%B3%E9%A2%911.m4a"></audio>
 <audio id="audio11242" preload="auto" src="https://stitch-companion.github.io/stitch-companion/1124%E9%9F%B3%E9%A2%912.m4a"></audio>
 <audio id="audio11243" preload="auto" src="https://stitch-companion.github.io/stitch-companion/1124%E9%9F%B3%E9%A2%913.m4a"></audio>
 
 <div class="main">
+  <div class="card" id="dayCard" style="background:rgba(255,255,255,.93);backdrop-filter:blur(12px);border-radius:16px;padding:10px 18px;margin-bottom:10px;box-shadow:0 4px 15px rgba(0,0,0,.08);text-align:center;width:100%;max-width:320px;position:relative;z-index:20;cursor:pointer" onclick="editSettings()">
+    <div style="font-size:13px;color:#636E72">陪你在 <span id="locationText" style="color:#6C5CE7;font-weight:700;cursor:pointer" onclick="event.stopPropagation();editLocation()">沙特</span> 的第 <span id="dayCount" style="color:#5B9BD5;font-weight:800;font-size:20px">0</span> 天</div>
+    <div id="quoteLine" style="font-size:12px;color:#FF6B9D;margin-top:3px">今天的你也很努力，每一步都算数 💙</div>
+  </div>
   <div class="model-wrap" id="modelWrap">
     <canvas id="modelCanvas" width="480" height="600"></canvas>
   </div>
@@ -184,6 +188,17 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;backg
   </div>
 </div>
 <div class="toast" id="toast"></div>
+<!-- 设置弹窗 -->
+<div class="draw" id="settingsDraw" style="z-index:700">
+  <div class="inner"><button class="x" onclick="closeSettings()">×</button>
+    <h3>⚙️ 设置</h3>
+    <div style="font-size:13px;color:#888;margin-bottom:12px;line-height:1.7">
+      <div style="margin-bottom:10px"><label style="font-weight:600;color:#2D3436">📍 所在地</label><input id="locInput" class="pw" style="text-align:left;letter-spacing:0;font-size:14px;margin-top:5px" placeholder="输入地点"></div>
+      <div><label style="font-weight:600;color:#2D3436">📅 起始日期</label><input type="date" id="dateInput2" class="pw" style="text-align:left;letter-spacing:0;font-size:14px;margin-top:5px"></div>
+    </div>
+    <button class="ub" onclick="saveSettings()">保存</button>
+  </div>
+</div>
 
 <script src="./three.min.js"></script>
 <script src="./GLTFLoader.js"></script>
@@ -264,8 +279,29 @@ function loadMails(){var c=document.getElementById('mailList'),ms=JSON.parse(loc
 // 跨标签页信箱同步
 window.addEventListener('storage',function(e){if(e.key==='sd_mail'){var m=document.getElementById('mailFS');if(m&&m.classList.contains('active'))loadMails()}})
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+// === 动态波浪背景 ===
+var wc=document.getElementById("waveCanvas");var wctx=wc.getContext("2d");var ww=0,wh=0;function resizeW(){ww=wc.width=wc.offsetWidth*window.devicePixelRatio;wh=wc.height=wc.offsetHeight*window.devicePixelRatio;wctx.scale(window.devicePixelRatio,window.devicePixelRatio)}resizeW();window.addEventListener("resize",resizeW);var t=0;function drawWaves(){if(!wc||!wctx)return;requestAnimationFrame(drawWaves);t+=.01;var w=wc.offsetWidth,h=wc.offsetHeight;wctx.clearRect(0,0,w,h);for(var i=0;i<3;i++){wctx.beginPath();wctx.moveTo(0,h);for(var x=0;x<=w;x+=5){var y=h-80+Math.sin(x*.01+t+i*1.5)*20+Math.sin(x*.02+t*1.3+i*2)*10+Math.sin(x*.003+t*.7)*5;wctx.lineTo(x,y)}wctx.lineTo(w,h);wctx.closePath();wctx.fillStyle="rgba(255,255,255,"+(.03+i*.02)+")";wctx.fill()}}drawWaves()
+// === 陪伴天数 + 励志语 + 设置 ===
+var QUOTES=["每一步都算数 💙","阳光总在风雨后 🌈","坚持就是胜利 ✨","你比想象中更强大 💪","累了就歇会儿 🌿","每一天都是新的开始 🌸","小小的进步也是进步 👏","谢谢你的坚持 🌟","你值得被爱 💗","未来会更好 🦋","你是独一无二的 🌻","今天也要微笑哦 😊","你的努力时间都看得到 ⏰","慢慢来，比较快 🐢","做自己的光 ✨"];
+function updateDay(){
+  var d=JSON.parse(localStorage.getItem('sd_settings')||'{"loc":"沙特","date":"'+new Date().toISOString().slice(0,10)+'"}');
+  document.getElementById('locationText').textContent=d.loc;
+  var s=new Date(d.date);s.setHours(0,0,0,0);
+  var n=new Date();n.setHours(0,0,0,0);
+  var diff=Math.max(0,Math.floor((n-s)/86400000));
+  document.getElementById('dayCount').textContent=diff;
+}
+function updateQuote(){
+  var idx=Math.floor(new Date().getTime()/86400000)%QUOTES.length;
+  document.getElementById('quoteLine').textContent='今天的你也很努力，'+QUOTES[idx];
+}
+function editSettings(){document.getElementById('settingsDraw').classList.add('active');var d=JSON.parse(localStorage.getItem('sd_settings')||'{"loc":"沙特","date":"'+new Date().toISOString().slice(0,10)+'"}');document.getElementById('locInput').value=d.loc;document.getElementById('dateInput2').value=d.date}
+function closeSettings(){document.getElementById('settingsDraw').classList.remove('active')}
+function saveSettings(){var loc=document.getElementById('locInput').value.trim()||'沙特';var dt=document.getElementById('dateInput2').value;localStorage.setItem('sd_settings',JSON.stringify({loc:loc,date:dt}));updateDay();closeSettings();st('已保存 ✅')}
+function editLocation(){var d=JSON.parse(localStorage.getItem('sd_settings')||'{"loc":"沙特","date":"'+new Date().toISOString().slice(0,10)+'"}');var l=prompt('输入所在地：',d.loc);if(l&&l.trim()){d.loc=l.trim();localStorage.setItem('sd_settings',JSON.stringify(d));updateDay()}}
 // === Init ===
-window.addEventListener('load',function(){init3D();st('欢迎来到史迪仔24Ai 💙')});
+window.addEventListener('load',function(){init3D();updateDay();updateQuote();st('欢迎来到史迪仔24Ai 💙')});
 </script>
 </body>
 </html>
+
