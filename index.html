@@ -84,6 +84,16 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;backg
 .long-content h2{font-size:24px;color:#6C5CE7;margin-bottom:10px}
 .long-content p{font-size:15px;color:#2D3436;line-height:1.8}
 @keyframes hb{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.15)}}
+.mail-bg{background:linear-gradient(180deg,#FFF8E1,#FFECB3 100%)}
+.mail-bd{flex:1;display:flex;flex-direction:column;padding:16px;overflow-y:auto}
+.mail-write{margin-bottom:16px}
+.mail-write textarea{width:100%;border:2px solid #E0E0E0;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;resize:none;outline:none;line-height:1.7;transition:border-color .2s}
+.mail-write textarea:focus{border-color:#6C5CE7}
+.mail-list{flex:1;overflow-y:auto}
+.mail-item{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 3px 10px rgba(0,0,0,.06)}
+.mail-item .mt{font-size:11px;color:#999;display:flex;justify-content:space-between;margin-bottom:6px}
+.mail-item .mc{font-size:14px;color:#2D3436;line-height:1.7}
+.mail-item .mr{font-size:13px;color:#6C5CE7;padding:8px 10px;background:#F3E5F5;border-radius:8px;margin-top:8px}}
 @media(max-width:380px){.model-wrap{width:200px;height:260px}.chat-box{width:260px;height:350px;right:10px;bottom:10px}}
 </style>
 </head>
@@ -92,6 +102,12 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;backg
 <div class="sea"><div class="wave"></div><div class="wave wave2"></div></div>
 <div class="stars" id="stars"></div>
 <button class="audio-btn" id="audioBtn">🔇</button>
+<!-- 呼吸和鼓励音频 -->
+<audio id="breatheAudio" preload="auto" src="https://stitch-companion.github.io/stitch-companion/breathe.m4a"></audio>
+<audio id="effortAudio" preload="auto" src="https://stitch-companion.github.io/stitch-companion/effort.m4a"></audio>
+<audio id="audio11241" preload="auto" src="https://stitch-companion.github.io/stitch-companion/1124%E9%9F%B3%E9%A2%911.m4a"></audio>
+<audio id="audio11242" preload="auto" src="https://stitch-companion.github.io/stitch-companion/1124%E9%9F%B3%E9%A2%912.m4a"></audio>
+<audio id="audio11243" preload="auto" src="https://stitch-companion.github.io/stitch-companion/1124%E9%9F%B3%E9%A2%913.m4a"></audio>
 
 <div class="main">
   <div class="model-wrap" id="modelWrap">
@@ -102,6 +118,7 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;backg
   <div class="btns">
     <button class="btn-icon" style="background:#00B894;color:#fff" onclick="openBreath()">🌬️</button>
     <button class="btn-icon" style="background:#FFB347;color:#fff" onclick="openEx()">🏃</button>
+    <button class="btn-icon" style="background:#6C5CE7;color:#fff" onclick="openMail()">📪</button>
   </div>
   <div class="model-hint" id="modelHint">加载3D史迪仔中... <span id="loadPct">0%</span></div>
 </div>
@@ -126,11 +143,21 @@ body{font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei',sans-serif;backg
 <div class="fs ex-bg" id="exFS">
   <div class="fs-hd"><h3>🏃 运动陪伴</h3><button class="fs-close" onclick="closeEx()">×</button></div>
   <div class="ex-bd">
+    <img src="stitch.png" style="width:80px;height:80px;border-radius:20px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,.15);flex-shrink:0">
     <div class="ex-emoji" id="exEmoji">🤸</div>
     <div class="ex-title" id="exTitle">仰卧起坐</div>
     <div class="ex-desc" id="exDesc">跟着史迪仔一起运动！💪</div>
     <div><button class="ex-switch" onclick="switchEx(0)">🤸 仰卧起坐</button><button class="ex-switch" onclick="switchEx(1)">🏓 乒乓球</button><button class="ex-switch" onclick="switchEx(2)">🧘 消气操</button></div>
     <button class="breath-btn" style="margin-top:10px;" onclick="closeEx()">完成 ✔</button>
+  </div>
+</div>
+
+<!-- 邮箱 -->
+<div class="fs mail-bg" id="mailFS">
+  <div class="fs-hd"><h3>📪 匿名信箱</h3><button class="fs-close" onclick="closeMail()">×</button></div>
+  <div class="mail-bd">
+    <div class="mail-write"><textarea id="mailInput" rows="3" placeholder="写点什么吧..."></textarea><button class="breath-btn" style="background:#6C5CE7;width:100%" onclick="sendMail()">发送 💌</button></div>
+    <div class="mail-list" id="mailList"><div style="text-align:center;padding:30px;color:#888;font-size:13px">还没有留言<br>写下第一封吧 📝</div></div>
   </div>
 </div>
 
@@ -189,16 +216,16 @@ function init3D(){
 function a(){requestAnimationFrame(a);if(mo){var t=Date.now()*.001;mo.position.y=Math.sin(t*.8)*.08;mo.rotation.y=Math.sin(t*.5)*.1}re.render(sc,ca)}
 // === Chat ===
 var co=false;function toggleChat(){co=!co;document.getElementById('chatBox').classList.toggle('active',co);document.getElementById('chatTg').classList.toggle('hidden',co)}
-const RR={s:["哭什么哭！😤 好了好了，我知道你累的。","不准说自己不行！😠 已经是勇士了。抱一下🤗"],h:["哟～心情不错？😏 干得漂亮！","笑得这么开心😋"],w:["又加班？！😠 劳逸结合！我陪你吐槽！","压力大是吧😤 放松点～"],d:["嗯嗯继续😊","原来如此😏","我懂我懂✨"]};
+const RR={s:["嗷呜～你咋又难过了！😤 哼！不准哭！... 不过嘛... 我知道你很努力了，抱一个啦～🤗","喂喂喂！(挥手) 不准说自己不行！😠 你可是能跑到沙特上班的勇士诶！I'm so proud of you! 💙"],h:["Yo～今天心情不错嘛～😏 是不是偷偷摸鱼了？嘿嘿 干得漂亮！keep going! ✨","WOW! 笑得这么灿烂！(围着你转圈) 今天一定发生了什么好事对不对？Tell me tell me! 🎉"],w:["切～又加班？！😤 你老板是不是拿你当超人在用啊！mama mia... 劳逸结合懂不懂！我陪你吐槽！","压力山大是吧？(拍拍你) 听好了：你已经做得很好了。Really! 放松点，天又不会塌～😊"],d:["嗯哼～我在听哦！😎 继续继续～","Oho～有意思！(竖起耳朵) 多说说嘛～😏","懂懂懂！totally get it! ✨ 还有吗？"]};
 function getR(m){var l=m.toLowerCase();if(/难|伤心|累|压力|委屈|哭/.test(l))return RR.s[Math.random()*RR.s.length|0];if(/开心|高兴|棒|哈哈|不错/.test(l))return RR.h[Math.random()*RR.h.length|0];if(/工作|老板|加班|职场/.test(l))return RR.w[Math.random()*RR.w.length|0];return RR.d[Math.random()*RR.d.length|0]}
 function sendMsg(){var i=document.getElementById('chatInput'),m=i.value.trim();if(!m)return;addM(m,'me');i.value='';setTimeout(function(){addM(getR(m),'st')},500+Math.random()*400)}
 function addM(t,w){var c=document.getElementById('chatMsgs'),d=document.createElement('div');d.className='msg '+w;d.textContent=t;c.appendChild(d);c.scrollTop=c.scrollHeight}
 function showBubble(t){var b=document.createElement('div');b.textContent=t;b.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.8);color:#fff;padding:12px 20px;border-radius:16px;font-size:14px;z-index:999;transition:opacity .3s';document.body.appendChild(b);setTimeout(function(){b.style.opacity='0';setTimeout(function(){b.remove()},300)},2000)}
 // === Breathing ===
 var bInt=null,bP=false,bT={};function openBreath(){document.getElementById('breathFS').classList.add('active');document.getElementById('breathTip').textContent='准备好了吗？🌿'}
-function closeBreath(){clearInterval(bInt);bP=false;document.getElementById('breathFS').classList.remove('active')}
-function startBreath(){document.getElementById('breathStart').style.display='none';document.getElementById('breathPause').style.display='inline-block';bP=false;bT={dur:300,s:0,cp:'inhale',total:0};var ci=document.getElementById('bcircle'),nu=document.getElementById('bnum'),ph=document.getElementById('bph'),tm=document.getElementById('breathTimer');bInt=setInterval(function(){bT.s++;bT.total++;if(bP)return;var r=bT.dur-bT.total;tm.textContent='剩余 '+(Math.floor(r/60)|0)+'分'+r%60+'秒';if(bT.total>=bT.dur){clearInterval(bInt);closeBreath();st('🎉 深呼吸完成！')}else{nu.textContent=bT.total;if(bT.cp==='inhale'){if(bT.s<=4){ci.className='bcircle in';ph.textContent='吸气'}else if(bT.s<=8){ph.textContent='屏息';ci.className='bcircle'}else{bT.cp='exhale';bT.s=0}}else{if(bT.s<=6){ci.className='bcircle out';ph.textContent='呼气'}else{bT.cp='inhale';bT.s=0}}}},1000)}
-function pauseBreath(){bP=!bP;document.getElementById('breathPause').textContent=bP?'▶ 继续':'⏸ 暂停'}
+function closeBreath(){clearInterval(bInt);bP=false;var ba=document.getElementById('breatheAudio');if(!ba.paused){ba.pause();ba.currentTime=0}document.getElementById('breathFS').classList.remove('active')}
+function startBreath(){document.getElementById('breathStart').style.display='none';document.getElementById('breathPause').style.display='inline-block';bP=false;bT={dur:300,s:0,cp:'inhale',total:0};var ci=document.getElementById('bcircle'),nu=document.getElementById('bnum'),ph=document.getElementById('bph'),tm=document.getElementById('breathTimer'),ba=document.getElementById('breatheAudio');ba.currentTime=0;ba.play();bInt=setInterval(function(){bT.s++;bT.total++;if(bP){ba.pause();return}else if(ba.paused){ba.play()}var r=bT.dur-bT.total;tm.textContent='剩余 '+(Math.floor(r/60)|0)+'分'+r%60+'秒';if(bT.total>=bT.dur){clearInterval(bInt);ba.pause();ba.currentTime=0;var ea=document.getElementById('effortAudio');ea.play();setTimeout(function(){closeBreath();st('🎉 深呼吸完成！你很棒！💙')},ea.duration*1000||3000)}else{nu.textContent=bT.total;if(bT.cp==='inhale'){if(bT.s<=4){ci.className='bcircle in';ph.textContent='吸气'}else if(bT.s<=8){ph.textContent='屏息';ci.className='bcircle'}else{bT.cp='exhale';bT.s=0}}else{if(bT.s<=6){ci.className='bcircle out';ph.textContent='呼气'}else{bT.cp='inhale';bT.s=0}}}},1000)}
+function pauseBreath(){bP=!bP;var ba=document.getElementById('breatheAudio');if(bP){ba.pause()}else{ba.play()}document.getElementById('breathPause').textContent=bP?'▶ 继续':'⏸ 暂停'}
 // === Exercise ===
 const eD=[{emoji:'🤸',title:'仰卧起坐',desc:'躺下→起来→再来！💪'},{emoji:'🏓',title:'乒乓球',desc:'左右左右！🧠'},{emoji:'🧘',title:'消气操',desc:'深呼吸→微笑→甩掉烦恼🌈'}]
 function openEx(){document.getElementById('exFS').classList.add('active');switchEx(0)}
@@ -208,8 +235,10 @@ function switchEx(i){var d=eD[i];document.getElementById('exEmoji').textContent=
 const sT=["亲爱的，一切都会好起来的 💙","在沙特的每一天都是成长 🌟","你值得休息 💜","做你自己就好 💗","明天又是新的一天 ✨"];
 function openDraw(){document.getElementById('draw').classList.add('active');var d=JSON.parse(localStorage.getItem('sd')||'{"c":0,"ds":[]}');d.c++;d.ds.push(new Date().toLocaleString('zh-CN'));localStorage.setItem('sd',JSON.stringify(d));checkS(d)}
 function closeDraw(){document.getElementById('draw').classList.remove('active');document.getElementById('pwInput').value='';document.getElementById('pwScreen').style.display='block';document.getElementById('secretBody').style.display='none';document.getElementById('pwdHint').style.display='none'}
-function unlockDraw(){var pw=document.getElementById('pwInput').value,bd=document.getElementById('secretBody');if(pw==='0118'){document.getElementById('pwScreen').style.display='none';bd.style.display='block';bd.innerHTML='<h4 style="color:#6C5CE7;text-align:center;margin-bottom:10px">💙 给你的话</h4><div class="secret-txt">'+sT[Math.random()*sT.length|0]+'</div>';st('解锁成功 💜')}else if(pw==='1124'){document.getElementById('pwScreen').style.display='none';bd.style.display='block';bd.innerHTML='<h4 style="color:#FF6B9D;text-align:center;margin-bottom:10px">🎵 专属音频</h4><div class="secret-txt">音频文件待上传</div>';st('解锁成功 🎵')}else{document.getElementById('pwdHint').style.display='block';document.getElementById('pwdHint').textContent='💡 可以试试可爱孩子的破蛋日哦～';document.getElementById('pwInput').value=''}}
+function unlockDraw(){var pw=document.getElementById('pwInput').value,bd=document.getElementById('secretBody');if(pw==='0118'){document.getElementById('pwScreen').style.display='none';bd.style.display='block';var imgIdx=Math.random()<.5?1:2;var txt=sT[Math.random()*sT.length|0];bd.innerHTML='<h4 style="color:#6C5CE7;text-align:center;margin-bottom:10px">💙 给你的话</h4><img src="'+imgIdx+'.jpg" style="width:100%;border-radius:12px;margin-bottom:10px;max-height:200px;object-fit:cover"><div class="secret-txt">'+txt+'</div>';st('解锁成功 💜')}else if(pw==='1124'){document.getElementById('pwScreen').style.display='none';bd.style.display='block';var audioId='audio1124'+(Math.random()<.33?1:Math.random()<.5?2:3);var imgIdx2=Math.random()<.5?1:2;var audioEl=document.getElementById(audioId);audioEl.currentTime=0;audioEl.play();bd.innerHTML='<h4 style="color:#FF6B9D;text-align:center;margin-bottom:10px">🎵 专属音频</h4><audio controls autoplay style="width:100%;border-radius:10px;margin-bottom:10px"><source src="'+audioEl.src+'"></audio><img src="'+imgIdx2+'.jpg" style="width:100%;border-radius:12px;object-fit:cover;max-height:200px"><p style="font-size:11px;color:#bbb;text-align:center;margin-top:6px">来自史迪仔的问候 💙</p>';st('解锁成功 🎵')}else{document.getElementById('pwdHint').style.display='block';document.getElementById('pwdHint').textContent='💡 可以试试可爱孩子的破蛋日哦～';document.getElementById('pwInput').value=''}}
 function checkS(d){var ds=d.ds.map(function(x){return new Date(x).toDateString()});var u=[...new Set(ds)].sort();if(u.length>=7){var stk=1;for(var i=1;i<u.length;i++){var df=(new Date(u[i])-new Date(u[i-1]))/86400000;if(df===1)stk++;else stk=1;if(stk>=7){document.getElementById('longTitle').textContent='🎉 连续7天！';document.getElementById('longMsg').textContent='你真了不起！史迪仔给你点赞 👍';document.getElementById('longBanner').classList.add('active');return}}}if(u.length>0){var la=new Date(u[u.length-1]);var df2=(new Date()-la)/86400000;if(df2>=14){document.getElementById('longTitle').textContent='🏠 欢迎回来！';document.getElementById('longMsg').textContent='超过14天没来了，史迪仔一直在等你 💙';document.getElementById('longBanner').classList.add('active')}}}
+// === Swipe Gestures ===
+var sx=0;document.addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});document.addEventListener('touchend',function(e){if(e.changedTouches){var dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>60){var btns=document.querySelectorAll('.btn-icon');var act=Array.from(btns).findIndex(function(b){return b.style.background!=''&&!b.onclick.toString().includes('openBreath')?false:true});var cur=Array.from(btns).findIndex(function(b){return b.matches(':active')});if(dx<-60){var nxt=0;for(var j=cur+1;j<btns.length;j++){btns[j].click();break}}else if(dx>60){var prv=cur-1;if(prv<0)prv=btns.length-1;btns[prv].click()}}}})
 // === Heart long-press ===
 var ht=null;var hb=document.createElement('button');hb.innerHTML='💜';hb.style.cssText='position:absolute;top:48%;left:50%;transform:translate(-50%,-50%);width:50px;height:44px;background:transparent;border:none;font-size:22px;cursor:pointer;z-index:15;animation:hb 1.5s ease-in-out infinite';
 document.getElementById('modelWrap').appendChild(hb);
@@ -220,6 +249,12 @@ hb.addEventListener('mouseup',function(){clearTimeout(ht)});
 hb.addEventListener('mouseleave',function(){clearTimeout(ht)});
 // === Toast ===
 function st(m,d){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},d||2500)}
+// === Mailbox ===
+function openMail(){document.getElementById('mailFS').classList.add('active');loadMails()}
+function closeMail(){document.getElementById('mailFS').classList.remove('active')}
+function sendMail(){var i=document.getElementById('mailInput'),v=i.value.trim();if(!v){st('写点什么吧～');return}var ms=JSON.parse(localStorage.getItem('sd_mail')||'[]');ms.push({text:v,time:new Date().toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}),reply:'史迪仔已收到你的信件 💙'});localStorage.setItem('sd_mail',JSON.stringify(ms));i.value='';loadMails();st('信已送出 💌')}
+function loadMails(){var c=document.getElementById('mailList'),ms=JSON.parse(localStorage.getItem('sd_mail')||'[]');if(!ms.length){c.innerHTML='<div style="text-align:center;padding:30px;color:#888;font-size:13px">还没有留言<br>写下第一封吧 📝</div>';return}c.innerHTML=ms.map(function(m,i){return'<div class="mail-item"><div class="mt"><span>📩 第'+(i+1)+'封</span><span>'+m.time+'</span></div><div class="mc">'+escHtml(m.text)+'</div><div class="mr">💙 '+escHtml(m.reply)+'</div></div>'}).join('')}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 // === Init ===
 window.addEventListener('load',function(){init3D();st('欢迎来到史迪仔24Ai 💙')});
 </script>
