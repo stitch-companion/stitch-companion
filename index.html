@@ -6,7 +6,9 @@
 <title>史迪仔24Ai</title>
 <!-- Supabase SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Three.js + GLTFLoader + DRACOLoader -->
+<!-- Three.js 本地文件（同域名，无 CORS） -->
+<script src="three.min.js"></script>
+<script src="GLTFLoader.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -22,7 +24,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .day-num{color:#A29BFE;font-weight:800;font-size:22px}
 .quote-line{font-size:12px;color:#FF6B9D;margin-top:4px;font-weight:500}
 .model-wrap{width:200px;height:250px;position:relative;margin:4px auto;display:flex;align-items:center;justify-content:center}
-#modelCanvas{display:none!important}
+#modelCanvas{display:none;width:100%;height:100%}
 .fallback-img{width:100%;height:100%;object-fit:contain;display:block!important;border-radius:50%;box-shadow:0 8px 25px rgba(0,0,0,.2)}
 .loading-overlay{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.4);border-radius:16px;z-index:5}
 .loading-overlay .emoji{font-size:36px}
@@ -147,7 +149,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   </div>
   <div class="model-wrap" id="modelWrap">
     <canvas id="modelCanvas" width="400" height="500"></canvas>
-    <img class="fallback-img" id="fallbackImg" src="stitch.png" style="display:none">
+    <img class="fallback-img" id="fallbackImg" src="stitch.png" style="display:block;">
   </div>
   <div class="btn-row">
     <button class="btn-cap btn-green" onclick="openBreath()">🌬️ <span class="btn-label">呼吸</span></button>
@@ -645,27 +647,98 @@ function toggleStarEffect(){
   }d();
 })();
 
-// ====== Three.js 3D + DRACOLoader（任务2）======
-var scene,camera,renderer,model,modelLoadTimer=null;
-  // 优先加载本地glb，失败则降级2D
-  // 3D模型在GitHub Releases: https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/stitch.glb
-  lo.load('https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/stitch.glb',
-    function(g){
-      clearTimeout(modelLoadTimer);modelLoadTimer=null;
-      var ml=document.getElementById('modelLoad');if(ml)ml.remove();
-      model=g.scene;model.position.y=0;model.traverse(function(c){if(c.isMesh){c.castShadow=true;c.receiveShadow=true}});scene.add(model);
-      ST('🎉 3D史迪仔来了！');
+// ====== Three.js 3D 模型加载（成功显示3D，失败降级2D）======
+var scene, camera, renderer, model;
+
+function init3D() {
+  var canvas = document.getElementById('modelCanvas');
+  var fallbackImg = document.getElementById('fallbackImg');
+  
+  // 检查 WebGL 支持
+  if (!window.WebGLRenderingContext) {
+    canvas.style.display = 'none';
+    return;
+  }
+  
+  // 测试 WebGL
+  var testCanvas = document.createElement('canvas');
+  var gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+  if (!gl) {
+    canvas.style.display = 'none';
+    return;
+  }
+  testCanvas = null;
+  
+  // 场景
+  scene = new THREE.Scene();
+  
+  // 相机
+  var pw = canvas.parentElement.clientWidth;
+  var ph = canvas.parentElement.clientHeight;
+  camera = new THREE.PerspectiveCamera(30, pw / ph, 0.1, 100);
+  camera.position.set(0, 1, 5);
+  
+  // 渲染器
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setSize(pw, ph);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+  
+  // 灯光
+  var amb = new THREE.AmbientLight(0xffffff, 0.7);
+  scene.add(amb);
+  var dl1 = new THREE.DirectionalLight(0xffffff, 0.8);
+  dl1.position.set(3, 6, 4);
+  scene.add(dl1);
+  var dl2 = new THREE.DirectionalLight(0x88ccff, 0.3);
+  dl2.position.set(-3, 2, -2);
+  scene.add(dl2);
+  
+  // 加载模型（同域名，无 CORS）
+  if (typeof THREE.GLTFLoader === 'undefined') {
+    canvas.style.display = 'none';
+    return;
+  }
+  
+  var loader = new THREE.GLTFLoader();
+  var timeout = setTimeout(function() {
+    if (model) return;
+    canvas.style.display = 'none';
+    if (renderer) { renderer.dispose(); renderer = null; }
+  }, 10000);
+  
+  loader.load(
+    'stitch-3d.glb',
+    function(gltf) {
+      clearTimeout(timeout);
+      model = gltf.scene;
+      model.position.y = 0;
+      model.traverse(function(c) {
+        if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; }
+      });
+      scene.add(model);
+      canvas.style.display = 'block';
+      fallbackImg.style.display = 'none';
     },
-    function(x){if(x.total>0){var p=Math.floor(x.loaded/x.total*100);var pb=document.getElementById('progBar');if(pb)pb.style.width=p+'%';var pt=document.getElementById('progTxt');if(pt)pt.textContent=p+'% - 加载3D...'}},
-    function(e){
-      console.error('3D加载失败:',e);
-      clearTimeout(modelLoadTimer);modelLoadTimer=null;
-      var ml=document.getElementById('modelLoad');if(ml)ml.remove();
-      cn.style.display='none';fi.style.display='block';
-      ST('3D加载失败，已切换为2D版 🐾');
+    function() {},
+    function(err) {
+      clearTimeout(timeout);
+      console.error('3D加载失败:', err);
+      canvas.style.display = 'none';
+      if (renderer) { renderer.dispose(); renderer = null; }
     }
   );
-  an();
+  
+  // 动画循环
+  (function animLoop() {
+    requestAnimationFrame(animLoop);
+    if (model) {
+      var t = Date.now() * 0.001;
+      model.position.y = Math.sin(t * 0.8) * 0.08;
+      model.rotation.y = Math.sin(t * 0.3) * 0.08;
+    }
+    if (renderer && scene && camera) renderer.render(scene, camera);
+  })();
 }
 // ====== 陪伴天数 + 励志语 ======
 var QUOTES=["每一步都算数 💙","阳光总在风雨后 🌈","坚持就是胜利 ✨","你比想象中更强大 💪","累了就歇会儿 🌿","每一天都是新的开始 🌸","小小的进步也是进步 👏","谢谢你的坚持 🌟","你值得被爱 💗","未来会更好 🦋","你是独一无二的 🌻","今天也要微笑哦 😊","时间都看得到 ⏰","慢慢来比较快 🐢","做自己的光 ✨"];
