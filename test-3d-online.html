@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>3D 史迪仔测试（在线版）</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(160deg,#1a1a2e,#16213e);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:#fff;overflow:hidden}
+#container{width:100%;height:100%;position:relative}
+canvas{display:block;width:100%;height:100%}
+#status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;background:rgba(0,0,0,.85);padding:40px 50px;border-radius:24px;backdrop-filter:blur(10px);box-shadow:0 20px 60px rgba(0,0,0,.5);max-width:90%;min-width:300px}
+#status h2{font-size:28px;margin-bottom:15px;background:linear-gradient(135deg,#FF8A5C,#A29BFE);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#status p{font-size:16px;color:#aaa;margin-top:15px;line-height:1.6}
+#progress{width:100%;height:6px;background:#333;border-radius:3px;overflow:hidden;margin-top:25px}
+#progress-bar{width:0%;height:100%;background:linear-gradient(90deg,#FF8A5C,#A29BFE);border-radius:3px;transition:width .3s}
+#error{color:#ff6b6b;margin-top:20px;font-size:14px;line-height:1.6}
+#success{color:#51cf66;margin-top:20px;font-size:18px;font-weight:600}
+#tips{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);padding:12px 24px;border-radius:12px;font-size:13px;color:#aaa;text-align:center;max-width:90%}
+</style>
+</head>
+<body>
+
+<div id="container">
+  <canvas id="modelCanvas"></canvas>
+  <div id="status">
+    <h2>🐾 正在加载 3D 史迪仔...</h2>
+    <div id="progress"><div id="progress-bar"></div></div>
+    <p id="progress-text">准备中...</p>
+    <div id="error"></div>
+    <div id="success"></div>
+  </div>
+  <div id="tips">💡 提示：3D 模型 26.78 MB，加载可能需要 1-3 分钟，请耐心等待...</div>
+</div>
+
+<!-- Three.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+<script>
+// 加载 GLTFLoader
+var script = document.createElement('script');
+script.src = 'https://cdn.jsdelivr.net/npm/three@0.157.0/examples/js/loaders/GLTFLoader.js';
+script.onload = init;
+script.onerror = function() {
+  showError('GLTFLoader 加载失败，请检查网络连接');
+};
+document.head.appendChild(script);
+
+var scene, camera, renderer, model;
+
+function init() {
+  if (typeof THREE === 'undefined') {
+    showError('Three.js 加载失败，请检查网络连接');
+    return;
+  }
+  
+  if (typeof THREE.GLTFLoader === 'undefined') {
+    showError('GLTFLoader 加载失败，请检查网络连接');
+    return;
+  }
+  
+  updateStatus('Three.js 已加载 ✅', 10);
+  
+  // 创建场景
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x1a1a2e);
+  
+  // 相机
+  camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 100);
+  camera.position.set(0, 1, 6);
+  
+  // 渲染器
+  var canvas = document.getElementById('modelCanvas');
+  renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  
+  // 灯光
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  var dl = new THREE.DirectionalLight(0xffffff, 0.8);
+  dl.position.set(3, 6, 4);
+  scene.add(dl);
+  
+  var dl2 = new THREE.DirectionalLight(0x88ccff, 0.3);
+  dl2.position.set(-3, 2, -2);
+  scene.add(dl2);
+  
+  updateStatus('场景已创建 ✅', 20);
+  
+  // 开始加载模型
+  loadModel();
+  
+  // 动画循环
+  animate();
+  
+  // 窗口大小调整
+  window.addEventListener('resize', function(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+}
+
+function loadModel() {
+  updateStatus('正在加载 3D 模型 (26.78 MB)...', 30);
+  
+  var loader = new THREE.GLTFLoader();
+  
+  // 从 GitHub Releases 加载
+  var modelUrl = 'https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/stitch-small.glb';
+  
+  loader.load(
+    modelUrl,
+    function(gltf) {
+      updateStatus('模型加载成功！渲染中...', 100);
+      model = gltf.scene;
+      model.position.y = 0;
+      model.traverse(function(child) {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      scene.add(model);
+      
+      // 隐藏状态提示
+      setTimeout(function(){
+        document.getElementById('status').style.opacity = '0';
+        setTimeout(function(){
+          document.getElementById('status').style.display = 'none';
+        }, 300);
+      }, 800);
+      
+      showSuccess('🎉 3D 史迪仔加载成功！');
+    },
+    function(xhr) {
+      if (xhr.total > 0) {
+        var percent = Math.floor(xhr.loaded / xhr.total * 100);
+        updateStatus('正在加载 3D 模型... ' + percent + '%', 30 + percent * 0.6);
+      } else {
+        updateStatus('正在下载 3D 模型...', 30);
+      }
+    },
+    function(error) {
+      console.error('加载失败:', error);
+      showError('模型加载失败: ' + error.message + '<br><br>可能原因：<br>1. 模型文件太大 (26.78 MB)<br>2. 网络超时<br>3. 浏览器不支持 WebGL');
+    }
+  );
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  if (model) {
+    var t = Date.now() * 0.001;
+    model.position.y = Math.sin(t * 0.8) * 0.08;
+    model.rotation.y = Math.sin(t * 0.5) * 0.1;
+  }
+  if (renderer) renderer.render(scene, camera);
+}
+
+function updateStatus(text, progress) {
+  var textEl = document.querySelector('#status h2');
+  var progressBar = document.getElementById('progress-bar');
+  var progressText = document.getElementById('progress-text');
+  if (textEl) textEl.textContent = text;
+  if (progressBar) progressBar.style.width = progress + '%';
+  if (progressText) progressText.textContent = '加载进度: ' + Math.floor(progress) + '%';
+}
+
+function showError(msg) {
+  var errorEl = document.getElementById('error');
+  if (errorEl) errorEl.innerHTML = '❌ ' + msg;
+}
+
+function showSuccess(msg) {
+  var successEl = document.getElementById('success');
+  if (successEl) successEl.innerHTML = msg;
+}
+</script>
+
+</body>
+</html>
