@@ -224,9 +224,8 @@ var PK=function(a){return a[Math.floor(Math.random()*a.length)]};
 var escH=function(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')};
 
 // ====== Supabase 云端统计 ======
-// 占位符：请替换为你的 Supabase Project URL 和 Publishable Key
-var SUPABASE_URL='YOUR_SUPABASE_URL';
-var SUPABASE_KEY='YOUR_SUPABASE_PUBLISHABLE_KEY';
+var SUPABASE_URL='https://rlnpvodtzdqekcksmpdg.supabase.co';
+var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJsbnB2b2R0emRxZWtja3NtcGRnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwMTk4ODUsImV4cCI6MjA5NzU5NTg4NX0.G_uvhh0tS4GemZH4dgebh5ceehKJqO9dLER2ATH9_74';
 var supabase=null;
 var statsReady=false;
 
