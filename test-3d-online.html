@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧸</text></svg>">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>3D 史迪仔测试</title>
 <style>
@@ -127,29 +128,13 @@ function loadModel() {
     },
     function(error) {
       console.error('模型加载失败:', error);
-      // 尝试用原始 URL 作为后备
-      updateStatus('重试中...', 50);
-      loader.load(
-        'https://stitch-companion.github.io/stitch-companion/stitch-3d.glb',
-        function(gltf) {
-          model = gltf.scene;
-          scene.add(model);
-          updateStatus('🎉 加载成功！', 100);
-          showSuccess('🎉 3D 史迪仔加载成功！');
-          setTimeout(function(){
-            document.getElementById('status').style.opacity = '0';
-            setTimeout(function(){ document.getElementById('status').style.display = 'none'; }, 300);
-          }, 800);
-        },
-        function(xhr2) {
-          if (xhr2.total > 0) {
-            updateStatus('重试中... ' + Math.floor(xhr2.loaded/xhr2.total*100) + '%', 50);
-          }
-        },
-        function(error2) {
-          showError('模型加载失败<br><br>' + (error.message || '') + '<br><br>请尝试 Ctrl+F5 刷新');
-        }
-      );
+      console.log('错误详情:', JSON.stringify(error));
+      var msg = '模型加载失败';
+      if (error && error.message) msg += '<br>错误: ' + error.message;
+      if (error && error.statusCode) msg += '<br>状态码: ' + error.statusCode;
+      if (error && error.statusText) msg += '<br>状态: ' + error.statusText;
+      msg += '<br><br>请按 Ctrl+F5 强制刷新重试';
+      showError(msg);
     }
   );
 }
