@@ -30,7 +30,7 @@ canvas{display:block;width:100%;height:100%}
     <div id="error"></div>
     <div id="success"></div>
   </div>
-  <div id="tips">💡 提示：3D 模型 26.78 MB，加载可能需要 1-3 分钟，请耐心等待...</div>
+  <div id="tips">💡 提示：3D 模型 0.17 MB，加载可能需要 1-3 分钟，请耐心等待...</div>
 </div>
 
 <!-- Three.js CDN -->
@@ -101,12 +101,12 @@ function init() {
 }
 
 function loadModel() {
-  updateStatus('正在加载 3D 模型 (26.78 MB)...', 30);
+  updateStatus('正在加载 3D 模型 (0.17 MB)...', 30);
   
   var loader = new THREE.GLTFLoader();
   
   // 从 GitHub Releases 加载
-  var modelUrl = 'https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/stitch-small.glb';
+  var modelUrl = 'https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/stitch-final.glb';
   
   loader.load(
     modelUrl,
@@ -142,7 +142,7 @@ function loadModel() {
     },
     function(error) {
       console.error('加载失败:', error);
-      showError('模型加载失败: ' + error.message + '<br><br>可能原因：<br>1. 模型文件太大 (26.78 MB)<br>2. 网络超时<br>3. 浏览器不支持 WebGL');
+      showError('模型加载失败: ' + error.message + '<br><br>可能原因：<br>1. 模型文件太大 (0.17 MB)<br>2. 网络超时<br>3. 浏览器不支持 WebGL');
     }
   );
 }
