@@ -467,7 +467,8 @@ function init3D(){
   }
 
   // 优先加载本地glb，失败则降级2D
-  lo.load('史迪仔.glb',
+  // 3D模型在GitHub Releases: https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/default.glb
+  lo.load('https://github.com/stitch-companion/stitch-companion/releases/download/v1.0.0/default.glb',
     function(g){
       clearTimeout(modelLoadTimer);modelLoadTimer=null;
       var ml=document.getElementById('modelLoad');if(ml)ml.remove();
