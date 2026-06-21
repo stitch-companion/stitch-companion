@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>3D 史迪仔测试（在线版）</title>
+<title>3D 史迪仔测试</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC',sans-serif;background:linear-gradient(160deg,#1a1a2e,#16213e);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;color:#fff;overflow:hidden}
@@ -30,37 +30,30 @@ canvas{display:block;width:100%;height:100%}
     <div id="error"></div>
     <div id="success"></div>
   </div>
-  <div id="tips">💡 提示：3D 模型 0.17 MB，加载可能需要 1-3 分钟，请耐心等待...</div>
+  <div id="tips">💡 模型 178 KB，同域名加载，预计几秒完成</div>
 </div>
 
-<!-- Three.js CDN -->
-<script src="https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js"></script>
+<!-- 使用仓库内本地文件（解决 CDN 404 和国内访问慢的问题） -->
+<script src="three.min.js"></script>
+<script src="GLTFLoader.js"></script>
 <script>
-// 加载 GLTFLoader
-var script = document.createElement('script');
-script.src = 'https://cdn.jsdelivr.net/npm/three@0.157.0/examples/js/loaders/GLTFLoader.js';
-script.onload = init;
-script.onerror = function() {
-  showError('GLTFLoader 加载失败，请检查网络连接');
-};
-document.head.appendChild(script);
+init(); // 立即初始化
 
 var scene, camera, renderer, model;
 
 function init() {
   if (typeof THREE === 'undefined') {
-    showError('Three.js 加载失败，请检查网络连接');
+    showError('Three.js 加载失败');
     return;
   }
-  
   if (typeof THREE.GLTFLoader === 'undefined') {
-    showError('GLTFLoader 加载失败，请检查网络连接');
+    showError('GLTFLoader 加载失败');
     return;
   }
   
-  updateStatus('Three.js 已加载 ✅', 10);
+  updateStatus('加载引擎 ✅', 10);
   
-  // 创建场景
+  // 场景
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x1a1a2e);
   
@@ -79,20 +72,15 @@ function init() {
   var dl = new THREE.DirectionalLight(0xffffff, 0.8);
   dl.position.set(3, 6, 4);
   scene.add(dl);
-  
   var dl2 = new THREE.DirectionalLight(0x88ccff, 0.3);
   dl2.position.set(-3, 2, -2);
   scene.add(dl2);
   
   updateStatus('场景已创建 ✅', 20);
   
-  // 开始加载模型
   loadModel();
-  
-  // 动画循环
   animate();
   
-  // 窗口大小调整
   window.addEventListener('resize', function(){
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
@@ -101,17 +89,13 @@ function init() {
 }
 
 function loadModel() {
-  updateStatus('正在加载 3D 模型 (0.17 MB)...', 30);
+  updateStatus('正在加载 3D 模型 (178 KB)...', 30);
   
   var loader = new THREE.GLTFLoader();
   
-  // 从 GitHub Releases 加载
-  var modelUrl = 'stitch-3d.glb';
-  
   loader.load(
-    modelUrl,
+    'stitch-3d.glb',
     function(gltf) {
-      updateStatus('模型加载成功！渲染中...', 100);
       model = gltf.scene;
       model.position.y = 0;
       model.traverse(function(child) {
@@ -122,27 +106,50 @@ function loadModel() {
       });
       scene.add(model);
       
-      // 隐藏状态提示
-      setTimeout(function(){
-        document.getElementById('status').style.opacity = '0';
-        setTimeout(function(){
-          document.getElementById('status').style.display = 'none';
-        }, 300);
-      }, 800);
-      
+      updateStatus('🎉 加载成功！', 100);
       showSuccess('🎉 3D 史迪仔加载成功！');
+      
+      // 淡出状态提示
+      setTimeout(function(){
+        var el = document.getElementById('status');
+        el.style.transition = 'opacity 0.5s';
+        el.style.opacity = '0';
+        setTimeout(function(){ el.style.display = 'none'; }, 500);
+      }, 1500);
     },
     function(xhr) {
       if (xhr.total > 0) {
-        var percent = Math.floor(xhr.loaded / xhr.total * 100);
-        updateStatus('正在加载 3D 模型... ' + percent + '%', 30 + percent * 0.6);
+        var pct = Math.floor(xhr.loaded / xhr.total * 100);
+        updateStatus('下载中... ' + pct + '%', 30 + pct * 0.7);
       } else {
-        updateStatus('正在下载 3D 模型...', 30);
+        updateStatus('下载中...', 30);
       }
     },
     function(error) {
-      console.error('加载失败:', error);
-      showError('模型加载失败: ' + error.message + '<br><br>可能原因：<br>1. 模型文件太大 (0.17 MB)<br>2. 网络超时<br>3. 浏览器不支持 WebGL');
+      console.error('模型加载失败:', error);
+      // 尝试用原始 URL 作为后备
+      updateStatus('重试中...', 50);
+      loader.load(
+        'https://stitch-companion.github.io/stitch-companion/stitch-3d.glb',
+        function(gltf) {
+          model = gltf.scene;
+          scene.add(model);
+          updateStatus('🎉 加载成功！', 100);
+          showSuccess('🎉 3D 史迪仔加载成功！');
+          setTimeout(function(){
+            document.getElementById('status').style.opacity = '0';
+            setTimeout(function(){ document.getElementById('status').style.display = 'none'; }, 300);
+          }, 800);
+        },
+        function(xhr2) {
+          if (xhr2.total > 0) {
+            updateStatus('重试中... ' + Math.floor(xhr2.loaded/xhr2.total*100) + '%', 50);
+          }
+        },
+        function(error2) {
+          showError('模型加载失败<br><br>' + (error.message || '') + '<br><br>请尝试 Ctrl+F5 刷新');
+        }
+      );
     }
   );
 }
@@ -154,26 +161,26 @@ function animate() {
     model.position.y = Math.sin(t * 0.8) * 0.08;
     model.rotation.y = Math.sin(t * 0.5) * 0.1;
   }
-  if (renderer) renderer.render(scene, camera);
+  if (renderer && scene && camera) renderer.render(scene, camera);
 }
 
 function updateStatus(text, progress) {
-  var textEl = document.querySelector('#status h2');
-  var progressBar = document.getElementById('progress-bar');
-  var progressText = document.getElementById('progress-text');
-  if (textEl) textEl.textContent = text;
-  if (progressBar) progressBar.style.width = progress + '%';
-  if (progressText) progressText.textContent = '加载进度: ' + Math.floor(progress) + '%';
+  var h2 = document.querySelector('#status h2');
+  var bar = document.getElementById('progress-bar');
+  var p = document.getElementById('progress-text');
+  if (h2) h2.textContent = text;
+  if (bar) bar.style.width = Math.min(progress, 100) + '%';
+  if (p) p.textContent = '加载进度: ' + Math.floor(Math.min(progress, 100)) + '%';
 }
 
 function showError(msg) {
-  var errorEl = document.getElementById('error');
-  if (errorEl) errorEl.innerHTML = '❌ ' + msg;
+  var el = document.getElementById('error');
+  if (el) el.innerHTML = '❌ ' + msg;
 }
 
 function showSuccess(msg) {
-  var successEl = document.getElementById('success');
-  if (successEl) successEl.innerHTML = msg;
+  var el = document.getElementById('success');
+  if (el) el.innerHTML = msg;
 }
 </script>
 
