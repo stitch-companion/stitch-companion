@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>史迪仔24Ai 国内版</title>
+<title>史迪仔24Ai</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -99,6 +99,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .long-content{background:#fff;border-radius:20px;padding:28px;text-align:center;max-width:320px}
 .long-content h2{font-size:22px;color:#6C5CE7;margin-bottom:8px}
 .long-content p{font-size:14px;color:#333;line-height:1.7}
+/* 图片放大浮层 */
+.img-modal{position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;background:rgba(0,0,0,.8);display:flex;justify-content:center;align-items:center;opacity:0;transition:opacity .3s}
+.img-modal img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.img-modal .close-btn{position:absolute;top:20px;right:20px;width:44px;height:44px;background:rgba(255,255,255,.9);border-radius:50%;border:none;font-size:28px;color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2)}
 @media(max-width:380px){.model-wrap{width:170px;height:220px}.btn-cap{min-width:48px;height:42px;font-size:16px;padding:0 12px}}
 </style>
 </head>
@@ -189,8 +193,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/gh/stitch-companion/stitch-companion@main/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/stitch-companion/stitch-companion@main/GLTFLoader.js"></script>
+<script src="./three.min.js"></script>
+<script src="./GLTFLoader.js"></script>
 <script>
 // ====== 工具 ======
 var ST=function(m,d){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},d||2500)};
@@ -216,12 +220,12 @@ document.getElementById('soundBtn').onclick=toggleNoise;
 
 // ====== 音频系统（用户手势内创建）=======
 // 音量常量：呼吸音80%，BGM 30%
-var VOL_BREATH=0.8,VOL_BGM=0.3;
+var VOL_BREATH=0.8,VOL_BGM=0.3;var BGM_POOL=[];function initBGMPool(){var files=["bgm1.mp3","bgm2.mp3","托口秀1.mp3","托口秀2.mp3"];BGM_POOL=files}initBGMPool();
 // 脱口秀音频池
 var BGM_POOL=['bgm1.mp3','bgm2.mp3'];
 var usedBgm=[];
 
-function pickBGM(){if(usedBgm.length>=BGM_POOL.length)usedBgm=[];var pool=BGM_POOL.filter(function(x){return usedBgm.indexOf(x)<0});var pick=PK(pool);usedBgm.push(pick);return pick}
+function pickBGM(){if(usedBgm.length>=BGM_POOL.length)usedBgm=[];var pool=BGM_POOL.filter(function(x){return usedBgm.indexOf(x)<0});if(pool.length===0){usedBgm=[];pool=BGM_POOL}var pick=PK(pool);usedBgm.push(pick);return pick}
 
 // 当前播放的音频实例
 var curBgm=null,bgmPlaying=false;
@@ -406,12 +410,12 @@ function unlockDraw(){
   if(pw==='0118'){
     document.getElementById('pwScreen').style.display='none';bd.style.display='block';
     var imgIdx=Math.random()<.5?1:2;
-    bd.innerHTML='<h4 style="color:#6C5CE7;text-align:center;margin-bottom:10px">💙 给你的话</h4><img src="'+imgIdx+'.jpg" style="width:100%;border-radius:12px;margin-bottom:10px;max-height:180px;object-fit:cover"><div style="font-size:14px;color:#333;line-height:1.8;padding:10px;background:#F8F9FA;border-radius:10px">'+PK(sT)+'</div>';
+    bd.innerHTML='<h4 style="color:#6C5CE7;text-align:center;margin-bottom:10px">💙 给你的话</h4><img src="'+imgIdx+'.jpg" style="width:100%;border-radius:12px;margin-bottom:10px;max-height:180px;object-fit:cover;cursor:pointer" onclick="showFullImg(this.src)"><div style="font-size:14px;color:#333;line-height:1.8;padding:10px;background:#F8F9FA;border-radius:10px">'+PK(sT)+'</div>';
     ST('解锁成功 💜');
   }else if(pw==='1124'){
     document.getElementById('pwScreen').style.display='none';bd.style.display='block';
     var sel=PK(['1124音频1.m4a','1124音频2.m4a','1124音频3.m4a']);var imgIdx2=Math.random()<.5?1:2;
-    bd.innerHTML='<h4 style="color:#FF6B9D;text-align:center;margin-bottom:10px">🎵 专属音频</h4><button class="breath-btn" style="background:#FF6B9D;width:100%;margin-bottom:10px" onclick="playSecretOnce(\''+sel+'\')">▶ 播放</button><img src="'+imgIdx2+'.jpg" style="width:100%;border-radius:12px;object-fit:cover;max-height:180px"><p style="font-size:11px;color:#bbb;text-align:center;margin-top:6px">来自史迪仔的问候 💙</p>';
+    bd.innerHTML='<h4 style="color:#FF6B9D;text-align:center;margin-bottom:10px">🎵 专属音频</h4><button class="breath-btn" style="background:#FF6B9D;width:100%;margin-bottom:10px" onclick="playSecretOnce(\''+sel+'\')">▶ 播放</button><img src="'+imgIdx2+'.jpg" style="width:100%;border-radius:12px;object-fit:cover;max-height:180px;cursor:pointer" onclick="showFullImg(this.src)"><p style="font-size:11px;color:#bbb;text-align:center;margin-top:6px">来自史迪仔的问候 💙</p>';
     ST('解锁成功 🎵');
   }else{
     pwAttempts++;document.getElementById('pwInput').value='';
@@ -422,6 +426,21 @@ function unlockDraw(){
 function playSecretOnce(src){
   if(secretAudio){try{secretAudio.pause()}catch(e){}secretAudio=null}
   secretAudio=new Audio(src);secretAudio.loop=false;secretAudio.volume=0.9;secretAudio.play().catch(function(){ST('播放失败')});
+}
+
+// ====== 图片放大浮层 ======
+function showFullImg(src){
+  var modal=document.createElement('div');
+  modal.className='img-modal';
+  modal.id='imgModal';
+  modal.innerHTML='<span class="close-btn" onclick="closeImgModal()">×</span><img src="'+src+'">';
+  modal.onclick=function(e){if(e.target===modal)closeImgModal()};
+  document.body.appendChild(modal);
+  setTimeout(function(){modal.style.opacity='1'},10);
+}
+function closeImgModal(){
+  var m=document.getElementById('imgModal');
+  if(m){m.style.opacity='0';setTimeout(function(){m.remove()},300)}
 }
 
 // ====== 打卡检测 ======
@@ -437,3 +456,4 @@ ST('欢迎来到史迪仔24Ai 💙');
 </script>
 </body>
 </html>
+
