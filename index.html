@@ -3,14 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>史迪仔24Ai</title>
+<title>史迪仔24Ai（国外版·沙特）</title>
 
 <!-- Three.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
-
-<!-- Supabase JS -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -57,13 +54,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .fs-close{width:36px;height:36px;border:none;background:none;font-size:22px;color:#999;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center}
 .fs-bd{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;align-items:center}
 .breath-bg{background:linear-gradient(180deg,#E8F5E9,#C8E6C9 50%,#A5D6A7 100%)}
+.exercise-bg{background:linear-gradient(180deg,#FFF3E0,#FFE0B2 50%,#FFCC80 100%)}
+.mail-bg{background:linear-gradient(180deg,#E3F2FD,#BBDEFB 50%,#90CAF9 100%)}
+.settings-bg{background:linear-gradient(180deg,#F3E5F5,#E1BEE7 50%,#CE93D8 100%)}
 .bcircle{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,#00B894,#00A085);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(0,184,148,0.3);transition:transform 4s ease-in-out;margin:20px 0}
 .bcircle.in{transform:scale(1.2)}
 .breath-tip{font-size:14px;color:#555;text-align:center;line-height:1.6}
 .breath-btn{background:linear-gradient(135deg,#00B894,#00A085);color:#fff;border:none;border-radius:24px;padding:12px 30px;font-size:14px;font-family:inherit;cursor:pointer;box-shadow:0 4px 12px rgba(0,184,148,0.3);transition:transform 0.2s;min-height:44px}
-.exercise-bg{background:linear-gradient(180deg,#FFF3E0,#FFE0B2 50%,#FFCC80 100%)}
-.mail-bg{background:linear-gradient(180deg,#E3F2FD,#BBDEFB 50%,#90CAF9 100%)}
-.settings-bg{background:linear-gradient(180deg,#F3E5F5,#E1BEE7 50%,#CE93D8 100%)}
 .draw{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:400;display:none;justify-content:center;align-items:center;padding:20px}
 .draw.active{display:flex}
 .draw .inner{background:#fff;border-radius:20px;padding:24px;width:100%;max-width:360px;position:relative;max-height:85vh;overflow-y:auto}
@@ -72,21 +69,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 .draw .ub{width:100%;background:linear-gradient(135deg,#FF6B9D,#FF8E9E);color:#fff;border:none;border-radius:12px;padding:12px;font-size:14px;font-family:inherit;cursor:pointer;min-height:44px}
 .toast{position:fixed;bottom:calc(100px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;text-align:center;max-width:80%}
 .toast.show{opacity:1}
-
-/* 设置界面 */
-.settings-content{width:100%;max-width:360px;margin:0 auto}
-.settings-section{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05)}
-.settings-section h4{font-size:15px;color:#333;margin-bottom:10px;font-weight:600}
-.settings-input{width:100%;padding:10px 12px;border:2px solid #E0E0E0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;margin-bottom:10px;min-height:40px}
-.settings-input:focus{border-color:#A29BFE}
-.settings-btn{width:100%;padding:10px;border:none;border-radius:10px;font-size:14px;font-family:inherit;cursor:pointer;font-weight:500;transition:transform 0.2s;min-height:40px}
-.settings-btn:active{transform:scale(0.97)}
-.settings-btn.save{background:linear-gradient(135deg,#00B894,#00A085);color:#fff}
-.settings-btn.test{background:linear-gradient(135deg,#6C5CE7,#A29BFE);color:#fff;margin-top:8px}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.stat-card{background:linear-gradient(135deg,#F8F9FA,#E8EAF6);border-radius:12px;padding:12px;text-align:center}
-.stat-card .num{font-size:24px;font-weight:700;color:#6C5CE7}
-.stat-card .label{font-size:11px;color:#888;margin-top:4px}
 </style>
 </head>
 <body>
@@ -103,9 +85,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
     <input id="authInput" type="password" maxlength="6" placeholder="请输入密码" style="width:100%;padding:14px 16px;font-size:18px;border:2px solid #E0E0E0;border-radius:16px;text-align:center;letter-spacing:8px;outline:none;transition:border-color 0.2s" onkeydown="if(event.key==='Enter')checkAuth()" onfocus="this.style.borderColor='#FF8A5C'" onblur="this.style.borderColor='#E0E0E0'">
     <p id="authError" style="font-size:13px;color:#E74C3C;margin-top:12px;min-height:20px;opacity:0;transition:opacity 0.3s"></p>
     <button onclick="checkAuth()" style="width:100%;margin-top:16px;padding:14px;background:linear-gradient(135deg,#FF8A5C,#FFB347);color:#fff;font-size:16px;font-weight:600;border:none;border-radius:20px;cursor:pointer;box-shadow:0 6px 20px rgba(255,138,92,0.3);transition:transform 0.2s" onmousedown="this.style.transform='scale(0.97)'" onmouseup="this.style.transform='scale(1)'">解锁 🐾</button>
-    
-    <!-- 隐藏设置入口（点击标题5次） -->
-    <div id="settingsTrigger" style="margin-top:20px;font-size:11px;color:#BBB;cursor:pointer;user-select:none">史迪仔24Ai v3.0</div>
   </div>
 </div>
 
@@ -151,79 +130,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
   </div>
 </div>
 
-<!-- 运动页面 -->
-<div class="fs exercise-bg" id="exerciseFS">
-  <div class="fs-hd"><h3>🏃 运动模式</h3><button class="fs-close" onclick="closeEx()">×</button></div>
-  <div class="fs-bd">
-    <div style="font-size:48px;margin:20px 0">🏃♂️</div>
-    <div style="font-size:16px;color:#555;margin-bottom:20px">跟着史迪仔一起动起来！</div>
-    <div style="font-size:14px;color:#888;background:#FFF3E0;padding:15px;border-radius:12px;margin:10px 0;line-height:1.6">
-      ✅ 随机播放脱口秀音频<br>
-      ✅ 3分钟后自动停止<br>
-      ✅ 边听边运动，轻松愉快！
-    </div>
-    <div class="breath-btn" id="exerciseStart" onclick="startExercise()" style="margin-top:20px;background:linear-gradient(135deg,#FFB347,#FF9800)">开始运动</div>
-    <div class="breath-btn" id="exerciseStop" onclick="stopExercise()" style="margin-top:10px;background:linear-gradient(135deg,#E0E0E0,#BDBDBD);color:#666;display:none">停止</div>
-  </div>
-</div>
-
-<!-- 信箱页面 -->
-<div class="fs mail-bg" id="mailFS">
-  <div class="fs-hd"><h3>📪 匿名信箱</h3><button class="fs-close" onclick="closeMail()">×</button></div>
-  <div class="fs-bd">
-    <div style="font-size:48px;margin:20px 0">📪</div>
-    <div style="font-size:16px;color:#555;margin-bottom:20px">给史迪仔留言</div>
-    <textarea id="mailInput" style="width:100%;height:120px;padding:12px;border:2px solid #E0E0E0;border-radius:12px;font-size:14px;font-family:inherit;resize:none;outline:none;margin-bottom:15px" placeholder="写下你的心里话..."></textarea>
-    <button class="breath-btn" onclick="sendMail()" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">发送 💜</button>
-    <div style="font-size:12px;color:#999;margin-top:20px;line-height:1.6">
-      💡 史迪仔会偷偷看你的留言<br>
-      💡 但不会告诉别人哦～
-    </div>
-  </div>
-</div>
-
-<!-- 设置页面 -->
-<div class="fs settings-bg" id="settingsFS">
-  <div class="fs-hd"><h3>⚙️ 设置</h3><button class="fs-close" onclick="closeSettings()">×</button></div>
-  <div class="fs-bd">
-    <div class="settings-content">
-      
-      <!-- 访问统计 -->
-      <div class="settings-section">
-        <h4>📊 访问统计</h4>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="num" id="statTotalVisits">0</div>
-            <div class="label">总访问次数</div>
-          </div>
-          <div class="stat-card">
-            <div class="num" id="statTotalDrawers">0</div>
-            <div class="label">抽屉打开次数</div>
-          </div>
-        </div>
-        <button class="settings-btn save" onclick="refreshStats()" style="margin-top:12px">刷新统计 🔄</button>
-      </div>
-      
-      <!-- DeepSeek API Key 设置 -->
-      <div class="settings-section">
-        <h4>🤖 DeepSeek AI 设置</h4>
-        <p style="font-size:12px;color:#888;margin-bottom:10px">输入 API Key 后，史迪仔会更智能哦～</p>
-        <input id="apiKeyInput" class="settings-input" type="password" placeholder="sk-..." value="">
-        <button class="settings-btn save" onclick="saveApiKey()">保存 Key 🔑</button>
-        <button class="settings-btn test" onclick="testApiKey()">测试连接 🔌</button>
-      </div>
-      
-      <!-- 位置设置 -->
-      <div class="settings-section">
-        <h4>📍 位置设置</h4>
-        <input id="locInput" class="settings-input" type="text" placeholder="例如：沙特" value="沙特">
-        <button class="settings-btn save" onclick="saveLocation()">保存位置 📍</button>
-      </div>
-      
-    </div>
-  </div>
-</div>
-
 <!-- 秘密抽屉 -->
 <div class="draw" id="draw">
   <div class="inner">
@@ -237,30 +143,60 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Micr
 
 </div>
 
+<!-- 运动界面 -->
+<div class="fs exercise-bg" id="exerciseFS">
+  <div class="fs-hd"><h3>🏃 运动模式</h3><button class="fs-close" onclick="closeEx()">×</button></div>
+  <div class="fs-bd">
+    <div style="font-size:48px;margin:20px 0">🏃♂️</div>
+    <div style="font-size:16px;color:#555;margin-bottom:20px">跟着史迪仔一起动起来！</div>
+    <div style="font-size:14px;color:#888;background:#FFF3E0;padding:15px;border-radius:12px;margin:10px 0;line-height:1.6">✅ 随机播放脱口秀音频<br>✅ 3分钟后自动停止<br>✅ 边听边运动，轻松愉快！</div>
+    <div class="breath-btn" id="exerciseStart" onclick="startExercise()" style="margin-top:20px;background:linear-gradient(135deg,#FFB347,#FF9800)">开始运动</div>
+    <div class="breath-btn" id="exerciseStop" onclick="stopExercise()" style="margin-top:10px;background:linear-gradient(135deg,#E0E0E0,#BDBDBD);color:#666;display:none">停止</div>
+  </div>
+</div>
+
+<!-- 信箱界面 -->
+<div class="fs mail-bg" id="mailFS">
+  <div class="fs-hd"><h3>📪 匿名信箱</h3><button class="fs-close" onclick="closeMail()">×</button></div>
+  <div class="fs-bd">
+    <div style="font-size:48px;margin:20px 0">📪</div>
+    <div style="font-size:16px;color:#555;margin-bottom:20px">给史迪仔留言</div>
+    <textarea id="mailInput" style="width:100%;height:120px;padding:12px;border:2px solid #E0E0E0;border-radius:12px;font-size:14px;font-family:inherit;resize:none;outline:none;margin-bottom:15px" placeholder="写下你的心里话..."></textarea>
+    <button class="breath-btn" onclick="sendMail()" style="background:linear-gradient(135deg,#6C5CE7,#A29BFE)">发送 💜</button>
+    <div style="font-size:12px;color:#999;margin-top:20px;line-height:1.6">💡 史迪仔会偷偷看你的留言<br>💡 但不会告诉别人哦～</div>
+  </div>
+</div>
+
+<!-- 设置界面（含统计 + AI配置） -->
+<div class="fs settings-bg" id="settingsFS">
+  <div class="fs-hd"><h3>⚙️ 设置</h3><button class="fs-close" onclick="closeSettings()">×</button></div>
+  <div class="fs-bd">
+    <div style="background:#fff;border-radius:16px;padding:16px;width:100%;max-width:340px;margin-bottom:12px;text-align:center">
+      <h4 style="font-size:15px;color:#333;margin-bottom:10px">📊 访问统计</h4>
+      <p style="font-size:14px;margin:8px 0">总访问次数：<b id="visitCount" style="color:#6C5CE7;font-size:22px">0</b></p>
+      <p style="font-size:14px;margin:8px 0">抽屉打开次数：<b id="drawerCount" style="color:#FF6B9D;font-size:22px">0</b></p>
+    </div>
+    <div style="background:#fff;border-radius:16px;padding:16px;width:100%;max-width:340px">
+      <h4 style="font-size:15px;color:#333;margin-bottom:10px">🤖 如何配置 DeepSeek API Key</h4>
+      <p style="font-size:12px;color:#888;line-height:1.7;text-align:left;margin-bottom:12px">1. 打开 https://platform.deepseek.com/<br>2. 注册并登录账号<br>3. 进入 "API Keys" 页面<br>4. 点击 "Create new API key"<br>5. 复制生成的 Key（以 sk- 开头）<br>6. 粘贴到下方输入框，点保存<br>7. 保存后史迪仔就能智能聊天啦！</p>
+      <input id="apiKeyInput" type="password" placeholder="sk-..." style="width:100%;padding:10px 12px;border:2px solid #E0E0E0;border-radius:10px;font-size:14px;outline:none;margin-bottom:10px">
+      <button class="breath-btn" onclick="saveApiKey()" style="background:linear-gradient(135deg,#00B894,#00A085)">保存 Key 🔑</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ===== Supabase 配置 =====
-const SUPABASE_URL = 'https://hjwshwajlybkzduhhfye.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhqd3Nod2FqbHlia3pkdWhoZnlIIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5OTgxMjAsImV4cCI6MjA2MzU3NDEyMH0.c9V9qI_qHjK7J4B1rwHgPyn-ZJQScCZl6IMrNUf8uQ';
-
-// 初始化 Supabase
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 // ===== 工具函数 =====
-var ST = function(m,d){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},d||2500);};
-var PK = function(a){return a[Math.floor(Math.random()*a.length)]};
+var ST=function(m,d){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},d||2500);};
+var PK=function(a){return a[Math.floor(Math.random()*a.length)]};
 
-// ===== 全局变量 =====
+// ===== 音频管理 =====
 var audioContext = null;
 var bgmAudio = null;
 var currentAudio = null;
-var breathTimer = null;
-var exerciseTimer = null;
-var exerciseRunning = false;
-var soundEnabled = false;
-var settingsClickCount = 0;
-var settingsTimer = null;
+var breathAudio = null;
 
-// ===== 音频管理 =====
+// 初始化音频上下文（微信兼容）
 function initAudioContext(){
   if(audioContext)return;
   try{
@@ -270,6 +206,7 @@ function initAudioContext(){
   }
 }
 
+// 播放音频文件（使用正确的文件名）
 function playAudio(filePath, volume=1.0, loop=false){
   if(!audioContext)initAudioContext();
   
@@ -286,57 +223,42 @@ function playAudio(filePath, volume=1.0, loop=false){
   return currentAudio;
 }
 
+// 停止所有音频
 function stopAllAudio(){
   if(bgmAudio)bgmAudio.pause();
   if(currentAudio)currentAudio.pause();
+  if(breathAudio)breathAudio.pause();
   bgmAudio = null;
   currentAudio = null;
+  breathAudio = null;
 }
-
-function toggleSound(){
-  soundEnabled = !soundEnabled;
-  var btn = document.getElementById('soundBtn');
-  
-  if(soundEnabled){
-    btn.textContent = '🔊';
-    // 开启背景音乐（海浪声）
-    if(!bgmAudio){
-      bgmAudio = playAudio('sea.m4a', 0.3, true);
-    } else {
-      bgmAudio.play();
-    }
-    ST('🔊 声音已开启');
-  } else {
-    btn.textContent = '🔇';
-    if(bgmAudio)bgmAudio.pause();
-    ST('🔇 声音已关闭');
-  }
+// 海浪背景白噪音
+function startBGM(){
+  if(bgmAudio)return;
+  bgmAudio=new Audio('sea.m4a');
+  bgmAudio.volume=0.3;
+  bgmAudio.loop=true;
+  bgmAudio.play().catch(function(e){console.log('海浪需交互',e)});
+}
+function stopBGM(){
+  if(bgmAudio){bgmAudio.pause();bgmAudio=null;}
+}
+function stopBreathAudio(){
+  if(currentAudio)currentAudio.pause();
 }
 
 // ===== 密码验证 =====
-var AUTH_PASSWORDS = ['0118','1124'];  // 两个密码都能进
+var AUTH_KEY='stitch-auth';
+var AUTH_PASSWORDS=['0118','1124'];
 
 function initAuth(){
-  if(localStorage.getItem('stitch-auth')==='true'){
+  if(localStorage.getItem(AUTH_KEY)==='true'){
     document.getElementById('authOverlay').style.display='none';
     document.getElementById('mainContent').style.opacity='1';
     initApp();
     return;
   }
   document.getElementById('authInput').focus();
-  
-  // 隐藏设置入口（点击5次）
-  var trigger = document.getElementById('settingsTrigger');
-  trigger.addEventListener('click', function(){
-    settingsClickCount++;
-    clearTimeout(settingsTimer);
-    settingsTimer = setTimeout(function(){settingsClickCount=0;}, 2000);
-    
-    if(settingsClickCount >= 5){
-      settingsClickCount = 0;
-      openSettings();
-    }
-  });
 }
 
 function checkAuth(){
@@ -345,13 +267,11 @@ function checkAuth(){
   var password=input.value.trim();
   
   if(AUTH_PASSWORDS.indexOf(password)!==-1){
-    localStorage.setItem('stitch-auth','true');
+    localStorage.setItem(AUTH_KEY,'true');
     var overlay=document.getElementById('authOverlay');
     var mainContent=document.getElementById('mainContent');
     overlay.style.opacity='0';
     setTimeout(function(){overlay.style.display='none';mainContent.style.opacity='1'},500);
-    
-    // 记录访问
     incrementVisit();
     initApp();
   }else{
@@ -362,84 +282,7 @@ function checkAuth(){
   }
 }
 
-document.addEventListener('DOMContentLoaded', initAuth);
-
-// ===== Supabase 统计函数（简化版：只记录总次数）=====
-async function incrementVisit(){
-  try {
-    // 先查询当前计数
-    var { data, error } = await supabase
-      .from('stats')
-      .select('total_visits')
-      .eq('id', 1)
-      .single();
-    
-    if(data){
-      // 更新计数
-      await supabase
-        .from('stats')
-        .update({ total_visits: data.total_visits + 1 })
-        .eq('id', 1);
-    } else {
-      // 创建新记录
-      await supabase
-        .from('stats')
-        .insert([{ id: 1, total_visits: 1, drawer_opens: 0 }]);
-    }
-    
-    console.log('访问记录成功');
-  } catch(e) {
-    console.error('记录访问失败:', e);
-  }
-}
-
-async function incrementDrawerCount(){
-  try {
-    var { data, error } = await supabase
-      .from('stats')
-      .select('drawer_opens')
-      .eq('id', 1)
-      .single();
-    
-    if(data){
-      await supabase
-        .from('stats')
-        .update({ drawer_opens: data.drawer_opens + 1 })
-        .eq('id', 1);
-    } else {
-      await supabase
-        .from('stats')
-        .insert([{ id: 1, total_visits: 0, drawer_opens: 1 }]);
-    }
-  } catch(e) {
-    console.error('记录抽屉打开失败:', e);
-  }
-}
-
-async function loadStats(){
-  try {
-    var { data, error } = await supabase
-      .from('stats')
-      .select('total_visits, drawer_opens')
-      .eq('id', 1)
-      .single();
-    
-    if(data){
-      document.getElementById('statTotalVisits').textContent = data.total_visits || 0;
-      document.getElementById('statTotalDrawers').textContent = data.drawer_opens || 0;
-    } else {
-      // 如果没有数据，创建初始记录
-      await supabase
-        .from('stats')
-        .insert([{ id: 1, total_visits: 0, drawer_opens: 0 }]);
-      
-      document.getElementById('statTotalVisits').textContent = 0;
-      document.getElementById('statTotalDrawers').textContent = 0;
-    }
-  } catch(e) {
-    console.error('加载统计失败:', e);
-  }
-}
+document.addEventListener('DOMContentLoaded',initAuth);
 
 // ===== 初始化应用 =====
 function initApp(){
@@ -447,48 +290,7 @@ function initApp(){
   updateQuote();
   init3D();
   initStarCanvas();
-  unlockAudio();
-  loadApiKey();
-  ST('欢迎来到史迪仔24Ai 💙');
-  
-  // 自动播放背景音乐（需要用户交互，所以放在这里）
-  setTimeout(function(){
-    if(!soundEnabled){
-      // 尝试自动播放（可能会被浏览器阻止）
-      bgmAudio = playAudio('sea.m4a', 0.3, true);
-      bgmAudio.addEventListener('playing', function(){
-        soundEnabled = true;
-        document.getElementById('soundBtn').textContent = '🔊';
-      });
-      bgmAudio.addEventListener('error', function(){
-        console.log('自动播放被阻止，需要用户点击');
-      });
-    }
-  }, 1000);
-  
-  // 长按史迪仔打开秘密抽屉
-  var modelWrap = document.getElementById('modelWrap');
-  var pressTimer = null;
-  
-  modelWrap.addEventListener('mousedown', function(e) {
-    pressTimer = setTimeout(function() {
-      openDraw();
-    }, 1000);
-  });
-  
-  modelWrap.addEventListener('mouseup', function(e) {
-    clearTimeout(pressTimer);
-  });
-  
-  modelWrap.addEventListener('touchstart', function(e) {
-    pressTimer = setTimeout(function() {
-      openDraw();
-    }, 1000);
-  });
-  
-  modelWrap.addEventListener('touchend', function(e) {
-    clearTimeout(pressTimer);
-  });
+  ST('欢迎来到史迪仔24Ai 💙（点一下屏幕开启声音）');
 }
 
 // ===== 星光触控特效 =====
@@ -599,10 +401,9 @@ function init3D(){
   var canvas=document.getElementById('modelCanvas');
   var fallbackImg=document.getElementById('fallbackImg');
   
-  fallbackImg.style.display='block';
-  
   if(!window.WebGLRenderingContext){
     canvas.style.display='none';
+    fallbackImg.style.display='block';
     return;
   }
   
@@ -610,6 +411,7 @@ function init3D(){
   var gl=testCanvas.getContext('webgl')||testCanvas.getContext('experimental-webgl');
   if(!gl){
     canvas.style.display='none';
+    fallbackImg.style.display='block';
     return;
   }
   testCanvas=null;
@@ -634,6 +436,7 @@ function init3D(){
   
   if(typeof THREE.GLTFLoader==='undefined'){
     canvas.style.display='none';
+    fallbackImg.style.display='block';
     return;
   }
   
@@ -676,7 +479,7 @@ function init3D(){
 }
 
 // ===== 陪伴天数 =====
-var QUOTES=["每一步都算数 💙","阳光总在风雨后 🌈","坚持就是胜利 ✨","你比想象中更强大 💪","累了就歇会儿 🌿","每一天都是新的开始 🌸","小小的进步也是进步 👏","谢谢你的坚持 🌟","你值得被爱 💗","未来会更好 🦌","你是独一无二的 🌻","今天也要微笑哦 😊","时间都看得到 ⏰","慢慢来比较快 🐢","做自己的光 ✨"];
+var QUOTES=["每一步都算数 💙","阳光总在风雨后 🌈","坚持就是胜利 ✨","你比想象中更强大 💪","累了就歇会儿 🌿","每一天都是新的开始 🌸","小小的进步也是进步 👏","谢谢你的坚持 🌟","你值得被爱 💗","未来会更好 🦋","你是独一无二的 🌻","今天也要微笑哦 😊","时间都看得到 ⏰","慢慢来比较快 🐢","做自己的光 ✨"];
 function updateDay(){
   var d=JSON.parse(localStorage.getItem('sd_settings')||'{"loc":"沙特","date":"'+new Date().toISOString().slice(0,10)+'"}');
   document.getElementById('locText').textContent=d.loc;
@@ -691,7 +494,6 @@ function updateQuote(){
 // ===== 功能函数 =====
 function openSettings(){document.getElementById('settingsFS').classList.add('active');loadStats();loadApiKey();}
 function closeSettings(){document.getElementById('settingsFS').classList.remove('active')}
-
 function openDraw(){document.getElementById('draw').classList.add('active')}
 function closeDraw(){document.getElementById('draw').classList.remove('active');document.getElementById('pwInput').value=''}
 
@@ -699,14 +501,13 @@ function unlockDraw(){
   var pw=document.getElementById('pwInput').value;
   if(pw==='0118'||pw==='1124'){
     ST('解锁成功 💜');
+    incrementDrawer();
     closeDraw();
     
-    // 记录抽屉打开
-    incrementDrawerCount();
-    
+    // 播放励志内容（随机）
     var random = Math.random();
     if(random < 0.5){
-      // 50% 概率播放音频
+      // 50% 概率播放音频（使用正确的文件名）
       var audioFiles = ['1124音频1.m4a','1124音频2.m4a','1124音频3.m4a','sea.m4a'];
       var randomAudio = audioFiles[Math.floor(Math.random()*audioFiles.length)];
       playAudio(randomAudio, 0.8);
@@ -721,6 +522,7 @@ function unlockDraw(){
       }else{
         var randomPhoto = photos[Math.floor(Math.random()*photos.length)];
         ST('📸 显示照片: ' + randomPhoto);
+        // 这里可以显示照片弹窗
       }
     }
   }else{
@@ -734,7 +536,6 @@ function sendMsg(){
   var input=document.getElementById('chatInput');
   var msg=input.value.trim();
   if(!msg)return;
-  
   var msgs=document.getElementById('chatMsgs');
   var div=document.createElement('div');
   div.className='msg me';
@@ -742,140 +543,62 @@ function sendMsg(){
   msgs.appendChild(div);
   input.value='';
   msgs.scrollTop=msgs.scrollHeight;
-  
-  // 调用 AI 或本地回复
-  setTimeout(function(){
-    callAI(msg, div, msgs);
-  }, 1000);
+  setTimeout(function(){ callAI(msg, msgs); }, 800);
 }
-
-// ===== AI 调用（智能降级）======
-async function callAI(userMsg, replyDiv, msgsContainer){
-  var apiKey = localStorage.getItem('stitch_deepseek_key');
-  
-  if(apiKey){
-    // 有 API Key，调用 DeepSeek
-    try {
-      var response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + apiKey,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          messages: [
-            {role: 'system', content: '你是史迪仔626，一个毒舌但温暖的朋友。用幽默、接地气的方式回复。'},
-            {role: 'user', content: userMsg}
-          ],
-          max_tokens: 200
-        })
+async function callAI(userMsg, msgs){
+  var key=localStorage.getItem('stitch_deepseek_key');
+  var reply=document.createElement('div');
+  reply.className='msg st';
+  msgs.appendChild(reply);
+  msgs.scrollTop=msgs.scrollHeight;
+  if(key){
+    try{
+      var r=await fetch('https://api.deepseek.com/v1/chat/completions',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},
+        body:JSON.stringify({model:'deepseek-chat',messages:[{role:'system',content:'你是史迪仔626，毒舌但温暖的朋友，用幽默接地气方式回复'},{role:'user',content:userMsg}],max_tokens:200})
       });
-      
-      if(response.ok){
-        var data = await response.json();
-        replyDiv.textContent = data.choices[0].message.content;
-        msgsContainer.scrollTop = msgsContainer.scrollHeight;
-        return;
-      }
-    } catch(e) {
-      console.error('DeepSeek API 调用失败:', e);
-    }
+      if(r.ok){var d=await r.json();reply.textContent=d.choices[0].message.content;msgs.scrollTop=msgs.scrollHeight;return;}
+    }catch(e){}
   }
-  
-  // 降级到本地模板
-  replyDiv.textContent = PK([
-    '嗷呜～有道理！😎',
-    '嗯嗯！继续！💪',
-    '史迪仔听懂了！🤙',
-    '哈哈，有趣！😂',
-    '嗯嗯，然后呢？🤔'
-  ]);
-  msgsContainer.scrollTop = msgsContainer.scrollHeight;
+  reply.textContent=PK(['嗷呜～有道理！😎','嗯嗯！继续！💪','史迪仔听懂了！🤙','哈哈有趣！😂','然后呢？🤔']);
+  msgs.scrollTop=msgs.scrollHeight;
 }
-
-// ===== 设置功能 =====
 function loadApiKey(){
-  var apiKey = localStorage.getItem('stitch_deepseek_key');
-  if(apiKey){
-    document.getElementById('apiKeyInput').value = apiKey;
-    document.getElementById('apiKeyInput').type = 'password';
-  }
+  var k=localStorage.getItem('stitch_deepseek_key');
+  if(k && document.getElementById('apiKeyInput'))document.getElementById('apiKeyInput').value=k;
 }
-
 function saveApiKey(){
-  var apiKey = document.getElementById('apiKeyInput').value.trim();
-  if(!apiKey){
-    ST('请输入 API Key！');
-    return;
-  }
-  
-  localStorage.setItem('stitch_deepseek_key', apiKey);
-  ST('✅ API Key 保存成功！');
+  var v=document.getElementById('apiKeyInput').value.trim();
+  if(!v){ST('请输入Key');return;}
+  localStorage.setItem('stitch_deepseek_key',v);
+  ST('✅ Key已保存，史迪仔更聪明啦');
 }
 
-async function testApiKey(){
-  var apiKey = localStorage.getItem('stitch_deepseek_key');
-  if(!apiKey){
-    ST('❌ 请先保存 API Key！');
-    return;
-  }
-  
-  try {
-    var response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + apiKey,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [{role: 'user', content: '你好'}],
-        max_tokens: 10
-      })
-    });
-    
-    if(response.ok){
-      ST('✅ API Key 有效！');
-    } else {
-      ST('❌ API Key 无效！');
-    }
-  } catch(e) {
-    ST('❌ 连接失败！');
-  }
-}
-
-function refreshStats(){
-  loadStats();
-  ST('📊 统计已刷新！');
-}
-
-function saveLocation(){
-  var loc = document.getElementById('locInput').value.trim();
-  if(!loc){
-    ST('请输入位置！');
-    return;
-  }
-  
-  var settings = JSON.parse(localStorage.getItem('sd_settings') || '{}');
-  settings.loc = loc;
-  localStorage.setItem('sd_settings', JSON.stringify(settings));
-  
-  document.getElementById('locText').textContent = loc;
-  ST('✅ 位置保存成功！');
-}
-
-// ===== 呼吸功能 =====
-var standupAudios = ['脱口秀1.mp3','脱口秀2.mp3'];
+// ===== 呼吸功能（带音频，使用正确的文件名）======
+var breathTimer=null;
+var breathAudio = null;
+var standupAudios = []; // 脱口秀音频列表
 
 function openBreath(){
   document.getElementById('breathFS').classList.add('active');
   
+  // 随机播放脱口秀音频（音量较大，使用正确的文件名 托口秀）
+  if(!audioContext)initAudioContext();
+  standupAudios = ['托口秀1.mp3','托口秀2.mp3'];
   var randomStandup = standupAudios[Math.floor(Math.random()*standupAudios.length)];
-  bgmAudio = playAudio(randomStandup, 0.7, true);
+  // 脱口秀作为背景（bgmAudio，音量0.7）
+  bgmAudio = new Audio(randomStandup);
+  bgmAudio.volume = 0.7;
+  bgmAudio.loop = true;
+  bgmAudio.play().catch(function(e){console.log('脱口秀播放失败',e)});
   
+  // 播放 breathe 音频（音量较小0.3，独立音频，混合播放，不互相覆盖）
   setTimeout(function(){
-    playAudio('breathe.m4a', 0.3, true);
+    breathAudio = new Audio('breathe.m4a');
+    breathAudio.volume = 0.3;
+    breathAudio.loop = true;
+    breathAudio.play().catch(function(e){console.log('breathe播放失败',e)});
   }, 500);
 }
 
@@ -892,91 +615,125 @@ function startBreath(){
     num++;
     document.getElementById('bnum').textContent=num;
     
+    // 5分钟（300秒）后结束
     if(num>=300){
       clearInterval(breathTimer);
       document.getElementById('breathStart').style.display='block';
       
+      stopAllAudio();
+      // 播放结束音（使用正确的文件名）
       playAudio('effort.m4a', 0.8);
       ST('🎉 深呼吸完成！');
-      stopAllAudio();
     }
   },1000);
 }
 
-// ===== 运动功能 =====
+// ===== 运动功能（带音频）======
+var exerciseTimer=null;
+
 function openEx(){
   document.getElementById('exerciseFS').classList.add('active');
 }
-
 function closeEx(){
   document.getElementById('exerciseFS').classList.remove('active');
   stopExercise();
 }
-
 function startExercise(){
+  if(standupAudios.length===0)standupAudios=['托口秀1.mp3','托口秀2.mp3'];
   ST('运动功能启动...');
-  exerciseRunning = true;
   document.getElementById('exerciseStart').style.display='none';
   document.getElementById('exerciseStop').style.display='block';
-  
   var randomStandup = standupAudios[Math.floor(Math.random()*standupAudios.length)];
   bgmAudio = playAudio(randomStandup, 0.7, true);
-  
   exerciseTimer = setTimeout(function(){
-    stopExercise();
+    stopAllAudio();
     ST('🏃 运动结束！');
+    document.getElementById('exerciseStart').style.display='block';
+    document.getElementById('exerciseStop').style.display='none';
   }, 180000);
 }
-
 function stopExercise(){
-  exerciseRunning = false;
+  if(exerciseTimer){clearTimeout(exerciseTimer);exerciseTimer=null;}
+  stopAllAudio();
   document.getElementById('exerciseStart').style.display='block';
   document.getElementById('exerciseStop').style.display='none';
-  
-  if(exerciseTimer){
-    clearTimeout(exerciseTimer);
-    exerciseTimer = null;
-  }
-  stopAllAudio();
 }
 
-// ===== 信箱功能 =====
-function openMail(){
-  document.getElementById('mailFS').classList.add('active');
-}
-
-function closeMail(){
-  document.getElementById('mailFS').classList.remove('active');
-}
-
+function openMail(){document.getElementById('mailFS').classList.add('active')}
+function closeMail(){document.getElementById('mailFS').classList.remove('active')}
 function sendMail(){
-  var mailInput = document.getElementById('mailInput');
-  var message = mailInput.value.trim();
-  
-  if(!message){
-    ST('写点什么再发送吧～');
-    return;
-  }
-  
+  var t=document.getElementById('mailInput').value.trim();
+  if(!t){ST('写点什么再发送吧～');return;}
   ST('💜 留言已收到！史迪仔会偷偷看的～');
-  mailInput.value='';
-  setTimeout(function(){
-    closeMail();
-  }, 1500);
+  document.getElementById('mailInput').value='';
+  setTimeout(closeMail,1500);
 }
 
 // ===== 音频解锁（微信兼容）======
+var audioUnlocked=false;
+
+function ensureAudioUnlocked(){
+  if(!audioUnlocked){
+    audioUnlocked=true;
+    initAudioContext();
+  }
+  startBGM();
+  document.getElementById('soundBtn').textContent='🔊';
+  ST('🔊 声音已开启（海浪声）');
+}
 function unlockAudio(){
-  if(audioContext)return;
+  if(audioUnlocked)return;
+  audioUnlocked=true;
   initAudioContext();
-  ST('🔊 点击声音按钮可以开关背景音乐');
+  startBGM();
+  document.getElementById('soundBtn').textContent='🔊';
+  ST('🔊 声音已开启（海浪声）');
+}
+function toggleSound(){
+  if(!audioUnlocked){audioUnlocked=true;initAudioContext();}
+  if(bgmAudio && !bgmAudio.paused){
+    stopBGM();
+    stopBreathAudio();
+    document.getElementById('soundBtn').textContent='🔇';
+    ST('🔇 背景音乐已暂停（呼吸音频同步暂停）');
+  }else{
+    startBGM();
+    document.getElementById('soundBtn').textContent='🔊';
+    ST('🔊 背景音乐已开启');
+  }
 }
 
-document.addEventListener('click',unlockAudio,{once:true});
-document.addEventListener('touchstart',unlockAudio,{once:true});
+document.addEventListener('click',ensureAudioUnlocked,{once:true});
+document.addEventListener('touchstart',ensureAudioUnlocked,{once:true});
+
+// ===== 本地统计 =====
+function loadStats(){
+  var stats=JSON.parse(localStorage.getItem('sd_stats')||'{"visit":0,"drawer":0}');
+  var visitCount=document.getElementById('visitCount');
+  var drawerCount=document.getElementById('drawerCount');
+  if(visitCount)visitCount.textContent=stats.visit;
+  if(drawerCount)drawerCount.textContent=stats.drawer;
+}
+
+function incrementVisit(){
+  var stats=JSON.parse(localStorage.getItem('sd_stats')||'{"visit":0,"drawer":0}');
+  stats.visit++;
+  localStorage.setItem('sd_stats',JSON.stringify(stats));
+  loadStats();
+}
+
+function incrementDrawer(){
+  var stats=JSON.parse(localStorage.getItem('sd_stats')||'{"visit":0,"drawer":0}');
+  stats.drawer++;
+  localStorage.setItem('sd_stats',JSON.stringify(stats));
+}
+
+loadStats();
 
 // ===== 史迪仔点击交互 =====
 document.getElementById('modelCanvas').addEventListener('click',function(){
+  // 播放点击音效（如果有）
+  // playAudio('click.mp3', 0.5);
   ST(PK(['嗷呜～你戳到我啦！😊','哈哈好痒！🤭','今天也要加油哦！💙']))
 });
 </script>
